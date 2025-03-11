@@ -1,0 +1,7 @@
+project
+run_configs
+logs
+gabbage
+*.pyc
+__pycache__
+llm.py.bak
