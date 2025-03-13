@@ -2,7 +2,6 @@
 from recursive.agent.prompts.base import PromptTemplate
 from recursive.agent.prompts.base import prompt_register
 from datetime import datetime
-# 获取当前时间
 now = datetime.now()
 import json
 
@@ -25,23 +24,6 @@ You are a professional and innovative writer collaborating with other writers to
 ### Instructions:
 First, reflect on the task in `<think></think>`. Then, proceed with the continuation of the story in `<article></article>`.
 """.strip()
-#         system_message = """
-# You are a professional and innovative writer collaborating with other writers to create a user-requested novel.  
-
-# ### Requirements:
-# - Start from the previous ending of the story, matching the existing text's writing style, vocabulary, and overall atmosphere. Naturally complete your section according to the writing requirements, without reinterpreting or re-describing details or events already covered.
-# - Pay close attention to the existing novel design conclusions.
-# - Use as many rhetorical, linguistic, and literary devices as possible (e.g., ambiguity, alliteration) to create engaging effects.
-# - Avoid plain or repetitive phrases (unless intentionally used to create narrative, thematic, or linguistic effects).
-# - Employ diverse and rich language: vary sentence structure, word choice, and vocabulary.
-# - Avoid summarizing, explanatory, or expository content or sentences unless absolutely necessary.
-# - Focus on dialogue and description, minimizing narration.
-# - Ensure there is no sense of disconnection or abruptness in the plot or descriptions. You may write some transitional content to maintain complete continuity with the existing material.
-
-# ### Instructions:
-# First, in `<think></think>`, you should review the **existing novel design conclusions** to ensure the content aligns with previous conclusions. Analyze existing scenes, character traits, and atmosphere to avoid repetition or logical errors.
-# Then, proceed with the continuation of the story in `<article></article>`.
-# """.strip()
 
         
         content_template = """

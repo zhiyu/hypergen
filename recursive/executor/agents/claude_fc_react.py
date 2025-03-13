@@ -190,7 +190,7 @@ class SearchAgent(BaseAgent):
         # action_memorys = []
         context_historys = []
         return_info = []
-        for turn in range(1, self.max_turn):
+        for turn in range(0, self.max_turn):
             prompt = self.format(
                 chat_history=[],
                 message=inner_history,
@@ -300,47 +300,11 @@ if __name__ == "__main__":
     """
 
 
-    from recursive.executor.actions.bing_browser import BingBrowser, BaichuanBingSearch
+    from recursive.executor.actions.bing_browser import BingBrowser
     # from recursive.executor.actions.google_scholar_search import GoogleScholar
     from recursive.executor.actions.python_interpreter import PythonInterpreter
 
     custom_format = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>"
-    # log_id = logger.add("test2.log", format=custom_format)
-    
-    # search_agent = SearchAgent(
-    #     prompt_version = "SearchAgentMainFineGrainedObs",
-    #     action_executor = ActionExecutor(
-    #         actions = [BingBrowser(searcher_type="BaichuanBingSearch")]),
-    #     # model = "gpt-4o",
-    #     model = "claude-3-5-sonnet-20241022",
-    #     max_turn = 8,
-    #     action_memory = True,
-    #     remove_history = True,
-    #     parse_arg_dict = {
-    #         "observation": ["observation"],
-    #         "missing_info": ["missing_info"],
-    #         "think": ["planning_and_think"],
-    #         "action_think": ["current_turn_query_think"],
-    #         "search_querys": ["current_turn_search_querys"],
-    #     }
-    # )
-
-    # # search_agent = SearchAgent(
-    # #     prompt_version = "SearchAgentMainWithSubQuestion",
-    # #     action_executor = ActionExecutor(
-    # #         actions = [BingBrowser(searcher_type="BaichuanBingSearch")]),
-    # #     model = "gpt-4o",
-    # #     max_turn = 4,
-    # #     action_memory = True,
-    # #     remove_history = True,
-    # #     has_search_targets = True
-    # # )
-    
-    # # search_agent.chat(message="姚明出生那年NBA亚军教练是谁？")
-    # search_agent.chat(message="世界径流量前五的河流，流经国家数量的最值、均值、中位数、众数分别是？", global_start_index = 52)
-    # # search_agent.chat(message="整理DeepSeek V2, V3和R1的详细和全面的发布信息，包括技术规格、性能基准、定价策略以及市场反馈。")
-    # search_agent.chat(message="整理DeepSeek R1的详细和全面的发布信息，包括技术规格、性能基准、定价策略以及市场反馈",
-                    #   global_start_index = 11)
     log_id = logger.add("test16.log", format=custom_format)
     
     search_agent = SearchAgent(
@@ -373,16 +337,6 @@ if __name__ == "__main__":
         }
     )
 
-    # search_agent = SearchAgent(
-    #     prompt_version = "SearchAgentMainWithSubQuestion",
-    #     action_executor = ActionExecutor(
-    #         actions = [BingBrowser(searcher_type="BaichuanBingSearch")]),
-    #     model = "gpt-4o",
-    #     max_turn = 4,
-    #     action_memory = True,
-    #     remove_history = True,
-    #     has_search_targets = True
-    # )
     
     from recursive.agent.agent_base import DummyRandomPlanningAgent
     # from recursive.agent.prompts.search_think_write_push_r1.merge_search_result import MergeSearchResultZHDetailedWithOnlySummaryENR1V2
@@ -390,14 +344,6 @@ if __name__ == "__main__":
     
     agent = DummyRandomPlanningAgent()
     
-    # to_run_root_question = "姚明出生那年NBA亚军教练是谁？"
-    # to_run_target_write_tasks = ""
-    # to_run_outer_write_task = "姚明出生那年NBA亚军教练是谁？字数要求：100字"
-    # # search_agent.chat(message="姚明出生那年NBA亚军教练是谁？")
-    # # goal = "收集DeepSeek公司创立的以下具体信息：\n1. 创立时间与地点的确切信息（解决5月和7月的时间差异）\n2. 从量化交易转型AI领域的具体决策过程\n3. 创始人梁文锋对公司的初始定位和愿景宣言\n4. 公司注册时的具体业务范围和发展规划\n5. 创立初期的技术储备情况（尤其是从幻方量化继承的技术资源）\n"
-    # # goal = "收集姚明个人信息，尤其是具体的出生年份"
-    # goal = "收集个人信息"
-    # depend_write_task_lengths = ["100字"]
 
     to_run_root_question = "20年前中美两国财富前三的富豪身价分别是多少，现在中美两国财富前三的富豪的身价分别是多少，在两个年份，中美两国身价的平均差多少"
     to_run_target_write_tasks = "20年前中美两国财富前三的富豪身价分别是多少，现在中美两国财富前三的富豪的身价分别是多少，在两个年份，中美两国身价的平均差多少"
@@ -405,12 +351,6 @@ if __name__ == "__main__":
     
     
     
-    # to_run_target_write_tasks = ""
-    # to_run_outer_write_task = "Write an article about Trade war between US and China, To comprehensively analyze the background, current developments, and future trends of the trade war between the US and China. word count requirement: You should determine itself, according the question. but, no more than 5000 words"
-    # search_agent.chat(message="姚明出生那年NBA亚军教练是谁？")
-    # goal = "收集DeepSeek公司创立的以下具体信息：\n1. 创立时间与地点的确切信息（解决5月和7月的时间差异）\n2. 从量化交易转型AI领域的具体决策过程\n3. 创始人梁文锋对公司的初始定位和愿景宣言\n4. 公司注册时的具体业务范围和发展规划\n5. 创立初期的技术储备情况（尤其是从幻方量化继承的技术资源）\n"
-    # goal = "收集姚明个人信息，尤其是具体的出生年份"
-    # goal = "20年前中美两国财富前三的富豪身价分别是多少，现在中美两国财富前三的富豪的身价分别是多少"
     goal = "20年前中美两国财富前三的富豪身价分别是多少，现在中美两国财富前三的富豪的身价分别是多少，在这两个年份，中美两国身价的平均差多少"
     
     depend_write_task_lengths = ["100字"]

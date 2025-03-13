@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: recursive
-Version: 0.0.1
-Summary: A short description of your package
-Requires-Python: >=3.6
-Provides-Extra: dev
-Requires-Dist: pytest; extra == "dev"
-Requires-Dist: gradio; extra == "dev"

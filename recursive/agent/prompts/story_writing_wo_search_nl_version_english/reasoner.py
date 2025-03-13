@@ -2,7 +2,7 @@
 from recursive.agent.prompts.base import PromptTemplate
 from recursive.agent.prompts.base import prompt_register
 from datetime import datetime
-# 获取当前时间
+
 now = datetime.now()
 
 @prompt_register.register_module()

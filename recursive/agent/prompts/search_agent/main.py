@@ -2,7 +2,6 @@
 from recursive.agent.prompts.base import PromptTemplate
 from recursive.agent.prompts.base import prompt_register
 from datetime import datetime
-# 获取当前时间
 now = datetime.now()
 
         
@@ -68,7 +67,7 @@ JSON array of actual search terms for this round, ["search term 1","search term 
 2. Search Term Optimization:
 - Failed searches should try: synonym replacement, long-tail word expansion, qualifier addition, language style conversion
 3. Termination Conditions:
-- Information completeness ≥95% or reach 5 round limit
+- Information completeness ≥95% or reach 4 round limit
 - Complete information gathering in as few rounds as possible
 4. Observation must thoroughly and meticulously organize and summarize collected information without omitting details
 
@@ -100,16 +99,3 @@ Complete this round (round {to_run_turn}) according to requirements
 if __name__ == "__main__":
     from recursive.agent.agent_base import DummyRandomPlanningAgent
     agent = DummyRandomPlanningAgent()
-    # system_message = Reasoner().construct_system_message()
-    # prompt = Reasoner().construct_prompt(
-    #     # to_run_task = "60岁高血压糖尿病患者能不能吃复方甲氧那明"
-    #     to_run_task = "有3个兴趣小组, 甲、乙两位同学各自参加其中一个小组, 每位同学参加各个小组的可能性相同, 则这两位同学参加同一个兴趣小组的概率为多少"
-    # )
-
-    # x = agent.call_llm(
-    #     system_message = system_message,
-    #     prompt = prompt,
-    #     parse_arg_dict = {"result": "result"},
-    #     model = 'claude-3-5-sonnet-20241022'
-    # )
-    # print(x)

@@ -83,11 +83,11 @@ def get_llm_output(node, agent, memory, agent_type, overwrite_cache=False, *args
         to_run_same_graph_dependent = "\n\n".join(["【{}】: \n{}".format(t["goal"], t["result"]) for t in memory_info["same_graph_precedents"]])
 
     to_run_target_write_tasks = ""
-    if task_type == "搜索":
+    if task_type == "RETRIEVAL":
         depend_write_task = node.get_direct_depend_write_task()
         if node.config["language"] == "zh":
             to_run_target_write_tasks = "\n".join(
-                "写作任务{}，字数：{}".format(idx, node.task_info["length"]) for idx, node in enumerate(depend_write_task, start=1)
+                "COMPOSITION任务{}，字数：{}".format(idx, node.task_info["length"]) for idx, node in enumerate(depend_write_task, start=1)
             ) if (depend_write_task is not None and len(depend_write_task) > 0) else "Not Provided"
         else:
             to_run_target_write_tasks = "\n".join(
@@ -204,7 +204,7 @@ class UpdateAtomPlanningAgent(Agent):
                 atom_llm_result = get_llm_output(
                     node, self, memory, "atom", retry_cnt > 0, *args, **kwargs
                 )
-                # 判定是否失败，如果atom_result不为"atomic"或"complex“其中之一则为失败，否则为成功
+            # Determine if it failed. If atom_result is not one of "atomic" or "complex" then it's a failure, otherwise it's successful
                 succ = (atom_llm_result["atom_result"].strip() in ("atomic", "complex"))
                 if not succ:
                     logger.error("ATOM Judgement for {} is failed, Get Response: {}, retry_cnt={}".format(node, 
@@ -214,7 +214,7 @@ class UpdateAtomPlanningAgent(Agent):
 
             atom_llm_result["atom_original"] = atom_llm_result.pop("original")
             return_result.update(atom_llm_result)
-            # 将atom的思考作为candidate_think用于recursive规划
+            # Use atom's thinking as candidate_think for recursive planning
             node.task_info["candidate_think"] = atom_llm_result["atom_think"]
             if atom_llm_result.get("update_result", ""):
                 node.task_info["goal"] = atom_llm_result.get("update_result", "").replace("\n", "; ")
@@ -233,9 +233,9 @@ class UpdateAtomPlanningAgent(Agent):
                     try:
                         plan_result = self.parse_result(plan_llm_result["plan_result"])
                     except Exception as e: 
-                        # 格式不对，无法获取plan_result，首先检查是不是能直接从回复中抽取出规划
+                        # Incorrect format, cannot get plan_result, first check if planning can be extracted directly from the response
                         source = plan_llm_result["plan_result"].strip() if plan_llm_result["plan_result"].strip() != "" else plan_llm_result["original"]
-                        plan_llm_result["plan_result"] = extract_json_content(source) # 如果取不出来为None
+                        plan_llm_result["plan_result"] = extract_json_content(source) # If fail to fetch, return None
                         try: 
                             plan_result = self.parse_result(plan_llm_result["plan_result"])
                         except Exception as e:
@@ -290,7 +290,7 @@ class SimpleExcutor(Agent):
         """
         task_type = node.task_type_tag
         inner_kwargs = node.config[task_type]["execute"]
-        if task_type == "搜索" and inner_kwargs.get("react_agent", False):
+        if task_type == "RETRIEVAL" and inner_kwargs.get("react_agent", False):
             react_agent = SearchAgent(
                 prompt_version = inner_kwargs["prompt_version"],
                 action_executor = ActionExecutor(
@@ -315,14 +315,14 @@ class SimpleExcutor(Agent):
             to_run_root_question = memory.root_node.task_info["goal"]
             if node.config["language"] == "zh":
                 to_run_target_write_tasks = "\n".join(
-                    "写作任务{}，字数：{}".format(idx, node.task_info["length"]) for idx, node in enumerate(depend_write_task, start=1)
+                    "COMPOSITION任务{}，字数：{}".format(idx, node.task_info["length"]) for idx, node in enumerate(depend_write_task, start=1)
                 ) if (depend_write_task is not None and len(depend_write_task) > 0) else "Not Provided"  
                 outer_write_task = node.get_outer_write_task()
-                to_run_outer_write_task = "写作任务{}，字数：{}".format(outer_write_task["goal"], 
+                to_run_outer_write_task = "COMPOSITION任务{}，字数：{}".format(outer_write_task["goal"], 
                                                                 outer_write_task["length"])
             else:
                 to_run_target_write_tasks = "\n".join(
-                    "Write Task{}，word count requirements：{}".format(idx, node.task_info["length"]) for idx, node in enumerate(depend_write_task, start=1)
+                    "Write Task{}, word count requirements: {}".format(idx, node.task_info["length"]) for idx, node in enumerate(depend_write_task, start=1)
                 ) if (depend_write_task is not None and len(depend_write_task) > 0) else "Not Provided"
                 outer_write_task = node.get_outer_write_task()
                 to_run_outer_write_task = "Write Task {}, word count requirements: {}".format(outer_write_task.task_info["goal"], outer_write_task.task_info["length"])
@@ -381,7 +381,7 @@ class SimpleExcutor(Agent):
                     retry_cnt += 1
                 
             # for write
-            if node.task_type_tag == "写作":
+            if node.task_type_tag == "COMPOSITION":
                 memory.article += "\n\n" + llm_result["result"]
         
         return llm_result
@@ -391,7 +391,7 @@ class SimpleExcutor(Agent):
         return agent_output
     
     def search_merge(self, node, memory, search_results, to_run_outer_write_task, *args, **kwargs):
-        inner_kwargs = node.config["搜索"]["search_merge"]
+        inner_kwargs = node.config["RETRIEVAL"]["search_merge"]
         prompt_version = inner_kwargs["prompt_version"]
 
         system_message = prompt_register.module_dict[prompt_version]().construct_system_message()
@@ -409,7 +409,7 @@ class SimpleExcutor(Agent):
             ) if (depend_write_task is not None and len(depend_write_task) > 0) else "Not Provided"
         else:
             to_run_target_write_tasks = "\n".join(
-                "Write Task{}，word count requirements：{}".format(idx, node.task_info["length"]) for idx, node in enumerate(depend_write_task, start=1)
+                "Write Task{}, word count requirements：{}".format(idx, node.task_info["length"]) for idx, node in enumerate(depend_write_task, start=1)
             ) if (depend_write_task is not None and len(depend_write_task) > 0) else "Not Provided"
         prompt = prompt_register.module_dict[prompt_version]().construct_prompt(
             to_run_search_task = to_run_search_task,
@@ -449,7 +449,7 @@ class FinalAggregateAgent(Agent):
     def forward(self, node, memory, *args, **kwargs) -> str:
         return_result = {}
         task_type = node.task_type_tag
-        if task_type == "搜索":
+        if task_type == "RETRIEVAL":
             # Aggregate All Child Result
             results = []
             for child in node.topological_task_queue:
@@ -458,7 +458,7 @@ class FinalAggregateAgent(Agent):
             results = "\n\n".join(results)
             return_result["result"] = results
     
-        elif task_type == "推理":
+        elif task_type == "REASONING":
             inner_kwargs = node.config[task_type]["final_aggregate"]
             results = []
             for child in node.topological_task_queue:
@@ -475,7 +475,7 @@ class FinalAggregateAgent(Agent):
                 )
                 return_result = fa_llm_result
                     
-        elif task_type == "写作":
+        elif task_type == "COMPOSITION":
             return_result["result"] = memory.article
         return return_result 
 

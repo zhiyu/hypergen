@@ -1,5 +1,4 @@
 import requests
-from transformers import AutoTokenizer
 import json
 import tqdm
 from concurrent.futures import ThreadPoolExecutor
@@ -8,9 +7,6 @@ from recursive.llm.llm import OpenAIApiProxy
 import time
 from recursive.utils.file_io import parse_hierarchy_tags_result
 from loguru import logger
-# from utils.comm import Cache
-# from utils import global_vars
-# es_cache: Cache = Cache.get_cache(f'{global_vars.cache_path}/es_predict.jsonl')
 
 VERBOSE=False
 # VERBOSE=True  
@@ -429,14 +425,7 @@ if __name__ == "__main__":
 首先需要确认姚明的出生年份，因此初始搜索词将围绕姚明的出生信息。
 </search_query_think>
 """.strip()
-    # selector(
-    #     # [web_page]f, "姚明出生那年NBA亚军教练是谁？", think2
-    #     # [web_page], "姚明出生那年NBA亚军教练是谁？", think2
-    #     [web_page], "姚明出生那年NBA亚军教练是谁？", think2    
-    # )
     summarizier(
-        # [web_page], "姚明出生那年NBA亚军教练是谁？", think2
-        # [web_page], "姚明出生那年NBA亚军教练是谁？", think2
         [web_page], "姚明出生那年NBA亚军教练是谁？", think2    
     )
     

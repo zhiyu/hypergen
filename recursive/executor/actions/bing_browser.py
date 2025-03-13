@@ -1,9 +1,6 @@
-import asyncio
 import json
 import logging
-import random
-import re
-import time
+import os
 import warnings
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import concurrent
@@ -15,7 +12,6 @@ import requests
 from bs4 import BeautifulSoup
 from cachetools import TTLCache, cached
 from duckduckgo_search import DDGS
-import datetime
 
 from recursive.executor.actions import BaseAction, tool_api
 from recursive.executor.actions.parser import BaseParser, JsonParser
@@ -29,6 +25,9 @@ import httpx
 import concurrent.futures
 from loguru import logger
 from charset_normalizer import detect
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path='api_key.env')
 
 
 class WebPageHelper:
@@ -298,9 +297,8 @@ class SerpApiSearch(BaseSearch):
                  backend_engine = "bing", # default search engine, was google before
                  cc = "US", # default search region
                  **kwargs,):
-        self.proxy = kwargs.get('proxy')
         black_list = []
-        self.serp_api_key = ""
+        self.serp_api_key = str(os.getenv('SERPAPI'))
         
         self.endpoint = "https://serpapi.com/search"
         if backend_engine == "bing":
@@ -402,36 +400,6 @@ class SerpApiSearch(BaseSearch):
             page["content"] = long_res
             fetched_pages.append(page)
         return fetched_pages
-
-    # def forward(
-    #     self, query, exclude_urls: List[str] = [], overwrite_cache=False):
-    #     """Search with SerpApi for self.k top passages for query or queries"""
-    #     # queries = (
-    #     #     [query_or_queries]
-    #     #     if isinstance(query_or_queries, str)
-    #     #     else query_or_queries
-    #     # )
-        
-
-  
-        
-    #     valid_url_to_snippets = self.webpage_helper.urls_to_snippets(
-    #         list(url_to_results.keys())
-    #     )
-    #     collected_results = []
-    #     pos2result = {}
-    #     for url in valid_url_to_snippets:
-    #         r = url_to_results[url]
-    #         r["raw_html_content"] = valid_url_to_snippets[url]["snippets"]
-    #         r["snippet"] = r["description"]
-    #         # collected_results.append(r)
-    #         pos2result[r["position"]] = r
-    #         # for k in ("description")
-    #         if "description" in r:
-    #             del r["description"]
-
-    #     # return collected_results
-    #     return pos2result
         
 
 
@@ -578,24 +546,24 @@ class BingBrowser(BaseAction):
  
     @tool_api()
     def full_pipeline_search(self, query_list, user_question, think, global_start_index):
-        """Bing Web浏览器中的搜索API，可获取网页信息
-        ### 具体功能
-        1. 通过该API可并行地搜索多个搜索query，分别获取每个搜索query对应的Bing搜索结果的摘要，你必需进一步获取全文。
-        2. 搜索结果的内容只会返回标题和摘要，不会返回全文（因此有些信息会缺失）。可进一步通过调用BingBrowser-select_click工具获取多条指定搜索结果的全文获取全部的信息
-        3. 除非摘要中包含全部需要的信息，否则必须调用该工具获取需要的搜索结果的全文。
-        
-        ### 具体返回内容
-        1. 以XML的格式返回所有搜索query的搜索结果，整体包<search_results></search_results>标签中，每条搜索结果包在<result></result>标签中，该标签有index属性指定搜索结果的序号，搜索结果序号可作为后续BingBrowser-select_click工具指定需要获取全文的参数。
-        2. 单条搜索结果内部有如下标签：
-            - <title></title>：搜索结果标题
-            - <url></url>：搜索结果的url
-            - <snippet></snippet>：搜索结果的摘要信息，该信息是对网页内容的摘要，需要进一步获取全文需要通过BingBrowser-select_click工具
-            - <publish_time></publish_time>：网页发布时间，‘未提供’表示该网页没有提供具体时间
-              
+        """Bing Web Browser Search API, which can retrieve webpage information
+        ### Specific Functions
+        1. Through this API, you can search multiple search queries in parallel, obtaining summaries of Bing search results corresponding to each search query. You must further retrieve the full text.
+        2. The content of search results will only return titles and summaries, not the full text (thus some information may be missing). You can further retrieve all information by calling the BingBrowser-select_click tool to get the full text of multiple specified search results.
+        3. Unless the summary contains all the needed information, you must call this tool to get the full text of the search results you need.
+
+        ### Specific Return Content
+        1. Returns all search query results in XML format, with everything contained within <search_results></search_results> tags. Each search result is contained within <result></result> tags, which have an index attribute specifying the sequence number of the search result. This sequence number can be used as a parameter for the subsequent BingBrowser-select_click tool to specify which full texts need to be retrieved.
+        2. Within a single search result, there are the following tags:
+            - <title></title>: Search result title
+            - <url></url>: URL of the search result
+            - <snippet></snippet>: Summary information of the search result. This information is a summary of the webpage content. To further get the full text, you need to use the BingBrowser-select_click tool
+            - <publish_time></publish_time>: Webpage publication time, 'Not provided' indicates that the webpage does not provide a specific time
+            
         Args:
-            query_list ({"type"-"array","items"-{"type"-"string"}}): 一组需要进行并行搜索的搜索query
-            user_question ({"type": "string"}): 用户问题
-            think ({"type": "string"}): 思考
+            query_list ({"type"-"array","items"-{"type"-"string"}}): A set of search queries to be searched in parallel
+            user_question ({"type": "string"}): User question
+            think ({"type": "string"}): Thinking
             global_start_index ({"type": "int"}): start_index
             
         Returns:
@@ -606,7 +574,7 @@ class BingBrowser(BaseAction):
         search_cache = caches["search"]
         
         # Load Cache
-        cache_name = "BingBrowser.full_pipeline_search.BaichuanBingSearch"
+        cache_name = "BingBrowser.full_pipeline_search.BingSearch"
         call_args_dict = {
             "search_N": search_N,
             "query_list": query_list,

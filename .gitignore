@@ -5,3 +5,6 @@ gabbage
 *.pyc
 __pycache__
 llm.py.bak
+*.env
+*.DS_Store
+*.egg-info/

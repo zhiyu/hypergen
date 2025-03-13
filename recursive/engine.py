@@ -28,14 +28,14 @@ class GraphRunEngine:
     def find_need_next_step_nodes(self, single=False):
         nodes = []
         queue = deque([self.root_node])
-        # 根节点，一开始就是READY状态
+        # Root node, starts in READY state
         while len(queue) > 0:
             # logger.info("in find_need_next_step_nodes, queue: {}".format(queue))
             node = queue.popleft()
             # logger.info("in find_need_next_step_nodes, select node: {}".format(node))
             if node.is_activate:
                 nodes.append(node)
-            if node.is_suspend: # 若节点内部处于挂起状态，遍历内部节点的topological_task_queue
+            if node.is_suspend: # If the node is in a suspended state internally, traverse the topological_task_queue of internal nodes
                 queue.extend(node.topological_task_queue)
             if single and len(nodes) > 0:
                 return nodes[0]
@@ -66,10 +66,10 @@ class GraphRunEngine:
         self.memory = self.memory.load(folder)
          
     def forward_exam(self, node, verbose):
-        # exam顺序是，层次上自底向上，依赖上自上而下。
-        # not_ready -> ready：需要判断依赖节点的执行状态，以及上层节点是否进入doing
-        # doing -> final_to_finish：需要判断下层节点是否全部finish
-        # plan_reflection_done -> doing：
+        # The exam order is bottom-up hierarchically, and top-down based on dependencies.
+        # not_ready -> ready: Need to check the execution status of dependent nodes, and whether upper-level nodes have entered the doing state
+        # doing -> final_to_finish: Need to check if all lower-level nodes have finished
+        # plan_reflection_done -> doing:
         if node.is_suspend:
             for inner_node in node.topological_task_queue:
                 self.forward_exam(inner_node, verbose)
@@ -77,7 +77,7 @@ class GraphRunEngine:
 
     def forward_one_step_not_parallel(self, full_step=False, select_node_hashkey=None, log_fn=None,
                                       *action_args, **action_kwargs):
-        # 找到需要进入下一个step的任务
+        # Find tasks that need to enter the next step
         if select_node_hashkey is not None:
             need_next_step_node = self.find_need_next_step_nodes(single=False)
             for node in need_next_step_node:
@@ -94,8 +94,8 @@ class GraphRunEngine:
             display_plan(self.root_node.inner_graph)
             return "done"
         logger.info("select node: {}".format(need_next_step_node.task_str()))
-        # 对该节点执行下一步
-        # 更新Memory
+        # Execute the next step for this node
+        # Update Memory
         self.memory.update_infos([need_next_step_node])
         if not full_step:
             action_name = need_next_step_node.next_action_step(self.memory, 
@@ -108,14 +108,12 @@ class GraphRunEngine:
                                "planning_post_reflect", \
                                "execute_post_reflect")
             
-        # action结束，进行全图状态更新，并行时，应等待并行任务结束后再统一执行
+        # After the action ends, update the entire graph status. When in parallel, should wait for all parallel tasks to complete before executing uniformly
         self.forward_exam(self.root_node, verbose)
         
         if verbose:
             display_plan(self.root_node.inner_graph)
         
-        # print("-- Result Graph --")
-        # display_graph(self.root_node.inner_graph, fn=log_fn)
         
     def forward_one_step_untill_done(self, full_step=False, 
                                            parallel=False,
@@ -178,17 +176,17 @@ def story_writing(input_filename,
             "execute_post_reflect": ["DummyRandomExecutorPostReflectionAgent", {}],
         },
         "task_type2tag": {
-            "写作": "write",
-            "推理": "think",
-            "搜索": "search",
+            "COMPOSITION": "write",
+            "REASONING": "think",
+            "RETRIEVAL": "search",
         },
         "require_keys": {
-            "写作": ["id", "dependency", "goal", "task_type", "length"],
-            "搜索": ["id", "dependency", "goal", "task_type"],
-            "推理": ["id", "dependency", "goal", "task_type"],
+            "COMPOSITION": ["id", "dependency", "goal", "task_type", "length"],
+            "RETRIEVAL": ["id", "dependency", "goal", "task_type"],
+            "REASONING": ["id", "dependency", "goal", "task_type"],
         },
-        "写作": {
-            "execute": { # tools之后会被弹出
+        "COMPOSITION": {
+            "execute": {
                 "prompt_version": "StoryWrtingNLWriterEN",
                 "llm_args": {
                     "model": global_use_model,
@@ -227,11 +225,11 @@ def story_writing(input_filename,
             "update": {},
             "final_aggregate": {},  
         },
-        "搜索": {
+        "RETRIEVAL": {
             "all_atom": True
         },
-        "推理": {
-            "execute": { # tools之后会被弹出
+        "REASONING": {
+            "execute": { 
                 "prompt_version": "StoryWrtingNLReasonerEN",
                 "llm_args": {
                     "model": global_use_model,
@@ -243,7 +241,6 @@ def story_writing(input_filename,
             },
             "atom": {
                 "use_candidate_plan": True
-                # "all_atom": True
             },            
             "planning": {},
             "update": {},
@@ -260,8 +257,6 @@ def story_writing(input_filename,
     
 
     data = read_jsonl(input_filename)
-    
-    # jsonl文件
     
     
     items = data[start:end]
@@ -285,7 +280,6 @@ def story_writing(input_filename,
 
     for item in items:
         question = item["ori"]["inputs"]
-        # if item["id"] != "example_088": continue
         root_node = RegularDummyNode(
             config = config,
             nid = "",
@@ -323,7 +317,6 @@ def story_writing(input_filename,
         output_f.write(json.dumps(item, ensure_ascii=False) + "\n")
         output_f.flush()
         
-        # 删除指定的日志处理器
         logger.remove(log_id)
 
     # output_f.close()
@@ -354,19 +347,18 @@ def report_writing(input_filename,
             "execute_post_reflect": ["DummyRandomExecutorPostReflectionAgent", {}],
         },
         "task_type2tag": {
-            "写作": "write",
-            "推理": "think",
-            "搜索": "search",
+            "COMPOSITION": "write",
+            "REASONING": "think",
+            "RETRIEVAL": "search",
         },
         "require_keys": {
-            # "写作": ["id", "dependency", "goal", "task_type", "length", "section_level", "section", 'format'],
-            "写作": ["id", "dependency", "goal", "task_type", "length"],
-            "搜索": ["id", "dependency", "goal", "task_type"],
-            "推理": ["id", "dependency", "goal", "task_type"],
+            "COMPOSITION": ["id", "dependency", "goal", "task_type", "length"],
+            "RETRIEVAL": ["id", "dependency", "goal", "task_type"],
+            "REASONING": ["id", "dependency", "goal", "task_type"],
         },
         "offer_global_writing_plan": True,
-        "写作": {
-            "execute": { # tools之后会被弹出
+        "COMPOSITION": {
+            "execute": {
                 "prompt_version": "ReportWriter",
                 "llm_args": {
                     "model": global_use_model,
@@ -406,8 +398,8 @@ def report_writing(input_filename,
             "update": {},
             "final_aggregate": {},  
         },
-        "搜索": {
-            "execute": { # tools之后会被弹出
+        "RETRIEVAL": {
+            "execute": {
                 "react_agent": True, # use Search Agent
                 "prompt_version": "SearchAgentENPrompt", # see recursive.agent.prompts.search_agent.main
                 "searcher_type": "SerpApiSearch", # see recursive.executor.actions.bing_browser
@@ -425,7 +417,7 @@ def report_writing(input_filename,
                     "search_querys": ["current_turn_search_querys"],
                 },
                 "temperature": 0.2, # search agent
-                "max_turn": 5, # search agent max turn
+                "max_turn": 4, # search agent max turn
                 "llm_merge": True, # use llm to merge search agent result, see recursive.agent.agents.regular.SimpleExcutor.search_merge, the prompt is set in config
                 "only_use_react_summary": False,
                 "webpage_helper_max_threads": 10, # use requests to download web page
@@ -465,8 +457,8 @@ def report_writing(input_filename,
             "update": {},
             "final_aggregate": {},  
         },
-        "推理": {
-            "execute": { # tools之后会被弹出
+        "REASONING": {
+            "execute": {
                 "prompt_version": "ReportReasoner",
                 "llm_args": {
                     "model": global_use_model,
@@ -549,10 +541,8 @@ def report_writing(input_filename,
         rf.flush()
         rf.close()
         
-        # 删除指定的日志处理器
         logger.remove(log_id)
 
-    # output_f.close()
     if done_flag_file is not None:
         with open(done_flag_file, "w") as f:
             f.write("done")

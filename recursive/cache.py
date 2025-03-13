@@ -82,7 +82,7 @@ def get_omit_json(data, max_str_len=100, max_list_len=10, to_str=True):
             ret = [dfs(e) for e in cur_data[:max_list_len]]
             omit_cnt = len(cur_data) - max_list_len
             if omit_cnt > 0:
-                ret.append(f'...省略{omit_cnt}条数据')
+                ret.append(f'... Omiting #{omit_cnt} data')
             
             return ret
 
@@ -90,7 +90,7 @@ def get_omit_json(data, max_str_len=100, max_list_len=10, to_str=True):
             omit_cnt = len(cur_data) - max_str_len
             ret = cur_data[:max_str_len]
             if omit_cnt > 0:
-                ret += f'...省略{omit_cnt}个字符'
+                ret += f'...Omiting #{omit_cnt} chars'
 
             return ret
         
@@ -114,7 +114,7 @@ class Cache:
             try:
                 self.cache_kv = self.read_cache()
             except Exception as e:
-                print(f'读取cache失败，{fn=}, {e=}')
+                print(f'Fail to fetch in cache {fn=}, {e=}')
                 self.cache_kv = {}
         else:
             self.cache_kv = {}
@@ -179,7 +179,7 @@ class Cache:
         obj["cache_name"] = name
         key = obj_to_hash(obj)
         if self.has(key):
-            logger.debug(f'命中cache：{name=}: {key=}')
+            logger.debug(f'HIT cache：{name=}: {key=}')
             return self.get(key) 
         else:
             return None
@@ -191,22 +191,6 @@ class Cache:
         key = obj_to_hash(obj)
         
         if value is not None:
-            logger.debug(f'新增cache：{name=}: {key=}')
+            logger.debug(f'ADD cache：{name=}: {key=}')
             self.add(key, value, hint=show_obj)
             
-
-    # def call_with_cache(self, func, *args, **kwargs):
-    #     obj = dict(name=func.__name__, args=list(args), kwargs=kwargs)
-    #     show_obj = get_omit_json(obj)
-    #     key = obj_to_hash(obj)
-    #     if self.has(key):
-    #         logger.debug(f'命中cache：{key=}')
-    #         return self.get(key)
-        
-    #     value = func(*args, **kwargs)
-    #     if value is not None:
-    #         logger.debug(f'新增cache：{key=}')
-    #         self.add(key, value, hint=show_obj)
-        
-    #     return value
-    

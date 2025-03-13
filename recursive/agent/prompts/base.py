@@ -23,7 +23,6 @@ class PromptTemplate(ABC):
                 if k is None or v is None: continue
                 system_msg = system_msg.replace(k, v)
             return system_msg
-            # return self.system_message.format(**system_message_key_mapping)
     
     def construct_prompt(self, **key_mapping):
         if len(key_mapping) == 0:

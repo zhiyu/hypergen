@@ -2,12 +2,8 @@
 from recursive.agent.prompts.base import PromptTemplate
 from recursive.agent.prompts.base import prompt_register
 from datetime import datetime
-# 获取当前时间
 now = datetime.now()
 
-# 1. 
-# 1. 首先在<任务更新></任务更新>中进行任务更新，在<think></think>中进行思考，然后在<result></result>中给出更新后的goal
-# 2. 然后在<
 
 @prompt_register.register_module()
 class StoryWritingNLWriteAtomWithUpdateEN(PromptTemplate):

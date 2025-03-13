@@ -1,7 +1,7 @@
-# MODEL=claude-3-5-sonnet-20241022
-MODEL=gpt-4o
+MODEL=claude-3-5-sonnet-20241022
+# MODEL=gpt-4o
 task_input_file=../test_data/qa_test.jsonl
-output_folder=project/qa/select4/$MODEL/test_online
+output_folder=project/qa/example_claude/$MODEL/test_4turns
 
 mkdir -p ${output_folder}
 task_output_file=${output_folder}/result.jsonl

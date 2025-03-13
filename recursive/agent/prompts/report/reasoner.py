@@ -2,7 +2,6 @@
 from recursive.agent.prompts.base import PromptTemplate
 from recursive.agent.prompts.base import prompt_register
 from datetime import datetime
-# 获取当前时间
 now = datetime.now()
 
 @prompt_register.register_module()
@@ -38,8 +37,8 @@ Attention!!
 3. Never Hallucination. Careful with your thinking.
 
 * Data Accuracy and Citation Support:
-   * Cite sources at the end of appropriate sentences using [citation:X] format
-   * If information comes from multiple sources, list all relevant citations, e.g., [citation:3][citation:5]
+   * Cite sources at the end of appropriate sentences using [reference:X] format
+   * If information comes from multiple sources, list all relevant citations, e.g., [reference:3][reference:5]
    * Citations should appear in the main text, not concentrated at the end
 
 # Output Format
@@ -63,16 +62,3 @@ Please complete the analysis task **{to_run_task}** follow the instruction in # 
 if __name__ == "__main__":
     from recursive.agent.agent_base import DummyRandomPlanningAgent
     agent = DummyRandomPlanningAgent()
-    # system_message = Reasoner().construct_system_message()
-    # prompt = Reasoner().construct_prompt(
-    #     # to_run_task = "60岁高血压糖尿病患者能不能吃复方甲氧那明"
-    #     to_run_task = "有3个兴趣小组, 甲、乙两位同学各自参加其中一个小组, 每位同学参加各个小组的可能性相同, 则这两位同学参加同一个兴趣小组的概率为多少"
-    # )
-
-    # x = agent.call_llm(
-    #     system_message = system_message,
-    #     prompt = prompt,
-    #     parse_arg_dict = {"result": "result"},
-    #     model = 'claude-3-5-sonnet-20241022'
-    # )
-    # print(x)

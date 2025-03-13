@@ -46,11 +46,6 @@ class Agent(ABC):
         logger.info(message[-1]["content"])
         
         model = other_inner_args.pop("model", "gpt-4o")
-        # if "claude" in model:
-        #     resp = llm.call(messages = message,
-        #                     model=model,
-        #                     **other_inner_args)["content"][0]["text"]
-        # else:
         
         resp = llm.call(messages = message,
                         model=model,
@@ -60,7 +55,7 @@ class Agent(ABC):
         else:
             reason = ""
         content = resp["message"]["content"]
-        logger.info("Get Reasoning: {}\n\nResult: {}".format(
+        logger.info("Get REASONING: {}\n\nResult: {}".format(
             reason, content
         ))
 
@@ -130,11 +125,8 @@ class DummyRandomPlanningAgent(Agent):
       
 @agent_register.register_module()
 class SinglePlanningAgent(Agent):
-    # (1) 不plan，root节点即executor节点
-    # (2) plan一个节点，然后再plan出一个executor节点，该节点的task为question
     @overrides
     def forward(self, node, memory, *args, **kwargs) -> str:
-        # layer_cnt = random.randint(1, 3)
         layer = node.node_graph_info["layer"]
         if layer == 1:
             result = {
@@ -184,9 +176,7 @@ class DummyRandomExecutorAgent(Agent):
 class DummyRandomUpdateAgent(Agent):
     @overrides
     def forward(self, node, memory, *args, **kwargs) -> str:
-        # exit()
         return None
-        # return json.dumps(node.task_info, ensure_ascii=False)
 
     @overrides
     def parse_result(self, agent_output, *args, **kwargs) -> Dict:
@@ -196,13 +186,6 @@ class DummyRandomUpdateAgent(Agent):
 class DummyRandomPriorReflectionAgent(Agent):
     @overrides
     def forward(self, node, memory, *args, **kwargs) -> str:
-        # result = {
-        #     "thought": "",
-        #     "original": "",
-        #     "status": "success",
-        #     "result": node.raw_plan
-        # }
-        # return result
         return None
 
     @overrides
@@ -214,13 +197,6 @@ class DummyRandomPlanningPostReflectionAgent(Agent):
     @overrides
     def forward(self, node, memory, *args, **kwargs) -> str:
         return None
-        # result = {
-        #     "thought": "",
-        #     "original": "",
-        #     "status": "success",
-        #     "result": node.raw_plan
-        # }
-        # return result
 
     @overrides
     def parse_result(self, agent_output, *args, **kwargs) -> Dict:
@@ -246,10 +222,6 @@ class DummyRandomExecutorPostReflectionAgent(Agent):
 class DummyRandomFinalAggregateAgent(Agent):
     @overrides
     def forward(self, node, memory, *args, **kwargs) -> str:
-        # 取最后一个子节点的final_result
-        # print("IN FINAL AGGREGATE")
-        # print(node.topological_task_queue[0].result)
-        # print(memory.info_nodes[node.topological_task_queue[0].hashkey].info)
         result = {
             "thought": "",
             "original": "",
