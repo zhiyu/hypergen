@@ -53,7 +53,7 @@ Independently determine, in order, whether the following three types of sub-task
 
 2. **search Sub-task**: If the writing requires external information (such as literature, academic results, industry data, policy documents, online resources, etc.), and these information is not provided by the **dependent tasks**  or the **already completed report content**, then an search sub-task needs to be planned.
 
-3. **Writing Sub-task**: If and only if the requires a larege amout of text output, at least > 1000 words, it my need to be broken down into multiple writing sub-tasks to reduce the burden of one-time creation. **When > 1500 words, it must be broken down.**
+3. **Writing Sub-task**: If and only if the requires a large amout of text output, at least > 1000 words, it my need to be broken down into multiple writing sub-tasks to reduce the burden of one-time creation. **When > 1500 words, it must be broken down.**
 
 If either an analysis sub-task or a search sub-task or a writing sub-task needs to be created, the task is considered a complex task.
 
@@ -139,7 +139,7 @@ Independently determine, in order, whether the following three types of sub-task
 
 2. **search Sub-task**: If the writing requires external information (such as literature, academic results, industry data, policy documents, online resources, etc.), and these information is not provided by the **dependent tasks**  or the **already completed report content**, then an search sub-task needs to be planned.
 
-3. **Writing Sub-task**: If and only if the requires a larege amout of text output, at least > 1000 words, it my need to be broken down into multiple writing sub-tasks to reduce the burden of one-time creation. **When > 1500 words, it must be broken down.**
+3. **Writing Sub-task**: If and only if the requires a large amout of text output, at least > 1000 words, it my need to be broken down into multiple writing sub-tasks to reduce the burden of one-time creation. **When > 1500 words, it must be broken down.**
 
 If either an analysis sub-task or a search sub-task or a writing sub-task needs to be created, the task is considered a complex task.
 

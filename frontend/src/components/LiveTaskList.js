@@ -128,7 +128,32 @@ const LiveTaskList = ({ taskId, onTaskClick }) => {
   };
 
   useEffect(() => {
-    // Initialize socket connection when component mounts
+    // First try to get task graph data directly from API for completed tasks
+    const fetchTaskGraph = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`http://localhost:5001/api/task-graph/${taskId}`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.taskGraph) {
+            const flatTasks = flattenTasks(data.taskGraph, [], false, 0, null);
+            setTasks(flatTasks);
+            setLoading(false);
+            // Still connect to socket for potential additional updates
+            return true;
+          }
+        }
+        return false;
+      } catch (error) {
+        console.log("Error fetching task graph, will try socket connection", error);
+        return false;
+      }
+    };
+
+    // Try to fetch the task graph data
+    fetchTaskGraph();
+
+    // Initialize socket connection
     console.log('Initializing socket connection');
     const newSocket = getSocket();
     setSocket(newSocket);
@@ -244,7 +269,7 @@ const LiveTaskList = ({ taskId, onTaskClick }) => {
     return (
       <Paper elevation={3} sx={{ p: 3, mb: 4, textAlign: 'center' }}>
         <CircularProgress size={40} sx={{ mb: 2 }} />
-        <Typography variant="body1">Connecting to task execution stream...</Typography>
+        <Typography variant="body1">Loading task data...</Typography>
       </Paper>
     );
   }
@@ -313,20 +338,40 @@ const LiveTaskList = ({ taskId, onTaskClick }) => {
   return (
     <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
       <Typography variant="h6" gutterBottom>
-        Live Task Hierarchy
+        Task Hierarchy
       </Typography>
       <Box sx={{ mb: 2 }}>
-        <Chip 
-          label={connected ? "Connected" : "Disconnected"} 
-          color={connected ? "success" : "error"}
-          size="small"
-          sx={{ mr: 1 }}
-        />
-        <Chip 
-          label={subscribed ? "Receiving updates" : "Not subscribed"} 
-          color={subscribed ? "success" : "warning"}
-          size="small"
-        />
+        {tasks.length > 0 ? (
+          <>
+            <Chip 
+              label={connected ? "Connected" : "Using saved data"} 
+              color={connected ? "success" : "default"}
+              size="small"
+              sx={{ mr: 1 }}
+            />
+            {connected && (
+              <Chip 
+                label={subscribed ? "Receiving updates" : "Not subscribed"} 
+                color={subscribed ? "success" : "warning"}
+                size="small"
+              />
+            )}
+          </>
+        ) : (
+          <>
+            <Chip 
+              label={connected ? "Connected" : "Disconnected"} 
+              color={connected ? "success" : "error"}
+              size="small"
+              sx={{ mr: 1 }}
+            />
+            <Chip 
+              label={subscribed ? "Receiving updates" : "Not subscribed"} 
+              color={subscribed ? "success" : "warning"}
+              size="small"
+            />
+          </>
+        )}
       </Box>
       <Divider sx={{ mb: 2 }} />
       <List sx={{ width: '100%', bgcolor: 'background.paper' }}>

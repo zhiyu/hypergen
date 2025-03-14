@@ -76,7 +76,7 @@ class GraphRunEngine:
             node.do_exam(verbose)
 
     def forward_one_step_not_parallel(self, full_step=False, select_node_hashkey=None, log_fn=None,
-                                      *action_args, **action_kwargs):
+                                      nodes_json_file=None, *action_args, **action_kwargs):
         # Find tasks that need to enter the next step
         if select_node_hashkey is not None:
             need_next_step_node = self.find_need_next_step_nodes(single=False)
@@ -92,11 +92,23 @@ class GraphRunEngine:
             logger.info("All Done")
             # display_graph(self.root_node.inner_graph, fn=log_fn)
             display_plan(self.root_node.inner_graph)
+            
+            # Save final nodes.json if path provided
+            if nodes_json_file:
+                with open(nodes_json_file, "w") as f:
+                    json.dump(self.root_node.to_json(), f, indent=4, ensure_ascii=False)
+                
             return "done"
         logger.info("select node: {}".format(need_next_step_node.task_str()))
         # Execute the next step for this node
         # Update Memory
         self.memory.update_infos([need_next_step_node])
+        
+        # Update nodes.json after each step if path provided 
+        if nodes_json_file:
+            with open(nodes_json_file, "w") as f:
+                json.dump(self.root_node.to_json(), f, indent=4, ensure_ascii=False)
+                
         if not full_step:
             action_name = need_next_step_node.next_action_step(self.memory, 
                                                                *action_args, 
@@ -118,12 +130,19 @@ class GraphRunEngine:
     def forward_one_step_untill_done(self, full_step=False, 
                                            parallel=False,
                                            save_folder=None,
+                                           nl=False,
+                                           nodes_json_file=None,
                                            *action_args, **action_kwargs):
         self.root_node.status = TaskStatus.READY
         for step in range(10000):
             logger.info("Step {}".format(step))
-            ret = self.forward_one_step_not_parallel(full_step = False, log_fn="logs/temp/{}".format(step),
-                                                     *action_args, **action_kwargs)
+            ret = self.forward_one_step_not_parallel(
+                full_step=False, 
+                log_fn="logs/temp/{}".format(step),
+                nodes_json_file=nodes_json_file,
+                *action_args, 
+                **action_kwargs
+            )
             self.save(save_folder)
             if ret == "done":
                 break
@@ -162,7 +181,8 @@ def story_writing(input_filename,
                   start,
                   end,
                   done_flag_file,
-                  global_use_model):
+                  global_use_model,
+                  nodes_json_file=None):
     
     config = {
         "language": "en", 
@@ -308,7 +328,7 @@ def story_writing(input_filename,
         log_id = logger.add("{}/engine.log".format(folder), format=custom_format)
         try:
             # result = engine.forward_one_step_untill_done(save_folder=folder, to_run_check_str = check_str) 
-            result = engine.forward_one_step_untill_done(save_folder=folder, nl = True)    
+            result = engine.forward_one_step_untill_done(save_folder=folder, nl=True, nodes_json_file=nodes_json_file)    
         except Exception as e:
             logger.error("Encounter exception: {}\nWhen Process {}".format(traceback.format_exc(), question))
             continue
@@ -331,7 +351,8 @@ def report_writing(input_filename,
                    end,
                    done_flag_file,
                    global_use_model,
-                   engine_backend):
+                   engine_backend,
+                   nodes_json_file=None):
     config = {
         "language": "en", 
         # Agent is Defined in recursive.agent.agents.regular
@@ -528,7 +549,7 @@ def report_writing(input_filename,
         custom_format = "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>"
         log_id = logger.add("{}/engine.log".format(folder), format=custom_format)
         try:
-            result = engine.forward_one_step_untill_done(save_folder=folder, nl = True)    
+            result = engine.forward_one_step_untill_done(save_folder=folder, nl=True, nodes_json_file=nodes_json_file)    
         except Exception as e:
             logger.error("Encounter exception: {}\nWhen Process {}".format(traceback.format_exc(), question))
             continue
@@ -557,6 +578,7 @@ def define_args():
     parser.add_argument("--model", type=str, required=True)
     parser.add_argument("--length", type=int)
     parser.add_argument("--engine-backend", type=str)
+    parser.add_argument("--nodes-json-file", type=str, help="Path to save nodes.json for real-time visualization")
     
     parser.add_argument("--start", type=int, default=None)
     parser.add_argument("--end", type=int, default=None)
@@ -571,7 +593,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.mode == "story":
         story_writing(args.filename, args.output_filename,
-                      args.start, args.end, args.done_flag_file, args.model)
+                      args.start, args.end, args.done_flag_file, args.model,
+                      nodes_json_file=args.nodes_json_file)
     else:
         report_writing(args.filename, args.output_filename,
-                       args.start, args.end, args.done_flag_file, args.model, args.engine_backend)
+                       args.start, args.end, args.done_flag_file, args.model, args.engine_backend,
+                       nodes_json_file=args.nodes_json_file)

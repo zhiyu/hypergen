@@ -5,13 +5,8 @@ import warnings
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import concurrent
 from typing import List, Optional, Tuple, Type, Union
-from urllib.parse import urlencode, quote
-from collections import OrderedDict
 
 import requests
-from bs4 import BeautifulSoup
-from cachetools import TTLCache, cached
-from duckduckgo_search import DDGS
 
 from recursive.executor.actions import BaseAction, tool_api
 from recursive.executor.actions.parser import BaseParser, JsonParser
@@ -602,11 +597,31 @@ class BingBrowser(BaseAction):
             pk_search_results = self.__single_fetch(pk_search_results)
         else:
             raise Exception()
+            
         logger.info("Querys {} after pk get {} results, fetched {} results, succ urls: \n{}, \nfailed urls: \n{}".format(
             str(query_list), ori_cnt, len(pk_search_results), 
             "\n".join([res["url"] for res in pk_search_results]),
             "\n".join(list(set(ori_urls) - set([res["url"] for res in pk_search_results])))
         ))
+        
+        # Check if we have any valid results
+        if not pk_search_results:
+            logger.warning("No web_pages found in search results")
+            # Return a default response when all web page requests fail
+            default_result = {
+                "web_pages": [],
+                "result": "No web pages could be retrieved due to access restrictions (403 Forbidden) or other errors.",
+                "juege_and_summarized_search_results": [],
+                "exclude_search_results": []
+            }
+            # save cache
+            search_cache.save_cache(
+                name=cache_name,
+                call_args_dict=call_args_dict,
+                value=default_result
+            )
+            return default_result
+            
         logger.info("Start Select and Summarize")
             
         # select

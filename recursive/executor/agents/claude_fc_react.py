@@ -146,20 +146,34 @@ class SearchAgent(BaseAgent):
                 "role": "assistant",
                 "content": turn_info["response"],
             })
+            
+            # Safely handle the case where tool_result might be None
+            tool_result_content = "No result available due to an error" 
+            if turn_info.get("tool_result") and isinstance(turn_info["tool_result"], dict):
+                tool_result_content = turn_info["tool_result"].get("result", "No result available")
+            
             inner_call_history.append({
                 "role": "user",
-                "content": turn_info["tool_result"]["result"],
+                "content": tool_result_content,
             })
         action_memory = "\n\n".join(action_memory)
         if not self.remove_history:
             formatted.extend(inner_call_history[:-1])
         
+        # Safely handle the tool_result that might be None
+        tool_result = "null"
+        if len(context_historys) > 0:
+            if context_historys[-1].get("tool_result") and isinstance(context_historys[-1]["tool_result"], dict):
+                tool_result = context_historys[-1]["tool_result"].get("result", "No result available")
+            else:
+                tool_result = "No result available due to an error"
+                
         final_message = self.message_constructor.construct_prompt(
             to_run_question = message[0]["content"],
             to_run_root_question = to_run_root_question,
             to_run_outer_write_task = to_run_outer_write_task,
             to_run_action_history = action_memory,
-            to_run_tool_result = context_historys[-1]["tool_result"]["result"] if len(context_historys) > 0 else "null",
+            to_run_tool_result = tool_result,
             to_run_turn = turn,
             to_run_target_write_tasks = to_run_target_write_tasks
         )
@@ -249,8 +263,18 @@ class SearchAgent(BaseAgent):
             current_turn_info["tool_result"] = action_return.result
             
             # Update global start index
-            page_cnt = len(current_turn_info["tool_result"]["web_pages"])
-            global_start_index += page_cnt
+            try:
+                if current_turn_info["tool_result"] and "web_pages" in current_turn_info["tool_result"]:
+                    page_cnt = len(current_turn_info["tool_result"]["web_pages"])
+                    global_start_index += page_cnt
+                else:
+                    # No web pages found or tool result doesn't have web_pages
+                    page_cnt = 0
+                    logger.warning("No web_pages found in tool_result")
+            except (TypeError, KeyError) as e:
+                # Handle cases where tool_result is None or doesn't have the expected structure
+                page_cnt = 0
+                logger.warning(f"Error processing tool result: {e}")
             # print(type(current_turn_info["tool_result"]))
             # logger.info("TOOL Result: \n{}".format(action_return.result["result"]))
         else:

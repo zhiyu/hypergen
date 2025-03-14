@@ -1,8 +1,7 @@
-# MODEL=claude-3-5-sonnet-20241022
+# MODEL=claude-3-7-sonnet-20250219
 MODEL=gpt-4o
-task_input_file=../test_data/story_test.jsonl
-output_folder=project/tell_me_a_story/select_5/$MODEL/test_online
-rm -rf project
+task_input_file=../test_data/meta_fiction.jsonl
+output_folder=project/story/$MODEL/reorder_prompts/meta_fiction_grief
 mkdir -p ${output_folder}
 task_output_file=${output_folder}/result.jsonl
 done_file=${output_folder}/done.txt

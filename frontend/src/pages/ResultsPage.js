@@ -409,7 +409,8 @@ const ResultsPage = () => {
             </Typography>
           </Paper>
           
-          {/* Only show progress bar during generation, not the live task list */}
+          {/* Show live task list during generation */}
+          <LiveTaskList taskId={id} onTaskClick={handleTaskClick} />
         </Box>
       </Container>
     );
@@ -523,10 +524,8 @@ const ResultsPage = () => {
         )}
 
         {activeTab === 1 && (
-          // Use the appropriate task list component based on generation status
-          generationStatus === 'completed' 
-            ? <TaskList tasks={taskList} onTaskClick={handleTaskClick} />
-            : <LiveTaskList taskId={id} onTaskClick={handleTaskClick} />
+          // Always use LiveTaskList for consistent display
+          <LiveTaskList taskId={id} onTaskClick={handleTaskClick} />
         )}
       </Box>
     </Container>
