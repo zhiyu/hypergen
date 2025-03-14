@@ -1,0 +1,4 @@
+#!/bin/bash
+cd /Users/cheny0x/Documents/Projects/heterogeneous-recursive-planning/recursive
+source /Users/cheny0x/Documents/Projects/heterogeneous-recursive-planning/backend/results/story-fb9e1850-1efe-42db-9bca-9e51121da347/api_key.env
+python engine.py --filename /Users/cheny0x/Documents/Projects/heterogeneous-recursive-planning/backend/results/story-fb9e1850-1efe-42db-9bca-9e51121da347/input.jsonl --output-filename /Users/cheny0x/Documents/Projects/heterogeneous-recursive-planning/backend/results/story-fb9e1850-1efe-42db-9bca-9e51121da347/result.jsonl --done-flag-file /Users/cheny0x/Documents/Projects/heterogeneous-recursive-planning/backend/results/story-fb9e1850-1efe-42db-9bca-9e51121da347/done.txt --model gpt-4o --mode story --nodes-json-file /Users/cheny0x/Documents/Projects/heterogeneous-recursive-planning/backend/results/story-fb9e1850-1efe-42db-9bca-9e51121da347/records/nodes.json

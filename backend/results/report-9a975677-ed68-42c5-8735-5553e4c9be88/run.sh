@@ -1,0 +1,4 @@
+#!/bin/bash
+cd /Users/cheny0x/Documents/Projects/heterogeneous-recursive-planning/recursive
+source /Users/cheny0x/Documents/Projects/heterogeneous-recursive-planning/backend/results/report-9a975677-ed68-42c5-8735-5553e4c9be88/api_key.env
+python engine.py --filename /Users/cheny0x/Documents/Projects/heterogeneous-recursive-planning/backend/results/report-9a975677-ed68-42c5-8735-5553e4c9be88/input.jsonl --output-filename /Users/cheny0x/Documents/Projects/heterogeneous-recursive-planning/backend/results/report-9a975677-ed68-42c5-8735-5553e4c9be88/result.jsonl --done-flag-file /Users/cheny0x/Documents/Projects/heterogeneous-recursive-planning/backend/results/report-9a975677-ed68-42c5-8735-5553e4c9be88/done.txt --model claude-3-5-sonnet-20241022 --engine-backend bing --mode report --nodes-json-file /Users/cheny0x/Documents/Projects/heterogeneous-recursive-planning/backend/results/report-9a975677-ed68-42c5-8735-5553e4c9be88/records/nodes.json
