@@ -46,7 +46,7 @@ pip install --upgrade pip
 
 # Install dependencies
 echo "Installing all project dependencies..."
-pip install -r project_requirements.txt
+pip install -r requirements.txt
 
 echo "Installing main package in development mode..."
 pip install -v -e .

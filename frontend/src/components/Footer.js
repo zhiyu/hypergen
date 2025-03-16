@@ -107,7 +107,7 @@ const Footer = () => {
               </Box>
               <Box component="li" sx={{ mb: 1 }}>
                 <Link 
-                  href="https://github.com/yimengchencs/heterogeneous-recursive-planning" 
+                  href="https://github.com/principia-ai/heterogeneous-recursive-planning"
                   target="_blank" 
                   rel="noopener"
                   color="text.secondary" 
@@ -126,7 +126,7 @@ const Footer = () => {
             </Typography>
             <Box sx={{ display: 'flex', gap: 2 }}>
               <Link 
-                href="https://github.com/yimengchencs/heterogeneous-recursive-planning" 
+                href="https://github.com/principia-ai/heterogeneous-recursive-planning"
                 target="_blank" 
                 rel="noopener"
                 sx={{ 
