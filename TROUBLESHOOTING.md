@@ -178,7 +178,7 @@ rm -rf backend/results/*
 
 If you continue to experience issues, please:
 
-1. Check the [GitHub issues](https://github.com/yimengchencs/heterogeneous-recursive-planning/issues) for similar problems
+1. Check the [GitHub issues](https://github.com/principia-ai/heterogeneous-recursive-planning/issues) for similar problems
 2. Create a new issue with:
    - A detailed description of the problem
    - Steps to reproduce the issue
