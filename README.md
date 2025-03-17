@@ -157,6 +157,44 @@ This visualization gives you insight into the agent's "thinking process" and hel
 To view the task execution in real-time, simply start a generation job and watch the task list update automatically as the agent works.
 
 
+## Contributing
+
+We welcome contributions from the community to help improve WriteHERE! Here's how you can contribute:
+
+### Code Contributions
+
+1. **Fork the repository** and create your feature branch from `main`
+2. **Set up your development environment** following the installation instructions above
+3. **Make your changes**, ensuring they follow the project's coding style and conventions
+4. **Add tests** for any new functionality
+5. **Ensure all tests pass** by running the test suite
+6. **Submit a pull request** with a clear description of your changes and their benefits
+
+### Bug Reports and Feature Requests
+
+- Use the **Issues** tab to report bugs or suggest new features
+- For bugs, include detailed steps to reproduce, expected behavior, and actual behavior
+- For feature requests, describe the functionality you'd like to see and how it would benefit the project
+
+### Documentation Improvements
+
+- Help improve our documentation by fixing errors, adding examples, or clarifying instructions
+- Documentation changes can be submitted through pull requests just like code changes
+
+### Community Support
+
+- Answer questions from other users in the Issues section
+- Share your experiences and use cases with the community
+
+### Development Guidelines
+
+- Follow the existing code style and architecture
+- Document new functions, classes, and modules
+- Write clear commit messages that explain the purpose of your changes
+- Keep pull requests focused on a single feature or bug fix
+
+By contributing to WriteHERE, you agree that your contributions will be licensed under the project's MIT License.
+
 ## Citation
 
 If you use this code in your research, please cite our paper:

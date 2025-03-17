@@ -25,7 +25,7 @@ Independently determine, in order, whether the following two types of sub-tasks 
 
 1. **design Sub-task**: If the writing requires certain design designs for support, and these design requirements are not provided by the **dependent design tasks** or the **already completed novel content**, then an design sub-task needs to be planned.
 
-2. **Writing Sub-task**: If the task involves a short piece of writing (e.g., 500 words or less) and does not contain complex twists, there is no need to further plan additional writing sub-tasks.
+2. **Writing Sub-task**: If its length equals or less than 500 words, there is no need to further plan additional writing sub-tasks.
 
 If either an design sub-task or a writing sub-task needs to be created, the task is considered a complex task.
 
@@ -93,7 +93,7 @@ Independently determine, in order, whether the following two types of sub-tasks 
 
 1. **Design Sub-task**: If the writing requires certain design designs for support, and these design requirements are not provided by the **dependent design tasks** or the **already completed novel content**, then an design sub-task needs to be planned.
 
-2. **Writing Sub-task**: If the task involves a short piece of writing (e.g., 500 words or less) and does not contain complex twists, there is no need to further plan additional writing sub-tasks.
+2. **Writing Sub-task**: If its length equals or less than 500 words, there is no need to further plan additional writing sub-tasks.
 
 If either an design sub-task or a writing sub-task needs to be created, the task is considered a complex task.
 
@@ -101,7 +101,7 @@ If either an design sub-task or a writing sub-task needs to be created, the task
 # Output Format
 1. First, in `<think></think>`, follow the atomic task determination rules and evaluate, in order, whether design or writing sub-tasks need to be broken down. This will determine whether the task is an atomic task or a complex task.
 
-2. Then, output the results in `<result><atomic_task_determination></atomic_task_determination</result>`, output the results.
+2. Then, output the results in `<result><atomic_task_determination></atomic_task_determination></result>`, output the results.
 
 The specific format is as follows:
 <think>

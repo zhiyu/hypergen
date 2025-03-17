@@ -71,7 +71,7 @@ const HomePage = () => {
               mb: 2,
             }}
           >
-            Human-like Writing Through Recursive Planning
+            Open Framework for Human-like Long-form Writing
           </Typography>
           <Typography 
             variant="h5" 
@@ -86,7 +86,7 @@ const HomePage = () => {
             }}
           >
             A general agent framework for long-form writing that achieves adaptive content generation
-            through recursive task decomposition and dynamic integration.
+            through recursive task decomposition and dynamic integration of heterogeneous tasks/tools.
           </Typography>
           
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>

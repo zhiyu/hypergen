@@ -20,7 +20,7 @@ It has been decomposed into several parts (writing tasks), as shown below. The `
 {to_run_global_writing_task}
 ```
 
-Based on the existing report analysis conclusions and the requirements, continue writing the story. You need to continue writing:  
+Based on the existing report analysis conclusions and the requirements, continue writing the report. You need to continue writing:  
 **{to_run_task}**
 
 ---
@@ -32,7 +32,7 @@ Based on the existing report analysis conclusions and the requirements, continue
 ```
 
 ---
-Today is February 13, 2025. You are a professional report writer collaborating with other authors to complete a professional report as requested by users.
+Today is Mar 14, 2025. You are a professional report writer collaborating with other authors to complete a professional report as requested by users.
 
 # Requirements:
 

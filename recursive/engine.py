@@ -119,7 +119,7 @@ class GraphRunEngine:
         verbose = action_name not in ("update", "prior_reflect", \
                                "planning_post_reflect", \
                                "execute_post_reflect")
-            
+    
         # After the action ends, update the entire graph status. When in parallel, should wait for all parallel tasks to complete before executing uniformly
         self.forward_exam(self.root_node, verbose)
         
