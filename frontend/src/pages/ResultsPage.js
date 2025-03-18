@@ -12,16 +12,19 @@ import {
   Button,
   Divider,
   LinearProgress,
-  Chip
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
 } from '@mui/material';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-// Removed TaskGraph import
-import TaskList from '../components/TaskList';
 import LiveTaskList from '../components/LiveTaskList';
 import DownloadIcon from '@mui/icons-material/Download';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import { getGenerationStatus, getGenerationResult, getTaskGraph, reloadTasks } from '../utils/api';
+import { getGenerationStatus, getGenerationResult, getTaskGraph, reloadTasks, stopTask } from '../utils/api';
 
 // Mock data for task graph - this would come from your backend in a real implementation
 const mockGraphData = {
@@ -172,6 +175,8 @@ const ResultsPage = () => {
   const [copySuccess, setCopySuccess] = useState('');
   const [progress, setProgress] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [stopConfirmOpen, setStopConfirmOpen] = useState(false);
+  const [stopInProgress, setStopInProgress] = useState(false);
 
   // Get the generation details from location state
   const generationDetails = location.state || {
@@ -257,6 +262,10 @@ const ResultsPage = () => {
             }
           } else if (statusData.status === 'error') {
             setError(statusData.error || 'An error occurred during generation');
+            clearInterval(pollInterval);
+            setLoading(false);
+          } else if (statusData.status === 'stopped') {
+            setError('Task has been stopped by user request.');
             clearInterval(pollInterval);
             setLoading(false);
           } else {
@@ -359,10 +368,57 @@ const ResultsPage = () => {
       }
     );
   };
+  
+  const handleStopGeneration = () => {
+    setStopInProgress(true);
+    stopTask(id)
+      .then(response => {
+        setGenerationStatus('stopped');
+        setError('Task has been stopped by user request.');
+      })
+      .catch(err => {
+        setError(`Failed to stop task: ${err.message}`);
+      })
+      .finally(() => {
+        setStopConfirmOpen(false);
+        setStopInProgress(false);
+      });
+  };
 
   if (loading && generationStatus !== 'completed') {
     return (
       <Container maxWidth="lg" sx={{ mt: 8 }}>
+        {/* Stop Confirmation Dialog */}
+        <Dialog
+          open={stopConfirmOpen}
+          onClose={() => setStopConfirmOpen(false)}
+          aria-labelledby="stop-dialog-title"
+          aria-describedby="stop-dialog-description"
+        >
+          <DialogTitle id="stop-dialog-title">
+            Confirm Stop Generation
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="stop-dialog-description">
+              Are you sure you want to stop this generation? This action cannot be undone, and the generation will be terminated immediately.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setStopConfirmOpen(false)} disabled={stopInProgress}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleStopGeneration} 
+              color="error" 
+              autoFocus
+              disabled={stopInProgress}
+              startIcon={stopInProgress ? <CircularProgress size={16} /> : null}
+            >
+              {stopInProgress ? "Stopping..." : "Stop Generation"}
+            </Button>
+          </DialogActions>
+        </Dialog>
+        
         <Box sx={{ mb: 4 }}>
           <Typography variant="h5" sx={{ mb: 2, textAlign: 'center' }}>
             {generationStatus === 'generating' ? 'Generating content...' : 'Loading results...'}
@@ -400,8 +456,21 @@ const ResultsPage = () => {
               />
               
               <Typography variant="body2" color="text.secondary" align="right">
-                {progress}% complete {elapsedTime > 0 ? `· ${elapsedTime} seconds elapsed` : ''}
+                {progress.toFixed(2)}% complete
+                {elapsedTime > 0
+                  ? `· ${Math.floor(elapsedTime / 60)}:${String(elapsedTime % 60).padStart(2, '0')} elapsed`
+                  : ''}
               </Typography>
+            </Box>
+            
+            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+              <Button 
+                variant="contained" 
+                color="error"
+                onClick={() => setStopConfirmOpen(true)}
+              >
+                Stop Generation
+              </Button>
             </Box>
             
             <Typography variant="body2" color="text.secondary">
@@ -463,8 +532,11 @@ const ResultsPage = () => {
             )}
             <Grid item xs={12}>
               <Typography variant="body1">
-                <strong>Status:</strong> {generationStatus === 'completed' ? 
+                <strong>Status:</strong> {
+                  generationStatus === 'completed' ? 
                   <span style={{ color: 'green' }}>Complete</span> : 
+                  generationStatus === 'stopped' ?
+                  <span style={{ color: 'red' }}>Stopped</span> :
                   <span style={{ color: 'orange' }}>In Progress</span>
                 }
               </Typography>

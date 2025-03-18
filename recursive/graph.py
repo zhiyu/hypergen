@@ -345,13 +345,13 @@ class AbstractNode(ABC):
         for condition_func, action_name, next_status in self.status_action_mapping[self.status]:
             if condition_func(self, memory, *args, **kwargs):
                 logger.info("Do Action: {}, make {} -> {}".format(action_name, self.status, next_status))
-                self.do_action(action_name, memory, *args, **kwargs)
+                result = self.do_action(action_name, memory, *args, **kwargs)
                 self.status = next_status
                 break
         else:
             raise Exception("No Condition Matched for status action, Error!")
     
-        return action_name
+        return action_name, result
 
     # ======= Exam =======
     def do_exam(self, verbose):

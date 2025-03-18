@@ -48,9 +48,10 @@ class GraphRunEngine:
     def save(self, folder):
         # save root_node
         # save memory
+        # save article while running
         root_node_file = "{}/nodes.pkl".format(folder)
         root_node_json_file = "{}/nodes.json".format(folder)
-        
+        article_file = "{}/article.txt".format(folder)
         with open(root_node_file, "wb") as f:
             pickle.dump(self.root_node, f)
         
@@ -58,6 +59,9 @@ class GraphRunEngine:
             json.dump(self.root_node.to_json(), f, indent=4, ensure_ascii=False)
             
         self.memory.save(folder)
+        
+        with open(article_file, 'w', encoding='utf-8') as file:
+            file.write(self.memory.article)
     
     def load(self, folder):
         root_node_file = "{}/nodes.pkl".format(folder)
@@ -111,7 +115,7 @@ class GraphRunEngine:
                 json.dump(self.root_node.to_json(), f, indent=4, ensure_ascii=False)
                 
         if not full_step:
-            action_name = need_next_step_node.next_action_step(self.memory, 
+            action_name, action_result = need_next_step_node.next_action_step(self.memory, 
                                                                *action_args, 
                                                                **action_kwargs)
         else:

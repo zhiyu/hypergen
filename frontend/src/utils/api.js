@@ -195,3 +195,21 @@ export const deleteTask = async (taskId) => {
     throw error;
   }
 };
+
+/**
+ * Stops a running task
+ * @param {string} taskId - ID of the task to stop
+ * @returns {Promise} - Promise that resolves with stop status
+ */
+export const stopTask = async (taskId) => {
+  try {
+    const response = await apiClient.post(`/stop-task/${taskId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error stopping task ${taskId}:`, error);
+    if (error.response && error.response.status === 404) {
+      throw new Error('Task not found. It may have already been stopped or completed.');
+    }
+    throw error;
+  }
+};

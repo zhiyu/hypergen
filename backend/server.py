@@ -10,6 +10,7 @@ import threading
 import time
 import shutil
 import re
+import signal
 from pathlib import Path
 from datetime import datetime
 
@@ -149,6 +150,8 @@ python engine.py --filename {input_file} --output-filename {output_file} --done-
         process = subprocess.Popen(['/bin/bash', script_path], 
                                    stdout=subprocess.PIPE, 
                                    stderr=subprocess.PIPE)
+        # Store the process object in task_storage for later termination
+        task_storage[task_id]["process"] = process
         stdout, stderr = process.communicate()
         
         # Check if the process completed successfully
@@ -240,6 +243,8 @@ python engine.py --filename {input_file} --output-filename {output_file} --done-
         process = subprocess.Popen(['/bin/bash', script_path], 
                                    stdout=subprocess.PIPE, 
                                    stderr=subprocess.PIPE)
+        # Store the process object in task_storage for later termination
+        task_storage[task_id]["process"] = process
         stdout, stderr = process.communicate()
         
         # Check if the process completed successfully
@@ -319,6 +324,7 @@ def api_get_status(task_id):
     # If task is not in memory, try to load it
     if task_id not in task_storage:
         task_dir = os.path.join(RESULTS_DIR, task_id)
+        print('debug')
         if os.path.isdir(task_dir):
             # Load task into memory
             result_file = os.path.join(task_dir, 'result.jsonl')
@@ -406,13 +412,105 @@ def api_get_result(task_id):
         "searchEngine": task.get("search_engine")
     })
 
-def transform_node_to_graph(node, seen_nodes=None, root=False):
+def extract_from_log(task_id):
+    """
+    Extract information from the engine.log file for a specific task
+    Returns a dictionary mapping task IDs to their content
+    """
+    task_dir = os.path.join(RESULTS_DIR, task_id)
+    log_paths = [
+        os.path.join(task_dir, 'engine.log'),
+    ]
+    
+    # Also check for subdirectories that might contain logs
+    records_dir = os.path.join(task_dir, 'records')
+    if os.path.isdir(records_dir):
+        for subdir in os.listdir(records_dir):
+            subdir_path = os.path.join(records_dir, subdir)
+            if os.path.isdir(subdir_path):
+                log_file = os.path.join(subdir_path, 'engine.log')
+                if os.path.exists(log_file):
+                    log_paths.append(log_file)
+    
+    reasoning_dict = {}
+    current_node_id = None
+    
+    for log_path in log_paths:
+        if not os.path.exists(log_path):
+            continue
+            
+        try:
+            with open(log_path, 'r', encoding='utf-8', errors='replace') as f:
+                for line in f:
+                    # Check if this is a line selecting a node
+                    if "select node:" in line:
+                        node_match = re.search(r'select node: (\d+(?:\.\d+)*)', line)
+                        if node_match:
+                            current_node_id = node_match.group(1)
+                            # Initialize the dictionary for this node if it doesn't exist
+                            if current_node_id not in reasoning_dict:
+                                reasoning_dict[current_node_id] = {"think": "", "result": ""}
+                    
+                    # Check if this is a valid log with timestamp format
+                    elif "Get REASONING:" in line and current_node_id:
+                        # Read the next lines until we get a complete think tag content
+                        in_think_tag = False
+                        in_result_tag = False
+                        think_content = []
+                        result_content = []
+                        
+                        # Continue reading lines to find <think> tag content
+                        for next_line in f:
+                            # Handle think tag
+                            if "<think>" in next_line:
+                                in_think_tag = True
+                                continue  # Skip the line with <think> tag
+
+                            if in_think_tag:
+                                think_content.append(next_line)
+                                continue
+                                
+                            if "</think>" in next_line and in_think_tag:
+                                # Only keep the content before </think>
+                                in_think_tag = False
+                                continue
+                            
+
+                            # Handle result tag (both <result> and <r> formats)
+                            if "<result>" in next_line:
+                                in_result_tag = True
+                                continue  # Skip the line with result tag
+                            
+                            if in_result_tag:
+                                result_content.append(next_line)
+                                continue
+
+                            if "</result>" in next_line and in_result_tag:
+                                # Only keep the content before </result>
+                                in_result_tag = False
+                                break
+                        
+                        if think_content and current_node_id in reasoning_dict:
+                            reasoning_dict[current_node_id]["think"] = "".join(think_content)
+
+                        if result_content and current_node_id in reasoning_dict:
+                            reasoning_dict[current_node_id]["result"] = "".join(result_content)
+                
+        except Exception as e:
+            print(f"Error reading log file {log_path}: {str(e)}")
+    
+    return reasoning_dict
+
+def transform_node_to_graph(node, seen_nodes=None, root=False, think_result_dict=None):
     """
     Transform a node from the internal format to the format expected by the frontend
     Based on the display logic in display.py
     """
     if seen_nodes is None:
         seen_nodes = set()
+    
+    if think_result_dict is None:
+        think_result_dict = {}
         
     # Get the base node data
     task_info = node.get("task_info", {})
@@ -443,6 +541,12 @@ def transform_node_to_graph(node, seen_nodes=None, root=False):
         "node_type": node.get("node_type", "UNKNOWN"),
         "is_execute_node": is_execute_node
     }
+    
+    # Add reasoning content from log if available for this node
+    if node_id in think_result_dict:
+        transformed["think"] = think_result_dict[node_id]["think"]
+        transformed["result"] = think_result_dict[node_id]["result"]
+
     
     # For task graph visualization, we need to collect and flatten all subtasks
     # from the node hierarchy
@@ -488,6 +592,11 @@ def transform_node_to_graph(node, seen_nodes=None, root=False):
                 "node_type": task.get("node_type", "UNKNOWN"),
                 "is_execute_node": is_execute
             }
+            
+            # Add reasoning content from log if available for this sub-task
+            if task_id in think_result_dict:
+                sub_task["think"] = think_result_dict[task_id]["think"]
+                sub_task["result"] = think_result_dict[task_id]["result"]
             
             # Add to parent's subtasks
             parent_transformed["sub_tasks"].append(sub_task)
@@ -563,8 +672,11 @@ def api_get_task_graph(task_id):
         with open(nodes_file, 'r') as f:
             nodes_data = json.load(f)
         
+        # Extract task input and output information from logs
+        think_result_dict = extract_from_log(task_id)
+        
         # Transform the data to the format expected by the frontend
-        transformed_graph = transform_node_to_graph(nodes_data, root=True)
+        transformed_graph = transform_node_to_graph(nodes_data, root=True, think_result_dict=think_result_dict)
         
         return jsonify({
             "taskId": task_id,
@@ -584,6 +696,116 @@ def api_reload_tasks():
         "taskCount": len(task_storage)
     })
     
+@app.route('/api/stop-task/<task_id>', methods=['POST'])
+def api_stop_task(task_id):
+    """Stop a running task"""
+    try:
+        # Sanitize task_id to prevent path traversal
+        if not re.match(r'^[a-zA-Z0-9_\-]+$', task_id):
+            return jsonify({"status": "error", "error": "Invalid task ID format"}), 400
+            
+        # Check if task exists
+        if task_id not in task_storage:
+            return jsonify({"status": "error", "error": "Task not found"}), 404
+            
+        # Check if task is already completed or stopped
+        if task_storage[task_id]["status"] in ["completed", "error", "stopped"]:
+            return jsonify({
+                "status": "ok",
+                "message": f"Task {task_id} is already {task_storage[task_id]['status']}"
+            })
+        
+          
+        # Direct approach: Find the pid for the python engine.py process and kill it
+        task_dir = os.path.join(RESULTS_DIR, task_id)
+
+        # 1. Create a stop.txt file for the task to detect gracefully                                                 │ │
+        stop_file = os.path.join(task_dir, 'stop.txt') 
+        
+        # First try to find the PID using ps command
+        try:
+            # For the specific task_id, find the python engine.py process
+            cmd = f"ps -ef | grep '{task_id}' | grep 'engine.py' | grep -v grep | awk '{{print $2}}'"
+            result = subprocess.check_output(cmd, shell=True).decode().strip()
+            
+            if result:
+                pid = int(result)
+                print(f"Found Python engine.py process with PID {pid} for task {task_id}")
+                
+                # Kill the process and its children
+                print(f"Killing process {pid} and its children")
+                if os.name != 'nt':  # Unix/Linux/MacOS
+                    # try:
+                    #     # Try to kill process group first
+                    #     os.killpg(os.getpgid(pid), signal.SIGKILL)
+                    #     print(f"Sent SIGKILL to process group for PID {pid}")
+                    # except Exception as group_err:
+                    #     print(f"Error killing process group: {str(group_err)}")
+                        
+                    # Also try direct kill commands
+                    os.system(f"kill -9 {pid}")
+                    os.system(f"pkill -P {pid}")  # Kill all child processes
+                    print(f"Used kill commands on PID {pid}")
+                else:
+                    # Windows
+                    os.system(f"taskkill /F /PID {pid} /T")
+                    print(f"Used taskkill on PID {pid}")
+            else:
+                print(f"Could not find Python engine.py process for task {task_id}")
+                
+                # Fall back to looking for the run.sh process
+                cmd = f"ps -ef | grep '{task_dir}/run.sh' | grep -v grep | awk '{{print $2}}'"
+                result = subprocess.check_output(cmd, shell=True).decode().strip()
+                
+                if result:
+                    pid = int(result)
+                    print(f"Found run.sh process with PID {pid} for task {task_id}")
+                    
+                    # Kill the process
+                    if os.name != 'nt':
+                        os.system(f"kill -9 {pid}")
+                        # os.system(f"pkill -P {pid}")
+                    else:
+                        os.system(f"taskkill /F /PID {pid} /T")
+                else:
+                    print(f"Could not find run.sh process for task {task_id}")
+                    
+        except Exception as e:
+            print(f"Error finding or killing processes for task {task_id}: {str(e)}")
+            
+            # As a last resort, try to kill any processes related to the task directory
+            if os.name != 'nt':
+                os.system(f"pkill -f '{task_dir}'")
+                print(f"Attempted to kill any processes related to {task_dir}")
+        
+        # Create a done file to indicate the task is stopped
+        with open(os.path.join(task_dir, 'done.txt'), 'w') as f:
+            f.write("Stopped by user at " + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+        
+        # Update task status
+        task_storage[task_id]["status"] = "stopped"
+        
+        # Set a result message for stopped tasks
+        task_storage[task_id]["result"] = "Task was stopped by user request before completion."
+        
+        # Emit a socket message to notify the frontend
+        socketio.emit('task_update', {
+            'taskId': task_id,
+            'status': 'stopped',
+            'message': 'Task has been stopped by user request'
+        })
+        
+        return jsonify({
+            "status": "ok",
+            "message": f"Task {task_id} has been stopped"
+        })
+    except Exception as e:
+        app.logger.error(f"Error stopping task {task_id}: {str(e)}")
+        return jsonify({
+            "status": "error",
+            "error": f"Failed to stop task: {str(e)}"
+        }), 500
+
 @app.route('/api/delete-task/<task_id>', methods=['DELETE'])
 def api_delete_task(task_id):
     """Delete a previously generated task and its associated files"""
@@ -718,9 +940,10 @@ def monitor_task_progress(task_id, nodes_dir):
         # Monitor the nodes.json file for changes
         last_modified = 0
         nodes_file = os.path.join(nodes_dir, 'nodes.json')
+        task_dir = os.path.dirname(nodes_dir)
         print(f"Watching for changes to: {nodes_file}")
         
-        while task_storage.get(task_id, {}).get('status') not in ['completed', 'error']:
+        while task_storage.get(task_id, {}).get('status') not in ['completed', 'error', 'stopped']:                
             if os.path.exists(nodes_file):
                 current_modified = os.path.getmtime(nodes_file)
                 
@@ -732,8 +955,11 @@ def monitor_task_progress(task_id, nodes_dir):
                         with open(nodes_file, 'r') as f:
                             nodes_data = json.load(f)
                             
+                        # Extract reasoning information from logs
+                        think_result_dict = extract_from_log(task_id)
+                        
                         # Transform the data for frontend
-                        transformed_graph = transform_node_to_graph(nodes_data, root=True)
+                        transformed_graph = transform_node_to_graph(nodes_data, root=True, think_result_dict=think_result_dict)
                         
                         # Send update via WebSocket
                         print(f"Sending task_update with {len(transformed_graph.get('sub_tasks', []))} sub-tasks")
@@ -756,8 +982,11 @@ def monitor_task_progress(task_id, nodes_dir):
                 print(f"Reading final state from nodes.json")
                 with open(nodes_file, 'r') as f:
                     nodes_data = json.load(f)
+                
+                # Extract reasoning information from logs
+                think_result_dict = extract_from_log(task_id)
                     
-                transformed_graph = transform_node_to_graph(nodes_data, root=True)
+                transformed_graph = transform_node_to_graph(nodes_data, root=True, think_result_dict=think_result_dict)
                 print(f"Sending final task_update with status {task_storage.get(task_id, {}).get('status')}")
                 socketio.emit('task_update', {
                     'taskId': task_id, 

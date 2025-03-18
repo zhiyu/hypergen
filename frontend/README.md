@@ -55,7 +55,7 @@ frontend/
 │   │   ├── Footer.js    # Page footer
 │   │   ├── Header.js    # Navigation header
 │   │   ├── TaskGraph.js # D3-based graph visualization
-│   │   └── TaskList.js  # List view of tasks
+│   │   └── LiveTaskList.js  # List view of tasks
 │   ├── pages/           # Page components
 │   │   ├── AboutPage.js             # Project information
 │   │   ├── HomePage.js              # Landing page
