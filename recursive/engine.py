@@ -15,6 +15,7 @@ from loguru import logger
 import traceback
 from recursive.memory import caches
 from recursive.cache import Cache
+from recursive.utils.get_index import get_report_with_ref
 
     
     
@@ -555,6 +556,7 @@ def report_writing(input_filename,
             continue
             
         
+        result = get_report_with_ref(engine.root_node.to_json(), result)
         item["result"] = result
         output_f.write(json.dumps(item, ensure_ascii=False) + "\n")
         output_f.flush()

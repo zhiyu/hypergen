@@ -1,6 +1,6 @@
 from recursive.utils.register import Register
 from abc import ABC, abstractmethod
-
+from loguru import logger
 
 prompt_register = Register("prompt_register")
 
@@ -28,4 +28,9 @@ class PromptTemplate(ABC):
         if len(key_mapping) == 0:
             return self.content_template
         else:
+            # try:
             return self.content_template.format(**key_mapping)
+            # except Exception as e:
+            #     logger.error(f"content_template: {self.content_template}")
+            #     logger.error(f"Error formatting prompt template: {e}, key_mapping: {key_mapping}")
+            #     raise e
