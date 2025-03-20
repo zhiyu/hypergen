@@ -36,9 +36,10 @@ import HistoryPanel from '../components/HistoryPanel';
 
 // Recommended model options
 const commonModels = [
-  { label: 'GPT-4o', value: 'gpt-4o' },
-  { label: 'Claude 3.5 Sonnet', value: 'claude-3-5-sonnet-20241022' },
   { label: 'Claude 3.7 Sonnet (Recommended)', value: 'claude-3-7-sonnet-20250219' },
+  { label: 'Claude 3.5 Sonnet', value: 'claude-3-5-sonnet-20241022' },
+  { label: 'GPT-4o', value: 'gpt-4o' },
+  { label: 'GPT-4o-mini', value: 'gpt-4o-mini' },
 ];
 
 // Example prompts for story generation
@@ -50,7 +51,7 @@ const examplePrompts = [
 
 const StoryGenerationPage = () => {
   const [prompt, setPrompt] = useState('');
-  const [model, setModel] = useState('gpt-4o');
+  const [model, setModel] = useState('claude-3-7-sonnet-20250219');
   const [apiKeys, setApiKeys] = useState({
     openai: localStorage.getItem('openai_api_key') || '',
     claude: localStorage.getItem('claude_api_key') || '',
@@ -77,7 +78,7 @@ const StoryGenerationPage = () => {
         await pingAPI();
         // API is available, nothing to do
       } catch (err) {
-        setError('Cannot connect to the backend server. Please make sure it is running at http://localhost:5001.');
+        setError('Cannot connect to the backend server. Please make sure it is running at http://localhost:' + (process.env.REACT_APP_BACKEND_PORT || '5001') + '.');
       }
     }
     
@@ -112,7 +113,7 @@ const StoryGenerationPage = () => {
     try {
       await pingAPI();
     } catch (err) {
-      setError('Cannot connect to the backend server. Please make sure it is running at http://localhost:5001.');
+      setError('Cannot connect to the backend server. Please make sure it is running at http://localhost:' + (process.env.REACT_APP_BACKEND_PORT || '5001') + '.');
       return;
     }
     
