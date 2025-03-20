@@ -1,8 +1,11 @@
-# WriteHERE: Heterogeneous Recursive Planning based Open Writing Project
+# 📝 WriteHERE: Heterogeneous Recursive Planning based Open Writing Project
+
+[![arXiv](https://img.shields.io/badge/arXiv-2503.08275-b31b1b.svg)](https://arxiv.org/abs/2503.08275)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 WriteHERE is an open-source, non-commercial agent framework for long-form writing that achieves human-like adaptive writing through recursive task decomposition and dynamic integration of three fundamental task types: retrieval, reasoning, and composition.
 
-## Overview
+## 🔍 Overview
 
 Unlike traditional approaches that rely on predetermined workflows and rigid thinking patterns, this framework:
 
@@ -12,7 +15,7 @@ Unlike traditional approaches that rely on predetermined workflows and rigid thi
 
 Our evaluations on both fiction writing and technical report generation demonstrate that this method consistently outperforms state-of-the-art approaches across all evaluation metrics.
 
-## Open Source Philosophy
+## 🌐 Open Source Philosophy
 
 WriteHERE is developed with these core principles:
 
@@ -21,7 +24,7 @@ WriteHERE is developed with these core principles:
 - **Full Transparency**: The entire system architecture and decision-making processes are transparent to users
 - **Community-Driven**: We welcome contributions, feedback, and collaborative improvements from the community
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -32,39 +35,82 @@ WriteHERE is developed with these core principles:
   - Anthropic (Claude models)
   - SerpAPI (for search functionality in report generation)
 
-### Quick Start
+### Quickstart
 
-#### Standard Installation
+You can use WriteHERE in two ways: with or without the visualization interface.
 
-For the easiest start, just run:
+#### Running Without Visualization
 
+This is the simpler approach when you don't need real-time visualization or want to use the engine for batch processing.
+
+1. **Setup the environment**:
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -v -e .
+
+# Create api_key.env file based on example
+cp recursive/api_key.env.example recursive/api_key.env
+# Edit the file to add your keys
+nano recursive/api_key.env
+```
+
+
+2. **Run the engine directly**:
+```bash
+cd recursive
+python engine.py --filename <input_file> --output-filename <output_file> --done-flag-file <done_file> --model <model_name> --mode <story|report>
+```
+
+Example for generating a story:
+```bash
+python engine.py --filename ../test_data/meta_fiction.jsonl --output-filename ./project/story/output.jsonl --done-flag-file ./project/story/done.txt --model gpt-4o --mode story
+```
+
+Example for generating a report:
+```bash
+python engine.py --filename ../test_data/qa_test.jsonl --output-filename ./project/qa/result.jsonl --done-flag-file ./project/qa/done.txt --model claude-3-sonnet --mode report
+```
+
+#### Running With Visualization Interface
+
+This option provides a web interface to visualize and monitor the writing process in real-time.
+
+1. **One-step setup and launch**:
 ```bash
 ./setup_env.sh  # One-time setup of the environment
 ./start.sh      # Start the application
 ```
 
 This will:
-1. Create a clean Python virtual environment
-2. Install all required dependencies
-3. Start the backend server on port 5001
-4. Start the frontend on port 3000
-5. Open your browser at http://localhost:3000
+- Create a clean Python virtual environment
+- Install all required dependencies
+- Start the backend server on port 5001
+- Start the frontend on port 3000
+- Open your browser at http://localhost:3000
+
+You can customize the ports using command-line arguments:
+```bash
+./start.sh --backend-port 8080 --frontend-port 8000
+```
 
 #### For Anaconda/Miniconda Users
 
 If you're using Anaconda and encounter dependency conflicts, use:
-
 ```bash
 ./run_with_anaconda.sh
 ```
 
-This script will create a dedicated Anaconda environment called 'writehere' with the correct dependencies and run both servers.
+This script creates a dedicated Anaconda environment called 'writehere' with the correct dependencies and runs both servers.
 
-#### Troubleshooting
-
-If you encounter any issues, please check the [Troubleshooting Guide](TROUBLESHOOTING.md) for common problems and solutions.
+You can customize ports with this script:
+```bash
+./run_with_anaconda.sh --backend-port 8080 --frontend-port 8000
+```
 
 ### Manual Installation
+
+If you prefer to set up the components manually:
 
 #### Backend Setup
 
@@ -84,18 +130,15 @@ pip install -v -e .
 pip install -r backend/requirements.txt
 ```
 
-4. API Keys setup (optional - can also be done via the web UI):
-```bash
-# Create api_key.env file based on example
-cp recursive/api_key.env.example recursive/api_key.env
-# Edit the file to add your keys
-nano recursive/api_key.env
-```
-
-5. Start the backend server:
+4. Start the backend server:
 ```bash
 cd backend
 python server.py
+```
+
+To use a custom port:
+```bash
+python server.py --port 8080
 ```
 
 #### Frontend Setup
@@ -111,7 +154,16 @@ npm install
 npm start
 ```
 
-## Features
+To use a custom port:
+```bash
+PORT=8000 npm start
+```
+
+### Troubleshooting
+
+If you encounter any issues, please check the [Troubleshooting Guide](TROUBLESHOOTING.md) for common problems and solutions.
+
+## ✨ Features
 
 - **Recursive Task Decomposition**: Breaks down complex writing tasks into manageable subtasks
 - **Dynamic Integration**: Seamlessly combines retrieval, reasoning, and composition tasks
@@ -122,7 +174,7 @@ npm start
 - **Transparent Operation**: All agent decisions and processes are visible to users
 - **Fully Customizable**: Modify prompts, parameters, and workflows to suit your needs
 
-## Project Structure
+## 📂 Project Structure
 
 ```
 .
@@ -143,21 +195,18 @@ npm start
 └── start.sh               # All-in-one startup script
 ```
 
-## Real-time Task Visualization
+## 📊 Real-time Task Visualization
 
-The system features real-time visualization of the task execution process. As the agent works on generating content, you can see:
+When using the visualization interface, you can see the task execution process in real-time. As the agent works on generating content, you can observe:
 
 1. The hierarchical decomposition of tasks
 2. Which tasks are currently being worked on
 3. The status of each task (ready, in progress, completed)
 4. The type of each task (retrieval, reasoning, composition)
 
-This visualization gives you insight into the agent's "thinking process" and helps you understand how complex writing tasks are broken down and solved step by step.
+This visualization provides insight into the agent's "thinking process" and helps you understand how complex writing tasks are broken down and solved step by step.
 
-To view the task execution in real-time, simply start a generation job and watch the task list update automatically as the agent works.
-
-
-## Contributing
+## 👥 Contributing
 
 We welcome contributions from the community to help improve WriteHERE! Here's how you can contribute:
 
@@ -195,7 +244,7 @@ We welcome contributions from the community to help improve WriteHERE! Here's ho
 
 By contributing to WriteHERE, you agree that your contributions will be licensed under the project's MIT License.
 
-## Citation
+## 📚 Citation
 
 If you use this code in your research, please cite our paper:
 
@@ -211,7 +260,7 @@ If you use this code in your research, please cite our paper:
 }
 ```
 
-## License
+## ⚖️ License
 
 [MIT License](LICENSE)
 

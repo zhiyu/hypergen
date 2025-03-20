@@ -1,9 +1,10 @@
 import axios from 'axios';
 
 // Base URL for API requests - adjust as needed for production/development
+const BACKEND_PORT = process.env.REACT_APP_BACKEND_PORT || '5001';
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? '/api' 
-  : 'http://localhost:5001/api';
+  : `http://localhost:${BACKEND_PORT}/api`;
 
 // Create an axios instance with CORS headers
 const apiClient = axios.create({
@@ -174,6 +175,24 @@ export const reloadTasks = async () => {
     return response.data;
   } catch (error) {
     console.error('Error reloading tasks:', error);
+    throw error;
+  }
+};
+
+/**
+ * Fetches the workspace content (article.txt) for a task
+ * @param {string} taskId - ID of the generation task
+ * @returns {Promise} - Promise that resolves with workspace content
+ */
+export const getWorkspace = async (taskId) => {
+  try {
+    const response = await apiClient.get(`/workspace/${taskId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching workspace content:', error);
+    if (error.response && error.response.status === 404) {
+      throw new Error('Workspace content not found. It may not be available yet.');
+    }
     throw error;
   }
 };

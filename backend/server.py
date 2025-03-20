@@ -11,8 +11,14 @@ import time
 import shutil
 import re
 import signal
+import argparse
 from pathlib import Path
 from datetime import datetime
+
+# Parse command-line arguments
+parser = argparse.ArgumentParser(description='Backend server for WriteHERE application')
+parser.add_argument('--port', type=int, default=5001, help='Port to run the server on')
+args = parser.parse_args()
 
 app = Flask(__name__)
 # Enable CORS with more specific options
@@ -21,8 +27,8 @@ CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 socketio = SocketIO(app, 
                     cors_allowed_origins="*", 
                     async_mode='threading',
-                    logger=True, 
-                    engineio_logger=True)
+                    logger=False, # disable logger
+                    engineio_logger=False)
 
 # Storage for task status and results
 task_storage = {}
@@ -123,10 +129,11 @@ def run_story_generation(task_id, prompt, model, api_keys):
     script_path = os.path.join(task_dir, 'run.sh')
     with open(script_path, 'w') as f:
         f.write(f"""#!/bin/bash
-cd {os.path.abspath(os.path.join(os.path.dirname(__file__), '../recursive'))}
-source {env_file}
-python engine.py --filename {input_file} --output-filename {output_file} --done-flag-file {done_file} --model {model} --mode story --nodes-json-file {nodes_file}
-""")
+        cd {os.path.abspath(os.path.join(os.path.dirname(__file__), '../recursive'))}
+        source {env_file}
+        export TASK_ENV_FILE={env_file}
+        python engine.py --filename {input_file} --output-filename {output_file} --done-flag-file {done_file} --model {model} --mode story --nodes-json-file {nodes_file}
+        """)
     
     os.chmod(script_path, 0o755)
     
@@ -215,10 +222,11 @@ def run_report_generation(task_id, prompt, model, enable_search, search_engine, 
     
     with open(script_path, 'w') as f:
         f.write(f"""#!/bin/bash
-cd {os.path.abspath(os.path.join(os.path.dirname(__file__), '../recursive'))}
-source {env_file}
-python engine.py --filename {input_file} --output-filename {output_file} --done-flag-file {done_file} --model {model} --engine-backend {engine_backend} --mode report --nodes-json-file {nodes_file}
-""")
+        cd {os.path.abspath(os.path.join(os.path.dirname(__file__), '../recursive'))}
+        source {env_file}
+        export TASK_ENV_FILE={env_file}
+        python engine.py --filename {input_file} --output-filename {output_file} --done-flag-file {done_file} --model {model} --engine-backend {engine_backend} --mode report --nodes-json-file {nodes_file}
+        """)
     
     os.chmod(script_path, 0o755)
     
@@ -399,11 +407,17 @@ def api_get_result(task_id):
         else:
             return jsonify({"error": "Task not found"}), 404
     
+    result_md_dir = os.path.join(RESULTS_DIR, 'records', task_id, 'report.md')
     task = task_storage[task_id]
     
     # We'll allow getting results even if status is not completed as long as we have the result data
     if "result" not in task:
-        return jsonify({"error": "Task result not available"}), 400
+        # Check if the result.md file exists
+        if not os.path.exists(result_md_dir):
+            return jsonify({"error": "Task result not available"}), 400
+        else:
+            with open(result_md_dir, 'r') as f:
+                task["result"] = f.read()
     
     return jsonify({
         "taskId": task_id,
@@ -539,7 +553,7 @@ def transform_node_to_graph(node, seen_nodes=None, root=False, think_result_dict
         "dependency": task_info.get("dependency", []),
         "sub_tasks": [],
         "node_type": node.get("node_type", "UNKNOWN"),
-        "is_execute_node": is_execute_node
+        "is_execute_node": is_execute_node,
     }
     
     # Add reasoning content from log if available for this node
@@ -908,6 +922,26 @@ def api_get_history():
         "history": history_tasks
     })
 
+@app.route('/api/workspace/<task_id>', methods=['GET'])
+def api_get_workspace(task_id):
+    """Get the article.txt content for a task"""
+    task_dir = os.path.join(RESULTS_DIR, 'records', task_id)
+    article_file = os.path.join(task_dir, 'article.txt')
+    
+    if not os.path.exists(article_file):
+        return jsonify({"error": "Workspace file not found"}), 404
+    
+    try:
+        with open(article_file, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return jsonify({
+            "taskId": task_id,
+            "workspace": content
+        })
+    except Exception as e:
+        print(f"Error reading workspace file: {str(e)}")
+        return jsonify({"error": f"Failed to read workspace file: {str(e)}"}), 500
+
 @app.route('/api/ping', methods=['GET'])
 def api_ping():
     """Simple endpoint to test if the API is reachable"""
@@ -1056,4 +1090,4 @@ def handle_subscribe(data):
     emit('task_update', {'taskId': task_id, 'taskGraph': initial_graph})
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, port=5001, allow_unsafe_werkzeug=True)
+    socketio.run(app, debug=True, port=args.port, allow_unsafe_werkzeug=True)
