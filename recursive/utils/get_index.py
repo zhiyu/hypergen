@@ -80,10 +80,16 @@ def extract_and_renumber_citations(text: str, citation_urls):
 
 def process_citations(text, citation_to_url):
     # 步骤1: 找出文章中所有引用
-    citation_pattern = r'\[reference:(\d+)\]'
+    citation_pattern = r'\[(?:reference|ref):(\d+)\]'
     citations_in_text = re.findall(citation_pattern, text)
     used_ids = [int(cid) for cid in citations_in_text]
-    old2id_2_pos = {idx: text.index("[reference:{}]".format(idx)) for idx in used_ids}
+    # Find positions using regex to match both formats
+    old2id_2_pos = {}
+    for idx in used_ids:
+        matches = list(re.finditer(r'\[(?:reference|ref):{}]'.format(idx), text))
+        if matches:
+            old2id_2_pos[idx] = matches[0].start()
+    # old2id_2_pos = {idx: text.index("[reference:{}]".format(idx)) for idx in used_ids}
     url2page = {page["url"]: page  for page in citation_to_url.values()}
     
     # 步骤2: 创建URL到引用ID的映射，合并相同URL的引用
@@ -117,7 +123,7 @@ def process_citations(text, citation_to_url):
         if old_id in old_to_new_id:
             new_id = old_to_new_id[old_id]
             url = new_citation_to_url[new_id]["url"]
-            return f'[\[reference:{new_id}\]]({url})'
+            return f'[[reference:{new_id}]]({url})'
         return ""  # 如果找不到映射，删除这个引用
     
     updated_text = re.sub(citation_pattern, replace_citation, text)
@@ -127,6 +133,9 @@ def process_citations(text, citation_to_url):
     pattern_consecutive = r'(\[reference:\d+\])(\1)+'
     while re.search(pattern_consecutive, updated_text):
         updated_text = re.sub(pattern_consecutive, r'\1', updated_text)
+
+    # Replace by [\d]
+    updated_text = re.sub(r'\[reference:(\d+)\]', r'[\1]', updated_text)
         
     return updated_text, new_citation_to_url
 
@@ -149,7 +158,8 @@ if __name__ == "__main__":
     traverse(data, web_pages)
     # print(len(web_pages))
     # print(sorted(web_pages.keys()))
-    article = open("{}/report.md".format(folder)).read()
+    # article = open("{}/report.md".format(folder)).read()
+    article = open("{}/article.txt".format(folder)).read()
     
     article, web_pages = process_citations(article, web_pages)
     
