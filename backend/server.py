@@ -120,6 +120,8 @@ def run_story_generation(task_id, prompt, model, api_keys):
     with open(env_file, 'w') as f:
         if 'openai' in api_keys and api_keys['openai']:
             f.write(f"OPENAI={api_keys['openai']}\n")
+        if 'qwen' in api_keys and api_keys['qwen']:
+            f.write(f"QWEN={api_keys['qwen']}\n")      
         if 'claude' in api_keys and api_keys['claude']:
             f.write(f"CLAUDE={api_keys['claude']}\n")
         if 'gemini' in api_keys and api_keys['gemini']:
@@ -213,6 +215,8 @@ def run_report_generation(task_id, prompt, model, enable_search, search_engine, 
     with open(env_file, 'w') as f:
         if 'openai' in api_keys and api_keys['openai']:
             f.write(f"OPENAI={api_keys['openai']}\n")
+        if 'qwen' in api_keys and api_keys['qwen']:
+            f.write(f"QWEN={api_keys['qwen']}\n")    
         if 'claude' in api_keys and api_keys['claude']:
             f.write(f"CLAUDE={api_keys['claude']}\n")
         if 'gemini' in api_keys and api_keys['gemini']:
@@ -289,7 +293,7 @@ def api_generate_story():
     
     # Generate a unique task ID
     task_id = f"story-{uuid.uuid4()}"
-    
+    print(data['apiKeys'])
     # Start the generation in a background thread
     thread = threading.Thread(
         target=run_story_generation,

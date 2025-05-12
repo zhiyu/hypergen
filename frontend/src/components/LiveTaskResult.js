@@ -3,9 +3,6 @@ import {
   Box,
   Paper,
   Typography,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
   Divider,
   Alert,
   CircularProgress,
@@ -142,7 +139,7 @@ const getStatusIcon = (status) => {
   }
 };
 
-const LiveTaskList = ({ taskId, onTaskClick }) => {
+const LiveTaskResult = ({ taskId, onTaskClick }) => {
   const [connected, setConnected] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   const [tasks, setTasks] = useState([]);
@@ -710,34 +707,10 @@ const LiveTaskList = ({ taskId, onTaskClick }) => {
             </CardBody>
           </Card>
         </Tab>
-        <Tab key="music" title="工作空间">
+        <Tab key="music" title="生成结果">
           <Card className="border border-gray-light shadow-lg shadow-gray-light">
             <CardBody>
               <Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 2,
-                  }}
-                >
-                  <Button
-                    variant="flat"
-                    onPress={fetchWorkspace}
-                    isDisabled={workspaceLoading}
-                    startContent={
-                      workspaceLoading ? (
-                        <CircularProgress size={16} />
-                      ) : (
-                        <ArticleIcon size={16} />
-                      )
-                    }
-                  >
-                    刷新
-                  </Button>
-                </Box>
-
                 {workspaceLoading && (
                   <Box
                     sx={{
@@ -793,4 +766,4 @@ const LiveTaskList = ({ taskId, onTaskClick }) => {
   );
 };
 
-export default LiveTaskList;
+export default LiveTaskResult;

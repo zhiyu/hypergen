@@ -51,6 +51,9 @@ def get_llm_output(node, agent, memory, agent_type, overwrite_cache=False, *args
         prompt_version = inner_kwargs["prompt_version"]
         
     to_run_check_str = kwargs.get("to_run_check_str", None)
+
+    print("AAAAA"+task_type)
+    print(inner_kwargs)
     
     system_message = prompt_register.module_dict[prompt_version]().construct_system_message(
         to_run_check_str = to_run_check_str

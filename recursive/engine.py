@@ -272,6 +272,10 @@ def story_writing(input_filename,
             "update": {},
             "final_aggregate": {
                 "prompt_version": "StoryWritingReasonerFinalAggregate",
+                "llm_args": {
+                    "model": global_use_model,
+                    "temperature": 0.3
+                },
                 "mode": "llm",
                 "parse_arg_dict": {
                     "result": ["result"],
@@ -432,9 +436,9 @@ def report_writing(input_filename,
         },
         "RETRIEVAL": {
             "execute": {
-                "react_agent": True, # use Search Agent
+                "react_agent": True if engine_backend else False, # use Search Agent
                 "prompt_version": "SearchAgentENPrompt", # see recursive.agent.prompts.search_agent.main
-                "searcher_type": "SerpApiSearch", # see recursive.executor.actions.bing_browser
+                "searcher_type": "DuckDuckGoSearch", # SerpApiSearch see recursive.executor.actions.bing_browser
                 "llm_args": {
                     "model": global_use_model, # set the llm
                 },
@@ -461,9 +465,9 @@ def report_writing(input_filename,
                 "select_quota": 12, # search agent select quota
                 "selector_max_workers": 8, # selector parallel
                 "summarizier_max_workers": 8, # summarizer parallel
-                "selector_model": "gpt-4o-mini",
+                "selector_model": global_use_model,
                 # "selector_model": "gemini-2.0-flash",
-                "summarizer_model": "gpt-4o-mini",
+                "summarizer_model": global_use_model,
                 # "summarizer_model": "gemini-2.0-flash",
             },
             "search_merge": {

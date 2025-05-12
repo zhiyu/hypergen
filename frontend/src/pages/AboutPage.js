@@ -1,196 +1,121 @@
-import React from 'react';
-import { 
-  Container, 
-  Typography, 
-  Box, 
-  Paper, 
-  Grid,
+import React from "react";
+import { Container, Typography, Box, Grid } from "@mui/material";
+
+import {
+  Tabs,
+  Tab,
+  Chip,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Avatar,
+  Button,
+  Link,
   Divider,
-  Link
-} from '@mui/material';
+} from "@heroui/react";
 
 const AboutPage = () => {
   return (
     <Container maxWidth="lg">
-      <Box sx={{ mt: 4, mb: 6 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          About the Project
-        </Typography>
-        <Typography variant="body1" paragraph>
-          Heterogeneous Recursive Planning represents a significant advancement in AI-powered content generation,
-          enabling more adaptive and human-like writing through innovative task decomposition and planning.
-        </Typography>
-      </Box>
-
-      <Paper elevation={3} sx={{ p: 4, mb: 6 }}>
-        <Typography variant="h4" gutterBottom>
-          Overview
-        </Typography>
-        <Divider sx={{ mb: 3 }} />
-        <Typography variant="body1" paragraph>
-          Heterogeneous Recursive Planning is a general agent framework for long-form writing that achieves 
-          human-like adaptive writing through recursive task decomposition and dynamic integration of three 
-          fundamental task types: retrieval, reasoning, and composition.
-        </Typography>
-        
-        <Typography variant="body1" paragraph>
-          Unlike traditional approaches that rely on predetermined workflows and rigid thinking patterns, 
-          this framework:
-        </Typography>
-        
-        <Box sx={{ pl: 3, mb: 3 }}>
-          <Typography variant="body1" paragraph>
-            1. <strong>Eliminates workflow restrictions</strong> through a planning mechanism that interleaves recursive task decomposition and execution
-          </Typography>
-          <Typography variant="body1" paragraph>
-            2. <strong>Facilitates heterogeneous task decomposition</strong> by integrating different task types
-          </Typography>
-          <Typography variant="body1" paragraph>
-            3. <strong>Adapts dynamically</strong> during the writing process, similar to human writing behavior
-          </Typography>
-        </Box>
-        
-        <Typography variant="body1" paragraph>
-          Our evaluations on both fiction writing and technical report generation demonstrate that this 
-          method consistently outperforms state-of-the-art approaches across all evaluation metrics.
-        </Typography>
-      </Paper>
-
-      <Grid container spacing={4} sx={{ mb: 6 }}>
-        <Grid item xs={12} md={6}>
-          <Paper elevation={3} sx={{ p: 4, height: '100%' }}>
-            <Typography variant="h5" gutterBottom>
-              Key Features
+      <div className="mt-12">
+        <Card className="border border-gray-light shadow-lg shadow-gray-light p-2">
+          <CardHeader className="block">
+            <Typography component="div" sx={{ fontWeight: 700 }}>
+              概述
             </Typography>
-            <Divider sx={{ mb: 2 }} />
-            <Box component="ul" sx={{ pl: 2 }}>
-              <Box component="li" sx={{ mb: 1 }}>
-                <Typography variant="body1">
-                  <strong>Recursive task decomposition and execution</strong> - Breaking complex writing tasks into manageable sub-tasks
-                </Typography>
-              </Box>
-              <Box component="li" sx={{ mb: 1 }}>
-                <Typography variant="body1">
-                  <strong>Dynamic integration of diverse task types</strong> - Seamlessly combining retrieval, reasoning, and composition
-                </Typography>
-              </Box>
-              <Box component="li" sx={{ mb: 1 }}>
-                <Typography variant="body1">
-                  <strong>Flexible adaptation during writing</strong> - Adjusting the plan as context evolves
-                </Typography>
-              </Box>
-              <Box component="li" sx={{ mb: 1 }}>
-                <Typography variant="body1">
-                  <strong>Support for multiple writing domains</strong> - Works for both creative fiction and technical reports
-                </Typography>
-              </Box>
-            </Box>
-          </Paper>
-        </Grid>
-        
-        <Grid item xs={12} md={6}>
-          <Paper elevation={3} sx={{ p: 4, height: '100%' }}>
-            <Typography variant="h5" gutterBottom>
-              Technical Implementation
-            </Typography>
-            <Divider sx={{ mb: 2 }} />
+          </CardHeader>
+          <CardBody>
             <Typography variant="body1" paragraph>
-              The framework is built on a task graph architecture that represents writing tasks as nodes with dependencies.
-              Each node can be one of three types:
+              异构递归规划（Heterogeneous Recursive
+              Planning）是一种面向长文本创作的通用智能体框架，它通过递归式任务分解与动态整合三种基础任务类型（检索、推理、组合），实现类人类的自适应写作能力，是AI内容生成领域的一项重大突破。
             </Typography>
-            
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="body1">
-                <strong>Composition (Write)</strong> - Creating actual content
-              </Typography>
-              <Typography variant="body1">
-                <strong>Retrieval (Search)</strong> - Gathering information
-              </Typography>
-              <Typography variant="body1">
-                <strong>Reasoning (Think)</strong> - Analyzing and planning
-              </Typography>
-            </Box>
-            
-            <Typography variant="body1">
-              The system uses advanced language models (LLMs) like GPT-4 and Claude to execute these tasks,
-              with a recursive planning mechanism that can decompose tasks and adapt plans dynamically.
+
+            <Typography variant="body1" paragraph>
+              与传统依赖预设流程和固定思维模式的方法不同，该框架具有以下特性：
             </Typography>
-          </Paper>
-        </Grid>
-      </Grid>
 
-      <Paper elevation={3} sx={{ p: 4, mb: 6 }}>
-        <Typography variant="h4" gutterBottom>
-          Research Publication
-        </Typography>
-        <Divider sx={{ mb: 3 }} />
-        <Typography variant="body1" paragraph>
-          This project is based on research described in the paper:
-        </Typography>
-        
-        <Box sx={{ p: 3, backgroundColor: '#f5f5f5', borderRadius: 2, mb: 3 }}>
-          <Typography variant="body1" fontFamily="monospace">
-            @misc&#123;xiong2025heterogeneousrecursiveplanning,
-            <br />
-            &nbsp;&nbsp;title=&#123;Beyond Outlining: Heterogeneous Recursive Planning for Adaptive Long-form Writing with Language Models&#125;, 
-            <br />
-            &nbsp;&nbsp;author=&#123;Ruibin Xiong* and Yimeng Chen* and Dmitrii Khizbullin and Mingchen Zhuge and Jürgen Schmidhuber&#125;,
-            <br />
-            &nbsp;&nbsp;year=&#123;2025&#125;,
-            <br />
-            &nbsp;&nbsp;eprint=&#123;2503.08275&#125;,
-            <br />
-            &nbsp;&nbsp;archivePrefix=&#123;arXiv&#125;,
-            <br />
-            &nbsp;&nbsp;primaryClass=&#123;cs.AI&#125;,
-            <br />
-            &nbsp;&nbsp;url=&#123;https://arxiv.org/abs/2503.08275&#125;
-            <br />
-            &#125;
-          </Typography>
-        </Box>
-        
-        <Typography variant="body1">
-          For more detailed information, you can read the full paper at{' '}
-          <Link href="https://arxiv.org/abs/2503.08275" target="_blank" rel="noopener">
-            https://arxiv.org/abs/2503.08275
-          </Link>
-        </Typography>
-      </Paper>
+            <div className="flex flex-col gap-2 mb-4">
+              <div>
+                1. <strong>消除工作流限制</strong>{" "}
+                通过递归任务分解与执行交替进行的规划机制，打破线性工作流约束。
+              </div>
+              <div>
+                2. <strong>支持异构任务分解n</strong>{" "}
+                融合不同任务类型实现多层次创作需求。
+              </div>
+              <div>
+                3. <strong>动态适配</strong>{" "}
+                在写作过程中持续自我优化，模拟人类写作的适应性行为。
+              </div>
+            </div>
 
-      <Paper elevation={3} sx={{ p: 4, mb: 6 }}>
-        <Typography variant="h4" gutterBottom>
-          Project Team
-        </Typography>
-        <Divider sx={{ mb: 3 }} />
-        <Box sx={{ 
-          display: 'flex', 
-          flexWrap: 'wrap', 
-          gap: 2, 
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
-          <Typography variant="body1" sx={{ fontWeight: 500 }}>
-            Ruibin Xiong
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary' }}>•</Typography>
-          <Typography variant="body1" sx={{ fontWeight: 500 }}>
-            Yimeng Chen
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary' }}>•</Typography>
-          <Typography variant="body1" sx={{ fontWeight: 500 }}>
-            Dmitrii Khizbullin
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary' }}>•</Typography>
-          <Typography variant="body1" sx={{ fontWeight: 500 }}>
-            Mingchen Zhuge
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary' }}>•</Typography>
-          <Typography variant="body1" sx={{ fontWeight: 500 }}>
-            Jürgen Schmidhuber
-          </Typography>
-        </Box>
-      </Paper>
+            <Typography variant="body1" paragraph>
+              我们在小说创作与技术报告生成任务上的实验表明，该方法在所有评估指标上均显著优于当前最先进方案。
+            </Typography>
+          </CardBody>
+        </Card>
+      </div>
+
+      <div className="my-12">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <Card className="border border-gray-light shadow-lg shadow-gray-light p-2 hover:shadow-gray-dark hover:scale-105">
+            <CardHeader className="block">
+              <Typography component="div" sx={{ fontWeight: 700 }}>
+                关键特性
+              </Typography>
+            </CardHeader>
+            <CardBody className="gap-2">
+              <div>
+                <strong>递归式任务分解与执行</strong> -
+                将复杂写作任务拆解为可处理的子任务
+              </div>
+              <div>
+                <Typography variant="body1">
+                  <strong>多类型任务动态整合</strong> -
+                  无缝协调检索、推理与创作三大功能
+                </Typography>
+              </div>
+              <div>
+                <Typography variant="body1">
+                  <strong>写作过程灵活调适</strong> -
+                  根据上下文演进实时调整规划方案
+                </Typography>
+              </div>
+              <div>
+                <Typography variant="body1">
+                  <strong>多领域写作支持</strong> -
+                  同时适用于创意小说与技术报告撰写
+                </Typography>
+              </div>
+            </CardBody>
+          </Card>
+          <Card className="border border-gray-light shadow-lg shadow-gray-light p-2 hover:shadow-gray-dark hover:scale-105">
+            <CardHeader className="block">
+              <Typography component="div" sx={{ fontWeight: 700 }}>
+                技术实现
+              </Typography>
+            </CardHeader>
+            <CardBody>
+              <Typography variant="body1" paragraph>
+                该框架采用​​任务图谱架构​​，将写作任务表示为具有依赖关系的节点。每个节点可属于以下三种类型之一：
+              </Typography>
+
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="body1">
+                  <strong>创作（写作）</strong> - 生成实际文本内容
+                </Typography>
+                <Typography variant="body1">
+                  <strong>检索（搜索）</strong> - 收集相关信息
+                </Typography>
+                <Typography variant="body1">
+                  <strong>推理（思考）</strong> - 进行分析与规划
+                </Typography>
+              </Box>
+            </CardBody>
+          </Card>
+        </div>
+      </div>
     </Container>
   );
 };

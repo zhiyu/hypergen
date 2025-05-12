@@ -92,6 +92,7 @@ class SearchAgent(BaseAgent):
             output["search_querys"] = json.loads(output["search_querys"])
         except Exception as e:
             logger.error("Parse search querys error with output dict: {}".format(output))
+            
             output["search_querys"] = output["search_querys"].replace("'", '"')
             output["search_querys"] = json.loads(output["search_querys"])
         return output
@@ -238,7 +239,7 @@ class SearchAgent(BaseAgent):
                     cnt += 1
                     continue
                 break
-                    
+
             current_turn_info = {"turn": turn}
             current_turn_info.update(parsed_resp)
             current_turn_info["response"] = response
@@ -289,10 +290,12 @@ class SearchAgent(BaseAgent):
         results = []
         for turn_idx, current_turn_info in enumerate(return_info[:-1]):
             turn_result = current_turn_info["tool_result"]
+            web_pages = turn_result["web_pages"] if turn_result else []
+            xml_format_result = turn_result["result"] if turn_result else []
             result = {
                 "turn": current_turn_info["turn"],
-                "web_pages": turn_result["web_pages"], # = web_pages (selected)
-                "xml_format_result": turn_result["result"], # = xml concat web pages
+                "web_pages": web_pages, # = web_pages (selected)
+                "xml_format_result": xml_format_result, # = xml concat web pages
                 "observation": return_info[turn_idx+1]["observation"],
             }
             results.append(result)

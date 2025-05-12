@@ -44,7 +44,6 @@ class Agent(ABC):
             message.append(history_message)
         message.append({"role": "user", "content": prompt})
         logger.info(message[-1]["content"])
-        
         model = other_inner_args.pop("model", "gpt-4o")
         
         resp = llm.call(messages = message,

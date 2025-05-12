@@ -21,16 +21,19 @@ This is the frontend application for the Heterogeneous Recursive Planning projec
 ### Installation
 
 1. Navigate to the frontend directory
+
 ```bash
 cd frontend
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 ```
 
 3. Start the development server
+
 ```bash
 PORT=3000 npm start
 ```

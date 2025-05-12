@@ -1,642 +1,292 @@
-import React from 'react';
-import { 
-  Container, 
-  Typography, 
-  Grid, 
-  Card, 
-  CardContent, 
-  Button, 
-  Box,
-  Paper,
+import React from "react";
+import {
+  Tabs,
+  Tab,
   Chip,
-  Divider,
-  useTheme,
-  useMediaQuery
-} from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-import CreateIcon from '@mui/icons-material/Create';
-import DescriptionIcon from '@mui/icons-material/Description';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import SearchIcon from '@mui/icons-material/Search';
-import PsychologyIcon from '@mui/icons-material/Psychology';
-import EditNoteIcon from '@mui/icons-material/EditNote';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Avatar,
+  Button,
+  Link,
+} from "@heroui/react";
+
+import {
+  PiImage,
+  PiMusicNotes,
+  PiVideoCamera,
+  PiArrowRight,
+  PiMagnifyingGlass,
+  PiBrain,
+  PiPencilSimpleLine,
+} from "react-icons/pi";
 
 const HomePage = () => {
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-  
   return (
-    <Container maxWidth="lg">
-      {/* Hero Section */}
-      <Box 
-        sx={{ 
-          mt: { xs: 4, md: 8 },
-          mb: { xs: 6, md: 10 },
-          textAlign: 'center',
-          position: 'relative',
-        }}
-      >
-        <Box 
-          sx={{
-            position: 'absolute',
-            top: -100,
-            left: -200,
-            right: -200,
-            bottom: -100,
-            background: 'radial-gradient(circle at 50% 50%, rgba(84, 54, 218, 0.08), transparent 70%)',
-            zIndex: -1,
-          }}
-        />
-        
-        <Box sx={{ maxWidth: 800, mx: 'auto' }}>
-          <Chip 
-            icon={<AutoAwesomeIcon />} 
-            label="Advanced AI Writing Framework" 
-            color="primary" 
-            variant="outlined" 
-            sx={{ mb: 3 }} 
-          />
-          <Typography 
-            variant="h1" 
-            component="h1" 
-            gutterBottom
-            sx={{ 
-              fontSize: { xs: '2.5rem', md: '3.5rem' },
-              letterSpacing: '-0.025em',
-              backgroundImage: 'linear-gradient(to right, #5436DA, #10A37F)',
-              backgroundClip: 'text',
-              color: 'transparent',
-              display: 'inline-block',
-              mb: 2,
+    <main className="container mx-auto max-w-6xl flex flex-1 flex-col items-center justify-center">
+      <div className="mt-16 z-20 flex flex-col items-center justify-center gap-[18px] sm:gap-6">
+        <Link href="/about" color="foreground">
+          <Button
+            className="h-9 overflow-hidden border-1 border-default-100 bg-default-50 px-[18px] py-2 text-small font-normal leading-5"
+            endContent={<PiArrowRight />}
+            radius="full"
+            variant="bordered"
+          >
+            更先进的 AI 写作框架
+          </Button>
+        </Link>
+        <div className="text-center text-[clamp(40px,10vw,44px)] font-medium leading-[1.2] tracking-tighter sm:text-[64px]">
+          <span
+            style={{
+              letterSpacing: "-0.025em",
+              backgroundImage: "linear-gradient(to right, #db2777, #fcd34d)",
+              backgroundClip: "text",
+              color: "transparent",
+              display: "inline-block",
             }}
           >
-            WriteHERE: An Open Framework for Human-like Long-form Writing
-          </Typography>
-          <Typography 
-            variant="h5" 
-            color="text.secondary" 
-            paragraph
-            sx={{ 
-              fontWeight: 400,
-              mb: 4,
-              maxWidth: 720,
-              mx: 'auto',
-              lineHeight: 1.5
-            }}
-          >
-            A general planning-based framework for long-form writing that achieves adaptive content generation
-            through recursive task decomposition and dynamic integration of heterogeneous tasks/tools.
-          </Typography>
-          
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
-            <Button 
-              component={RouterLink}
-              to="/story-generation"
-              variant="contained" 
-              color="primary" 
-              size="large"
-              sx={{ 
-                py: 1.5, 
-                px: 4, 
-                borderRadius: 3,
-                fontSize: '1rem'
-              }}
+            支持拟人化长文本生成的 AI 写作助手
+          </span>
+        </div>
+        <p className="text-center font-normal leading-7 sm:w-[466px] sm:text-[18px]">
+          一个基于通用规划的文本写作框架，通过递归式任务分解与异构任务/工具的动态集成，实现自适应内容生成。
+        </p>
+        <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
+          <Link href="/story" color="text-white">
+            <Button
+              className="w-full bg-gradient-to-tr from-pink-600 to-amber-300 text-white shadow-lg hover:scale-105"
+              radius="full"
+              size="lg"
             >
-              Get Started
+              在线体验
             </Button>
-            <Button 
-              component={RouterLink}
-              to="/about"
-              variant="outlined" 
-              color="primary" 
-              size="large"
-              sx={{ 
-                py: 1.5, 
-                px: 4, 
-                borderRadius: 3,
-                fontSize: '1rem',
-                backgroundColor: 'rgba(84, 54, 218, 0.04)',
-                '&:hover': {
-                  backgroundColor: 'rgba(84, 54, 218, 0.08)',
-                }
-              }}
+          </Link>
+
+          <Link className="w-full" href="/about" color="foreground">
+            <Button
+              className="w-full"
+              radius="full"
+              size="lg"
+              variant="bordered"
             >
-              Learn More
+              了解更多
             </Button>
-          </Box>
-        </Box>
-      </Box>
-      
+          </Link>
+        </div>
+      </div>
+
       {/* Features Section */}
-      <Box 
-        sx={{ 
-          mb: 10, 
-          py: 6, 
-          px: { xs: 2, md: 6 },
-          borderRadius: 4,
-          background: 'linear-gradient(145deg, rgba(84, 54, 218, 0.04), rgba(16, 163, 127, 0.04))',
-        }}
-      >
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography 
-            variant="h2" 
-            gutterBottom
-            sx={{ 
-              fontSize: { xs: '1.75rem', md: '2.25rem' },
-              fontWeight: 700,
-              color: 'text.primary'
-            }}
-          >
-            How It Works
-          </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 700, mx: 'auto' }}>
-            Heterogeneous Recursive Planning goes beyond traditional writing approaches by mimicking
-            human cognitive processes through adaptive task decomposition.
-          </Typography>
-        </Box>
-        
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={4}>
-            <Box 
-              sx={{ 
-                p: 3, 
-                borderRadius: 4, 
-                height: '100%', 
-                backgroundColor: 'white',
-                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-5px)',
-                  boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.08)',
-                }
-              }}
-            >
-              <Box 
-                sx={{ 
-                  display: 'inline-flex', 
-                  p: 1.5, 
-                  borderRadius: 2, 
-                  backgroundColor: 'rgba(84, 54, 218, 0.1)', 
-                  color: 'primary.main',
-                  mb: 2
-                }}
-              >
-                <SearchIcon fontSize="medium" />
-              </Box>
-              <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
-                Retrieval
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Dynamically searches for relevant information during the writing process,
-                ensuring factual accuracy and comprehensive coverage of the topic.
-              </Typography>
-            </Box>
-          </Grid>
-          
-          <Grid item xs={12} md={4}>
-            <Box 
-              sx={{ 
-                p: 3, 
-                borderRadius: 4, 
-                height: '100%', 
-                backgroundColor: 'white',
-                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-5px)',
-                  boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.08)',
-                }
-              }}
-            >
-              <Box 
-                sx={{ 
-                  display: 'inline-flex', 
-                  p: 1.5, 
-                  borderRadius: 2, 
-                  backgroundColor: 'rgba(16, 163, 127, 0.1)', 
-                  color: 'secondary.main',
-                  mb: 2
-                }}
-              >
-                <PsychologyIcon fontSize="medium" />
-              </Box>
-              <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
-                Reasoning
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Applies logical analysis to plan, organize, and refine content structure,
-                ensuring coherent and well-structured output that follows a logical flow.
-              </Typography>
-            </Box>
-          </Grid>
-          
-          <Grid item xs={12} md={4}>
-            <Box 
-              sx={{ 
-                p: 3, 
-                borderRadius: 4, 
-                height: '100%', 
-                backgroundColor: 'white',
-                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)',
-                transition: 'transform 0.2s, box-shadow 0.2s',
-                '&:hover': {
-                  transform: 'translateY(-5px)',
-                  boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.08)',
-                }
-              }}
-            >
-              <Box 
-                sx={{ 
-                  display: 'inline-flex', 
-                  p: 1.5, 
-                  borderRadius: 2, 
-                  backgroundColor: 'rgba(245, 158, 11, 0.1)', 
-                  color: '#F59E0B',
-                  mb: 2
-                }}
-              >
-                <EditNoteIcon fontSize="medium" />
-              </Box>
-              <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
-                Composition
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Generates articulate and engaging content based on the retrieved information
-                and reasoning, adapting to context and maintaining consistent style and tone.
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-      
+      <div className="mt-36">
+        <div>
+          <div className="text-4xl mb-2 font-medium text-center">
+            它是如何工作的
+          </div>
+          <div className="text-center mb-12">
+            异构递归规划通过自适应任务分解模拟人类认知过程，突破了传统写作方法的局限。
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          <Card className="border border-gray-light shadow-lg shadow-gray-light p-2 hover:shadow-gray-dark hover:scale-105 hover:-translate-y-2">
+            <CardHeader className="justify-between">
+              <div className="flex items-center">
+                <PiMagnifyingGlass size={24} color="#db2777" className="mr-2" />
+                <div className="text-xl">检索</div>
+              </div>
+            </CardHeader>
+            <CardBody className="text-default-600">
+              采用动态信息检索机制，在文本生成过程中实时获取相关信息，确保事实准确性与主题覆盖完整性。
+            </CardBody>
+          </Card>
+          <Card className="border border-gray-light shadow-lg shadow-gray-light p-2 hover:shadow-gray-dark hover:scale-105 hover:-translate-y-2">
+            <CardHeader className="justify-between">
+              <div className="flex items-center">
+                <PiBrain size={24} color="#db2777" className="mr-2" />
+                <div className="text-xl">推理</div>
+              </div>
+            </CardHeader>
+            <CardBody className="text-default-600">
+              采用逻辑分析方法进行内容结构的规划、组织与优化，确保生成文本具有严密的逻辑连贯性与良好的结构完整性。
+            </CardBody>
+          </Card>
+          <Card className="border border-gray-light shadow-lg shadow-gray-light p-2 hover:shadow-gray-dark hover:scale-105 hover:-translate-y-2">
+            <CardHeader className="justify-between">
+              <div className="flex items-center">
+                <PiPencilSimpleLine
+                  size={24}
+                  color="#db2777"
+                  className="mr-2"
+                />
+                <div className="text-xl">创作</div>
+              </div>
+            </CardHeader>
+            <CardBody className="text-default-600">
+              基于信息检索与推理机制生成的内容，产出表达准确、富有吸引力的文本，同时确保上下文适应性与文体特征的一致性。
+            </CardBody>
+          </Card>
+        </div>
+      </div>
+
       {/* Use Cases Section */}
-      <Box sx={{ mb: 10 }}>
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography 
-            variant="h2" 
-            gutterBottom
-            sx={{ 
-              fontSize: { xs: '1.75rem', md: '2.25rem' },
-              fontWeight: 700,
-              color: 'text.primary'
-            }}
-          >
-            Generate Content
-          </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 700, mx: 'auto', mb: 4 }}>
-            Choose the type of content you want to create and experience the power of heterogeneous recursive planning.
-          </Typography>
-        </Box>
-        
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={6}>
-            <Card 
-              sx={{ 
-                height: '100%', 
-                display: 'flex', 
-                flexDirection: 'column',
-                borderRadius: 4,
-                overflow: 'hidden',
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
-                transition: 'transform 0.3s ease',
-                '&:hover': {
-                  transform: 'translateY(-8px)',
-                }
-              }}
-            >
-              <Box 
-                sx={{ 
-                  background: 'linear-gradient(135deg, #5436DA, #8667EE)',
-                  p: 4,
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}
-              >
-                <Box 
-                  sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    opacity: 0.1,
-                    background: 'radial-gradient(circle at 70% 30%, white, transparent 70%)',
+      <div className="mt-36">
+        <div>
+          <div className="text-4xl mb-2 font-medium text-center">适用场景</div>
+          <div className="text-center mb-12">
+            选择拟生成的内容类型，即刻体验异构递归规划技术的优势。
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <Card className="border border-gray-light shadow-lg shadow-gray-light p-2 hover:shadow-gray-dark hover:scale-105">
+            <CardHeader className="block">
+              <div className="text-2xl font-medium mb-2">故事生成</div>
+              <div className="text-sm">轻松创作精彩故事</div>
+            </CardHeader>
+            <CardBody className="text-default-600">
+              运用我们的异构递归规划方法，生成富有创意的叙事、小说和故事内容。特别适用于创意写作、娱乐产业及教育领域的内容创作。
+              <div className="flex gap-2 mt-8">
+                <Chip
+                  classNames={{
+                    base: "bg-gradient-to-tr from-pink-600 to-amber-300 border-small border-white/10",
+                    content: "text-white",
                   }}
-                />
-                <CreateIcon sx={{ fontSize: 60, color: 'white', mb: 2 }} />
-                <Typography variant="h4" component="div" sx={{ color: 'white', fontWeight: 700, mb: 1 }}>
-                  Story Generation
-                </Typography>
-                <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                  Craft engaging narratives and fiction
-                </Typography>
-              </Box>
-              
-              <CardContent sx={{ flexGrow: 1, p: 4 }}>
-                <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                  Generate creative narratives, fiction, and stories using our heterogeneous 
-                  recursive planning approach. Perfect for creative writing, entertainment, 
-                  and educational content.
-                </Typography>
-                
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
-                  <Chip size="small" label="Fiction" />
-                  <Chip size="small" label="Short Stories" />
-                  <Chip size="small" label="Creative Writing" />
-                </Box>
-                
-                <Button 
-                  endIcon={<ArrowForwardIcon />}
-                  size="large" 
-                  variant="contained" 
-                  color="primary" 
-                  component={RouterLink}
-                  to="/story-generation"
-                  sx={{ 
-                    borderRadius: 3,
-                    py: 1.5,
-                    width: '100%',
-                  }}
+                  color="warning"
+                  variant="flat"
                 >
-                  Generate Story
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-          
-          <Grid item xs={12} md={6}>
-            <Card 
-              sx={{ 
-                height: '100%', 
-                display: 'flex', 
-                flexDirection: 'column',
-                borderRadius: 4,
-                overflow: 'hidden',
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
-                transition: 'transform 0.3s ease',
-                '&:hover': {
-                  transform: 'translateY(-8px)',
-                }
-              }}
-            >
-              <Box 
-                sx={{ 
-                  background: 'linear-gradient(135deg, #10A37F, #34D399)',
-                  p: 4,
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}
-              >
-                <Box 
-                  sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    opacity: 0.1,
-                    background: 'radial-gradient(circle at 70% 30%, white, transparent 70%)',
+                  Fiction
+                </Chip>
+                <Chip
+                  classNames={{
+                    base: "bg-gradient-to-tr from-pink-600 to-amber-300 border-small border-white/10",
+                    content: "text-white",
                   }}
-                />
-                <DescriptionIcon sx={{ fontSize: 60, color: 'white', mb: 2 }} />
-                <Typography variant="h4" component="div" sx={{ color: 'white', fontWeight: 700, mb: 1 }}>
-                  Report Generation
-                </Typography>
-                <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                  Create comprehensive, fact-based documents
-                </Typography>
-              </Box>
-              
-              <CardContent sx={{ flexGrow: 1, p: 4 }}>
-                <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                Create comprehensive technical reports and documentation with accurate information retrieval and logical reasoning. Ideal for news, technical, and business documentation.
-                </Typography>
-                
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
-                  <Chip size="small" label="Research" />
-                  <Chip size="small" label="Analysis" />
-                  <Chip size="small" label="Documentation" />
-                </Box>
-                
-                <Button 
-                  endIcon={<ArrowForwardIcon />}
-                  size="large" 
-                  variant="contained" 
-                  color="secondary" 
-                  component={RouterLink}
-                  to="/report-generation"
-                  sx={{ 
-                    borderRadius: 3,
-                    py: 1.5,
-                    width: '100%',
-                  }}
+                  color="warning"
+                  variant="flat"
                 >
-                  Generate Report
-                </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-      </Box>
-      
-      {/* Process Visualization */}
-      <Paper 
-        elevation={0} 
-        sx={{ 
-          p: { xs: 3, md: 5 }, 
-          mb: 10, 
-          borderRadius: 4, 
-          backgroundColor: 'grey.50',
-          border: '1px solid',
-          borderColor: 'grey.100'
-        }}
-      >
-        <Box sx={{ maxWidth: 800, mx: 'auto' }}>
-          <Typography 
-            variant="h3" 
-            gutterBottom 
-            sx={{ 
-              fontSize: { xs: '1.5rem', md: '2rem' },
-              fontWeight: 700,
-              mb: 3,
-              textAlign: 'center'
-            }}
-          >
-            Visualize the Writing Process
-          </Typography>
-          <Typography variant="body1" color="text.secondary" paragraph sx={{ mb: 4, textAlign: 'center' }}>
-            Our framework makes the writing process transparent by showing how complex writing tasks are broken down into manageable sub-tasks that integrate retrieval, reasoning, and composition.
-          </Typography>
-          
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ 
-                  width: 40, 
-                  height: 40, 
-                  borderRadius: '50%', 
-                  backgroundColor: 'primary.main', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  flexShrink: 0
-                }}>
-                  1
-                </Box>
-                <Typography variant="body1">
-                  <strong>Initial decomposition</strong> of writing task
-                </Typography>
-              </Box>
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ 
-                  width: 40, 
-                  height: 40, 
-                  borderRadius: '50%', 
-                  backgroundColor: 'primary.main', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  flexShrink: 0
-                }}>
-                  2
-                </Box>
-                <Typography variant="body1">
-                  <strong>Recursive planning</strong> of subtasks
-                </Typography>
-              </Box>
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ 
-                  width: 40, 
-                  height: 40, 
-                  borderRadius: '50%', 
-                  backgroundColor: 'primary.main', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  flexShrink: 0
-                }}>
-                  3
-                </Box>
-                <Typography variant="body1">
-                  <strong>Dynamic integration</strong> of components
-                </Typography>
-              </Box>
-            </Grid>
-            
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ 
-                  width: 40, 
-                  height: 40, 
-                  borderRadius: '50%', 
-                  backgroundColor: 'primary.main', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  flexShrink: 0
-                }}>
-                  4
-                </Box>
-                <Typography variant="body1">
-                  <strong>Content generation</strong> with quality
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
-        </Box>
-      </Paper>
-      
-      {/* CTA Section */}
-      <Box 
-        sx={{ 
-          mb: 10, 
-          textAlign: 'center',
-          p: { xs: 4, md: 8 },
-          borderRadius: 4,
-          background: 'linear-gradient(135deg, rgba(84, 54, 218, 0.05) 0%, rgba(84, 54, 218, 0.1) 100%)',
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
-        <Box 
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            opacity: 0.4,
-            background: 'radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.8), transparent 60%)',
-          }}
-        />
-        
-        <Box sx={{ position: 'relative', maxWidth: 800, mx: 'auto' }}>
-          <Typography 
-            variant="h2" 
-            gutterBottom
-            sx={{ 
-              fontSize: { xs: '1.75rem', md: '2.5rem' },
-              fontWeight: 700,
-              color: 'text.primary',
-              mb: 2
-            }}
-          >
-            Ready to transform your writing process?
-          </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 4, maxWidth: 600, mx: 'auto' }}>
-            Experience the next generation of AI-assisted writing with our heterogeneous recursive planning framework.
-          </Typography>
-          
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
-            <Button 
-              component={RouterLink}
-              to="/story-generation"
-              variant="contained" 
-              color="primary" 
-              size="large"
-              sx={{ 
-                py: 1.5, 
-                px: 4, 
-                borderRadius: 3,
-                fontSize: '1rem'
+                  Short Stories
+                </Chip>
+                <Chip
+                  classNames={{
+                    base: "bg-gradient-to-tr from-pink-600 to-amber-300 border-small border-white/10",
+                    content: "text-white",
+                  }}
+                  color="warning"
+                  variant="flat"
+                >
+                  Creative Writing
+                </Chip>
+              </div>
+            </CardBody>
+          </Card>
+          <Card className="border border-gray-light shadow-lg shadow-gray-light p-2 hover:shadow-gray-dark hover:scale-105">
+            <CardHeader className="block">
+              <div className="text-2xl font-medium mb-2">报告生成</div>
+              <div className="text-sm">撰写全面且具备事实依据的文档</div>
+            </CardHeader>
+            <CardBody className="text-default-600">
+              通过精准信息检索与逻辑推理，创建内容全面的技术报告与文档系统，特别适用于新闻、技术和商业文档领域。
+              <div className="flex gap-2 mt-8">
+                <Chip
+                  classNames={{
+                    base: "bg-gradient-to-tr from-pink-600 to-amber-300 border-small border-white/10",
+                    content: "text-white",
+                  }}
+                  color="warning"
+                  variant="flat"
+                >
+                  Research
+                </Chip>
+                <Chip
+                  classNames={{
+                    base: "bg-gradient-to-tr from-pink-600 to-amber-300 border-small border-white/10",
+                    content: "text-white",
+                  }}
+                  color="warning"
+                  variant="flat"
+                >
+                  Analysis
+                </Chip>
+                <Chip
+                  classNames={{
+                    base: "bg-gradient-to-tr from-pink-600 to-amber-300 border-small border-white/10",
+                    content: "text-white",
+                  }}
+                  color="warning"
+                  variant="flat"
+                >
+                  Documentation
+                </Chip>
+              </div>
+            </CardBody>
+          </Card>
+        </div>
+      </div>
+
+      <div className="mt-36 w-full">
+        <div className="text-4xl mb-2 font-medium text-center">
+          写作思路，一目了然
+        </div>
+        <div className="text-center mb-12">
+          该框架将复杂写作分解为可管理的子任务（包含检索、推理和写作），让整个创作过程清晰可见。
+        </div>
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+          <div className="flex gap-4 items-center md:justify-center">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center"
+              style={{
+                backgroundColor: "#fcd34d",
               }}
             >
-              Try Story Generation
-            </Button>
-            <Button 
-              component={RouterLink}
-              to="/report-generation"
-              variant="contained" 
-              color="secondary" 
-              size="large"
-              sx={{ 
-                py: 1.5, 
-                px: 4, 
-                borderRadius: 3,
-                fontSize: '1rem'
+              1
+            </div>
+            <span className="text-lg">写作任务的初始化拆解</span>
+          </div>
+          <div className="flex gap-4 items-center md:justify-center">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center"
+              style={{
+                backgroundColor: "#fcd34d",
               }}
             >
-              Try Report Generation
-            </Button>
-          </Box>
-        </Box>
-      </Box>
-    </Container>
+              2
+            </div>
+            <span className="text-lg">子任务的递归规划</span>
+          </div>
+          <div className="flex gap-4 items-center md:justify-center">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center"
+              style={{
+                backgroundColor: "#fcd34d",
+              }}
+            >
+              3
+            </div>
+            <span className="text-lg">组件的动态集成</span>
+          </div>
+          <div className="flex gap-4 items-center md:justify-center">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center"
+              style={{
+                backgroundColor: "#fcd34d",
+              }}
+            >
+              4
+            </div>
+            <span className="text-lg">高质量内容生成</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-36 mb-24">
+        <div className="text-4xl mb-2 font-medium">
+          准备好革新您的写作流程了吗？
+        </div>
+        <div className="text-center">
+          快来体验基于异构递归规划的新一代AI写作助手
+        </div>
+      </div>
+    </main>
   );
 };
 

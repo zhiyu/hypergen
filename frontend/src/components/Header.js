@@ -1,245 +1,213 @@
-import React, { useState } from 'react';
-import { 
-  AppBar, 
-  Toolbar, 
-  Typography, 
-  Button, 
-  IconButton, 
-  Drawer, 
-  List, 
-  ListItem, 
-  ListItemText, 
-  Box, 
-  useMediaQuery, 
-  useTheme,
-  Container,
-  Divider 
-} from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
-import CreateIcon from '@mui/icons-material/Create';
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import React, { useState } from "react";
+
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem,
+  Link,
+  Button,
+  DropdownItem,
+  DropdownTrigger,
+  Dropdown,
+  DropdownMenu,
+} from "@heroui/react";
+
+import { PiFileText, PiFiles, PiFilmReel } from "react-icons/pi";
+import { ThemeSwitcher } from "./ThemeSwitcher";
+
+export const Logo = () => {
+  return (
+    <svg
+      stroke="currentColor"
+      fill="currentColor"
+      stroke-width="0"
+      viewBox="0 0 256 256"
+      height="28"
+      width="28"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="linearGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop
+            offset="0%"
+            style={{ "stop-color": "#db2777", "stop-opacity": "1" }}
+          />
+          <stop
+            offset="100%"
+            style={{ "stop-color": "#fcd34d", "stop-opacity": "1" }}
+          />
+        </linearGradient>
+      </defs>
+
+      <path
+        fill="url(#linearGradient)"
+        d="M216,40V216a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V40A16,16,0,0,1,56,24H200A16,16,0,0,1,216,40Z"
+        opacity="0.2"
+      ></path>
+
+      <path
+        fill="url(#linearGradient)"
+        d="M144,228a12,12,0,0,1-12,12H116a12,12,0,0,1,0-24h16A12,12,0,0,1,144,228ZM220,32H60a12,12,0,0,0,0,24,12,12,0,0,1,0,24H44a12,12,0,0,0,0,24H76a12,12,0,0,1,0,24,12,12,0,0,0,0,24h48a12,12,0,0,1,0,24,12,12,0,0,0,0,24h48a12,12,0,0,0,0-24,12,12,0,0,1,0-24h16a12,12,0,0,0,0-24H164a12,12,0,0,1,0-24,12,12,0,0,0,0-24,12,12,0,0,1,0-24h56a12,12,0,0,0,0-24Z"
+      ></path>
+    </svg>
+  );
+};
+
+export const ChevronDown = ({ fill, size, height, width, ...props }) => {
+  return (
+    <svg
+      fill="none"
+      height={size || height || 24}
+      viewBox="0 0 26 26"
+      width={size || width || 24}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <path
+        d="m19.92 8.95-6.52 6.52c-.77.77-2.03.77-2.8 0L4.08 8.95"
+        stroke={fill}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeMiterlimit={10}
+        strokeWidth={1.5}
+      />
+    </svg>
+  );
+};
 
 const Header = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-  const toggleDrawer = () => {
-    setDrawerOpen(!drawerOpen);
+  const icons = {
+    chevron: <ChevronDown fill="currentColor" size={16} />,
   };
 
-  const menuItems = [
-    { text: 'Home', path: '/' },
-    { text: 'Story Generation', path: '/story-generation' },
-    { text: 'Report Generation', path: '/report-generation' },
-    { text: 'About', path: '/about' }
-  ];
-
-  const drawer = (
-    <Box sx={{ width: 280, padding: 2 }} role="presentation">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Box 
-            sx={{ 
-              display: 'flex',
-              alignItems: 'center',
-              mr: 1,
-              position: 'relative'
+  function getMenuItems() {
+    return (
+      <>
+        <NavbarMenuItem key="nav-1">
+          <Link className="w-full" href="/" color="foreground">
+            首页
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem key="nav-10">
+          <Link className="w-full" href="/history" color="foreground">
+            我的创作
+          </Link>
+        </NavbarMenuItem>
+        <Dropdown>
+          <NavbarItem>
+            <DropdownTrigger>
+              <Button
+                disableRipple
+                className="p-0 bg-transparent data-[hover=true]:bg-transparent text-md"
+                endContent={icons.chevron}
+                variant="light"
+              >
+                长文本创作
+              </Button>
+            </DropdownTrigger>
+          </NavbarItem>
+          <DropdownMenu
+            aria-label="features"
+            itemClasses={{
+              base: "gap-4",
             }}
+            variant="flat"
           >
-            <EditNoteIcon 
-              sx={{ 
-                color: 'primary.main',
-                fontSize: 24,
-                filter: 'drop-shadow(0px 1px 1px rgba(0,0,0,0.1))'
-              }} 
-            />
-            <Box 
-              sx={{
-                position: 'absolute',
-                right: -2,
-                bottom: -2,
-                width: 8,
-                height: 8,
-                backgroundColor: 'secondary.main',
-                borderRadius: '50%',
-                boxShadow: '0 0 0 1.5px white',
-              }}
-            />
-          </Box>
-          <Typography variant="h6" sx={{ 
-              fontWeight: 800,
-              color: 'text.primary',
-              letterSpacing: '-0.01em',
-              fontFamily: "'Inter', sans-serif",
-              '& span': {
-                color: 'secondary.main'
-              }
-            }}>
-            Write<span>HERE</span>
-          </Typography>
-        </Box>
-        <IconButton onClick={toggleDrawer} sx={{ color: 'text.secondary' }}>
-          <CloseIcon />
-        </IconButton>
-      </Box>
-      <Divider sx={{ mb: 2 }} />
-      <List>
-        {menuItems.map((item) => (
-          <ListItem 
-            button 
-            key={item.text} 
-            component={RouterLink} 
-            to={item.path}
-            onClick={toggleDrawer}
-            sx={{
-              borderRadius: 2,
-              mb: 1,
-              '&:hover': {
-                backgroundColor: 'grey.50',
-              },
-            }}
+            <DropdownItem
+              key="autoscaling"
+              description=""
+              startContent={<PiFileText color="#db2777" size="20" />}
+            >
+              <Link className="w-full" href="/story" color="foreground">
+                故事生成
+              </Link>
+            </DropdownItem>
+            <DropdownItem
+              key="autoscaling"
+              description=""
+              startContent={<PiFiles color="#db2777" size="20" />}
+            >
+              <Link className="w-full" href="/report" color="foreground">
+                报告生成
+              </Link>
+            </DropdownItem>
+            <DropdownItem
+              key="autoscaling"
+              description=""
+              startContent={<PiFilmReel color="#db2777" size="20" />}
+            >
+              <Link className="w-full" href="/story" color="foreground">
+                剧本生成
+              </Link>
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+        {/* <NavbarMenuItem key="nav-12">
+          <Link
+            href="https://arxiv.org/abs/2503.08275"
+            target="_blank"
+            rel="noopener"
+            color="foreground"
           >
-            <ListItemText 
-              primary={item.text} 
-              primaryTypographyProps={{ 
-                fontWeight: 500,
-                fontSize: '1rem'
-              }} 
-            />
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+            参考论文
+          </Link>
+        </NavbarMenuItem> */}
+        <NavbarMenuItem className="hidden lg:flex ml-16">
+          <Link href="#" color="foreground">
+            登录
+          </Link>
+          <Link href="#" color="foreground" className="ml-4">
+            注册账号
+          </Link>
+        </NavbarMenuItem>
+        <ThemeSwitcher />
+      </>
+    );
+  }
 
   return (
-    <AppBar 
-      position="static" 
-      elevation={0} 
-      color="default" 
-      sx={{ 
-        borderBottom: 1, 
-        borderColor: 'grey.100',
-        backdropFilter: 'blur(10px)',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)'
+    <Navbar
+      onMenuOpenChange={setIsMenuOpen}
+      isBordered
+      classNames={{
+        base: "border-b border-gray-light ",
+        wrapper: "w-full px-0 mx-6 max-w-[5120px]",
       }}
     >
-      <Container maxWidth="lg">
-        <Toolbar sx={{ px: { xs: 0 } }}>
-          <Box sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            flexGrow: 1 
-          }}>
-            <Box 
-              sx={{ 
-                display: 'flex',
-                alignItems: 'center',
-                mr: 1.5,
-                position: 'relative'
-              }}
-            >
-              <EditNoteIcon 
-                sx={{ 
-                  color: 'primary.main',
-                  fontSize: 32,
-                  filter: 'drop-shadow(0px 1px 2px rgba(0,0,0,0.2))'
-                }} 
-              />
-              <Box 
-                sx={{
-                  position: 'absolute',
-                  right: -3,
-                  bottom: -3,
-                  width: 12,
-                  height: 12,
-                  backgroundColor: 'secondary.main',
-                  borderRadius: '50%',
-                  boxShadow: '0 0 0 2px white',
-                }}
-              />
-            </Box>
-            <Typography 
-              variant="h6" 
-              component={RouterLink} 
-              to="/" 
-              sx={{ 
-                fontWeight: 800,
-                textDecoration: 'none',
-                color: 'text.primary',
-                letterSpacing: '-0.01em',
-                fontFamily: "'Inter', sans-serif",
-                '&:hover': {
-                  color: 'primary.main',
-                },
-                '& span': {
-                  color: 'secondary.main'
-                }
-              }}
-            >
-              Write<span>HERE</span>
-            </Typography>
-          </Box>
-          
-          {isMobile ? (
-            <IconButton 
-              edge="end" 
-              aria-label="menu" 
-              onClick={toggleDrawer}
-              sx={{ 
-                color: 'text.primary',
-                '&:hover': {
-                  backgroundColor: 'grey.50',
-                },
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-          ) : (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              {menuItems.map((item) => (
-                <Button 
-                  key={item.text} 
-                  component={RouterLink} 
-                  to={item.path}
-                  variant="text"
-                  color="inherit"
-                  sx={{ 
-                    fontWeight: 500,
-                    px: 2,
-                    borderRadius: 2,
-                    color: 'text.secondary',
-                    '&:hover': {
-                      backgroundColor: 'grey.50',
-                      color: 'primary.main',
-                    },
-                  }}
-                >
-                  {item.text}
-                </Button>
-              ))}
-            </Box>
-          )}
-          
-          <Drawer
-            anchor="right"
-            open={drawerOpen}
-            onClose={toggleDrawer}
-            PaperProps={{
-              sx: {
-                borderTopLeftRadius: 12,
-                borderBottomLeftRadius: 12,
-              }
-            }}
+      <NavbarContent justify="end">
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="sm:hidden"
+        />
+        <NavbarBrand>
+          <Link
+            className="w-full flex items-center"
+            href="/"
+            color="foreground"
           >
-            {drawer}
-          </Drawer>
-        </Toolbar>
-      </Container>
-    </AppBar>
+            <Logo />
+            <span className="font-bold ml-2">
+              Hyper<span>Gen</span>
+            </span>
+          </Link>
+        </NavbarBrand>
+      </NavbarContent>
+
+      <NavbarMenu>{getMenuItems()}</NavbarMenu>
+
+      <NavbarContent
+        className="hidden sm:flex gap-8 font-medium"
+        justify="center"
+      >
+        {getMenuItems()}
+      </NavbarContent>
+    </Navbar>
   );
 };
 

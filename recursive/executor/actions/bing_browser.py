@@ -376,6 +376,7 @@ class SerpApiSearch(BaseSearch):
         for idx, page in enumerate(results, start=1):
             page["position"] = idx
             pos2results[idx-1] = page
+        print(pos2results)    
         return pos2results
     
     def fetch_content(
@@ -396,6 +397,124 @@ class SerpApiSearch(BaseSearch):
             fetched_pages.append(page)
         return fetched_pages
         
+
+class DuckDuckGoSearch(BaseSearch):
+
+    def __init__(self,
+                 serp_api_key=None,
+                 topk = 20,
+                 is_valid_source = None,
+                 min_char_count = 150,
+                 snippet_chunk_size = 1000,
+                 webpage_helper_max_threads = 10,
+                 backend_engine = "bing", # default search engine, was google before
+                 cc = "US", # default search region
+                 **kwargs,):
+        black_list = []
+        self.serp_api_key = str(os.getenv('SERPAPI'))
+        
+        self.endpoint = "http://172.17.138.4:8080"
+        if backend_engine == "bing":
+            logger.info("USE BING")
+            self.params = {"engine": backend_engine, "count": topk, "cc": cc, **kwargs}
+        elif backend_engine == "google":
+            logger.info("USE GOOGLE")
+            self.params = {"engine": backend_engine, "count": topk, "gl": cc.lower(), **kwargs}
+            
+            
+        self.webpage_helper = WebPageHelper(
+            min_char_count=min_char_count,
+            snippet_chunk_size=snippet_chunk_size,
+            max_thread_num=webpage_helper_max_threads,
+        )
+        self.usage = 0
+
+        # If not None, is_valid_source shall be a function that takes a URL and returns a boolean.
+        self.is_valid_source = is_valid_source if is_valid_source else lambda x: True
+        
+        super().__init__(topk, black_list)
+        
+    def get_usage_and_reset(self):
+        usage = self.usage
+        self.usage = 0
+        return {"DuckDuckGoSearch": usage}
+    
+    def search(self, query, exclude_urls: List[str] = [], overwrite_cache=False):
+        search_cache = caches["search"]
+        cache_name = "DuckDuckGoSearch"
+        call_args_dict = {
+            "query": query,
+            "params": self.params,
+            "exclude_urls": exclude_urls
+        }
+        print("overwrite_cache", overwrite_cache)
+        
+        url_to_results = {}
+        if search_cache is not None and not overwrite_cache:
+            cache_result = search_cache.get_cache(
+                name = cache_name,
+                call_args_dict = call_args_dict
+            )
+            if cache_result is not None:
+                url_to_results = cache_result
+                
+        
+        # No Cache, True Call
+        if len(url_to_results) == 0:
+            queries = [query]
+            self.usage += len(queries)
+            headers = {"Content-Type": "application/json"}
+        
+            for query in queries:
+                try:
+                    params = {**self.params, "q": query, "api_key": self.serp_api_key,"format":"json"}
+                    print("search params:")
+                    print(params)
+                    results = requests.get(self.endpoint, headers=headers, params=params).json()
+                    print(results)
+                    if "results" in results:
+                        for d in results["results"]:
+                            if "url" in d and self.is_valid_source(d["url"]) and d["url"] not in exclude_urls:
+                                url_to_results[d["url"]] = {
+                                    "url": d["url"],
+                                    "title": d.get("title", ""),
+                                    "description": d.get("content", ""),
+                                    "position": d.get("positions")[0],
+                                    "publish_time": "Not Provided"
+                                }
+                except Exception as e:
+                    logging.error(f"Error occurs when searching query {query}: {e}")
+            # Save Cache
+            if search_cache is not None:
+                search_cache.save_cache(
+                    name = cache_name,
+                    call_args_dict = call_args_dict,
+                    value = url_to_results
+                )
+        results = sorted(list(url_to_results.values()), key=lambda x: x["position"])
+        pos2results = {}
+        for idx, page in enumerate(results, start=1):
+            page["position"] = idx
+            pos2results[idx-1] = page
+        return pos2results
+    
+    def fetch_content(
+        self, pages
+    ):
+        urls = [page["url"] for page in pages]
+        valid_url_to_snippets = self.webpage_helper.urls_to_snippets(urls)
+        fetched_pages = []
+        for page in pages:
+            url = page["url"]
+            if url not in valid_url_to_snippets: continue
+            page["snippet"] = page["description"]
+            del page["description"]
+            long_res = "Snippet: {}\nContent: {}".format(
+                page["snippet"], valid_url_to_snippets[url]["text"]
+            )
+            page["content"] = long_res
+            fetched_pages.append(page)
+        return fetched_pages        
 
 
 FORMAT_STRING_TEMPLATE = """
@@ -593,7 +712,7 @@ class BingBrowser(BaseAction):
         ori_urls = [res["url"] for res in pk_search_results]
         # fetch web page content
         # pk_search_results = self.__fetch(pk_search_results)
-        if self.searcher_type == "SerpApiSearch":
+        if self.searcher_type == "DuckDuckGoSearch":
             pk_search_results = self.__single_fetch(pk_search_results)
         else:
             raise Exception()

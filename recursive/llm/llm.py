@@ -158,6 +158,9 @@ class OpenAIApiProxy():
         elif "gpt" in model:
             url = "https://api.openai.com/v1/chat/completions"
             api_key = str(os.getenv('OPENAI'))
+        elif "qwen" in model:
+            url = "https://ymcas-llm.yxt.com/ymcas-ai/multi-model/v1/chat/completions"
+            api_key = str(os.getenv('QWEN'))    
         elif "claude" in model:
             url = 'https://api.anthropic.com/v1/messages'
             api_key = str(os.getenv('CLAUDE'))
@@ -352,7 +355,7 @@ class OpenAIApiProxy():
         
         if self.verbose:
             logger.info("Response: {}".format(json.dumps(data, ensure_ascii=False, indent=4)))
-    
+        
         input_tokens_key = 'prompt_tokens' if is_gpt else 'input_tokens'
         output_tokens_key = 'completion_tokens' if is_gpt else 'output_tokens'
         output_reason_tokens = data.get('usage', {}).get('completion_tokens_details', {}).get('reasoning_tokens', 0)
