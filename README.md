@@ -20,15 +20,15 @@ HyperGen 是一个基于 [WriteHERE](https://github.com/principia-ai/WriteHERE) 
 
 ##### 首页
 
-![screenshots](./screenshots/1.png)
+![screenshots](./assets/1.png)
 
 ##### 报告生成页面
 
-![screenshots](./screenshots/2.png)
+![screenshots](./assets/2.png)
 
 ##### 生成结果页面
 
-![screenshots](./screenshots/3.png)
+![screenshots](./assets/3.png)
 
 ### 快速开始
 
