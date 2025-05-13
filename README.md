@@ -1,6 +1,6 @@
 <h1 align="center">HyperGen</span></h1>
 
-HyperGen 是一个基于 [WriteHERE](https://github.com/principia-ai/WriteHERE) 开发的长文本生成应用，计划在原框架基础之上增加多语言、多租户、多场景等产品功能的支持。
+HyperGen 是一个基于 [WriteHERE](https://github.com/principia-ai/WriteHERE) 开发的长文本生成应用，对 WriteHERE 原有功能和交互设计进行了优化和调整，同时增加了多语言、多租户、多场景等产品功能的支持。
 
 <p align="center">
   <a href="https://arxiv.org/abs/2503.08275"><img src="https://img.shields.io/badge/arXiv-2503.08275-b31b1b.svg" alt="arXiv"></a>
