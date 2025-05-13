@@ -1,38 +1,38 @@
 <h1 align="center">HyperGen</span></h1>
 
-HyperGen is an open-source framework that revolutionizes long-form writing through human-like adaptive planning, developed based on [WriteHERE](https://github.com/principia-ai/WriteHERE)
+HyperGen 是一个基于 [WriteHERE](https://github.com/principia-ai/WriteHERE) 开发的长文本生成应用，计划在原框架基础之上增加多语言、多租户、多场景等产品功能的支持。
 
 <p align="center">
   <a href="https://arxiv.org/abs/2503.08275"><img src="https://img.shields.io/badge/arXiv-2503.08275-b31b1b.svg" alt="arXiv"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
 </p>
 
-### Road Map
+### 路线图
 
-- multi language support ( in progress )
-- multi-tenant support ( in progress )
-- multi-scenario support ( in progress )
-- OpenAI-compatible API support ( in progress )
-- searxng support ( finished )
-- code（writehere） optimization ( in progress )
+- 多语言支持 ( in progress )
+- 多租户支持 ( in progress )
+- 多场景支持 ( in progress )
+- OpenAI-compatible API 支持 ( in progress )
+- searxng 支持 ( 已完成 )
+- WriteHERE 代码优化 ( in progress )
 
-### Screenshots
+### 应用截屏
 
-##### Landing Page
+##### 首页
 
 ![screenshots](/screenshots/1.png)
 
-##### Generating Page
+##### 报告生成页面
 
 ![screenshots](/screenshots/2.png)
 
-##### Result Page
+##### 生成结果页面
 
 ![screenshots](/screenshots/3.png)
 
-### Quickstart
+### 快速开始
 
-#### One-step setup and launch:
+#### 一键启动
 
 ```bash
 ./setup_env.sh  # One-time setup of the environment
@@ -53,7 +53,7 @@ You can customize the ports using command-line arguments:
 ./start.sh --backend-port 8080 --frontend-port 8000
 ```
 
-#### For Anaconda/Miniconda Users
+#### Anaconda/Miniconda 用户
 
 If you're using Anaconda and encounter dependency conflicts, use:
 
@@ -69,11 +69,11 @@ You can customize ports with this script:
 ./run_with_anaconda.sh --backend-port 8080 --frontend-port 8000
 ```
 
-#### Manual Installation
+#### 手动安装
 
 If you prefer to set up the components manually:
 
-##### Backend Setup
+##### 后端服务
 
 1. Create a Python virtual environment:
 
@@ -107,7 +107,7 @@ To use a custom port:
 python server.py --port 8080
 ```
 
-##### Frontend Setup
+##### 前端服务
 
 1. Install frontend dependencies:
 
@@ -128,7 +128,7 @@ To use a custom port:
 PORT=8000 npm start
 ```
 
-### Project Structure
+### 项目结构
 
 ```
 .
