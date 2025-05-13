@@ -12,6 +12,8 @@ HyperGen is an open-source framework that revolutionizes long-form writing throu
 - multi language support ( in progress )
 - multi-tenant support ( in progress )
 - multi-scenario support ( in progress )
+- OpenAI-compatible API support ( in progress )
+- searxng support ( finished )
 - code（writehere） optimization ( in progress )
 
 ### Screenshots
