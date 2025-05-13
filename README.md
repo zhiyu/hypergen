@@ -1,4 +1,4 @@
-<h1 align="center">HyperGen</span></h1>
+## HyperGen
 
 HyperGen 是一个基于 [WriteHERE](https://github.com/principia-ai/WriteHERE) 开发的长文本生成应用，对 WriteHERE 原有功能和交互设计进行了优化和调整，同时增加了多语言、多租户、多场景等产品功能的支持。
 
