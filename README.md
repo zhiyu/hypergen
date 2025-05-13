@@ -7,8 +7,6 @@ HyperGen 是一个基于 [WriteHERE](https://github.com/principia-ai/WriteHERE) 
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
 </p>
 
-![screenshots](./screenshots/output.mp4)
-
 ### 路线图
 
 - 多语言支持 ( in progress )
