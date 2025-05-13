@@ -398,7 +398,7 @@ class SerpApiSearch(BaseSearch):
         return fetched_pages
         
 
-class DuckDuckGoSearch(BaseSearch):
+class Searxng(BaseSearch):
 
     def __init__(self,
                  serp_api_key=None,
@@ -437,11 +437,11 @@ class DuckDuckGoSearch(BaseSearch):
     def get_usage_and_reset(self):
         usage = self.usage
         self.usage = 0
-        return {"DuckDuckGoSearch": usage}
+        return {"Searxng": usage}
     
     def search(self, query, exclude_urls: List[str] = [], overwrite_cache=False):
         search_cache = caches["search"]
-        cache_name = "DuckDuckGoSearch"
+        cache_name = "Searxng"
         call_args_dict = {
             "query": query,
             "params": self.params,
@@ -540,7 +540,7 @@ class BingBrowser(BaseAction):
     """Wrapper around the Web Browser Tool.
     """
     def __init__(self,
-                 searcher_type: str = 'DuckDuckGoSearch',
+                 searcher_type: str = 'Searxng',
                  timeout: int = 5,
                  black_list: Optional[List[str]] = [
                      'enoN',
@@ -712,7 +712,7 @@ class BingBrowser(BaseAction):
         ori_urls = [res["url"] for res in pk_search_results]
         # fetch web page content
         # pk_search_results = self.__fetch(pk_search_results)
-        if self.searcher_type == "DuckDuckGoSearch":
+        if self.searcher_type == "Searxng":
             pk_search_results = self.__single_fetch(pk_search_results)
         else:
             raise Exception()

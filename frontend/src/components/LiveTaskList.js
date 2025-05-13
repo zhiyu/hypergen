@@ -83,13 +83,13 @@ const getSocket = () => {
 const getTaskIcon = (taskType) => {
   switch (taskType) {
     case "write":
-      return <PiPencilSimpleLine />;
+      return <PiPencilSimpleLine size={16} />;
     case "search":
-      return <PiMagnifyingGlass />;
+      return <PiMagnifyingGlass size={16} />;
     case "think":
-      return <PiBrain />;
+      return <PiBrain size={16} />;
     default:
-      return <PiPencilSimpleLine />;
+      return <PiPencilSimpleLine size={16} />;
   }
 };
 
@@ -605,45 +605,30 @@ const LiveTaskList = ({ taskId, onTaskClick }) => {
               >
                 {tasks.map((task, index) => (
                   <ListboxItem
-                    key="edit"
-                    description={
-                      task.dependency && task.dependency.length > 0
-                        ? "依赖项: " + task.dependency.join(", ")
-                        : ""
-                    }
-                    startContent={
-                      <div>
-                        {/* Show hierarchy connector with a subtle dashed line */}
+                    key={"list-" + index}
+                    className="py-2 border-b border-gray-light last:border-none"
+                  >
+                    <div className="flex items-center text-base">
+                      <span>
                         {task.level > 0 && (
-                          <div
-                            className="flex justify-end mr-2"
+                          <span
+                            className="align-middle inline-block mr-4"
                             style={{
-                              width: 24 * task.level,
+                              marginLeft: 24 * (task.level - 1),
                               zIndex: 1,
                             }}
                           >
                             {getTaskIcon(task.task_type)}
-                          </div>
+                          </span>
                         )}
-                      </div>
-                    }
-                    className="py-2 border-b border-gray-light last:border-none"
-                  >
-                    <div className="flex items-center mb-2">
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                          flexWrap: "wrap",
-                          pr: 2,
-                        }}
-                      >
-                        <Typography variant="subtitle1">
+                      </span>
+                      <span>
+                        <span className="align-middle">
                           {task.id ? task.id + ". " : ""}
                           {task.goal}
-                        </Typography>
+                        </span>
                         <Chip
+                          className="align-middle"
                           color={getStatusColor(task.status)}
                           size="sm"
                           variant="faded"
@@ -659,35 +644,45 @@ const LiveTaskList = ({ taskId, onTaskClick }) => {
                             ? "已就绪"
                             : task.status || "NOT READY"}
                         </Chip>
+                      </span>
 
-                        {task.start_time && task.end_time && (
-                          <Tooltip title="Execution time">
-                            <Chip
-                              icon={<AccessTimeIcon fontSize="small" />}
-                              size="sm"
-                              color="default"
-                              variant="light"
-                            >{`${Math.round(
-                              (new Date(task.end_time) -
-                                new Date(task.start_time)) /
-                                1000
-                            )}s`}</Chip>
-                          </Tooltip>
-                        )}
+                      {task.start_time && task.end_time && (
+                        <Tooltip title="Execution time">
+                          <Chip
+                            icon={<AccessTimeIcon fontSize="small" />}
+                            size="sm"
+                            color="default"
+                            variant="light"
+                          >{`${Math.round(
+                            (new Date(task.end_time) -
+                              new Date(task.start_time)) /
+                              1000
+                          )}s`}</Chip>
+                        </Tooltip>
+                      )}
 
-                        {task.token_usage && (
-                          <Tooltip title="Token usage (input/output)">
-                            <Chip
-                              icon={<TokenIcon fontSize="small" />}
-                              size="sm"
-                              color="default"
-                              variant="light"
-                            >{`${task.token_usage.input_tokens || 0}/${
-                              task.token_usage.output_tokens || 0
-                            }`}</Chip>
-                          </Tooltip>
-                        )}
-                      </Box>
+                      {task.token_usage && (
+                        <Tooltip title="Token usage (input/output)">
+                          <Chip
+                            icon={<TokenIcon fontSize="small" />}
+                            size="sm"
+                            color="default"
+                            variant="light"
+                          >{`${task.token_usage.input_tokens || 0}/${
+                            task.token_usage.output_tokens || 0
+                          }`}</Chip>
+                        </Tooltip>
+                      )}
+                    </div>
+                    <div
+                      className="mt-1 text-default-400"
+                      style={{
+                        marginLeft: 24 * task.level + 8,
+                      }}
+                    >
+                      {task.dependency && task.dependency.length > 0
+                        ? "依赖项 " + task.dependency.join(", ")
+                        : ""}
                     </div>
                     <div>
                       {/* Show a brief description or snippet if available */}

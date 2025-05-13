@@ -438,7 +438,7 @@ def report_writing(input_filename,
             "execute": {
                 "react_agent": True if engine_backend else False, # use Search Agent
                 "prompt_version": "SearchAgentENPrompt", # see recursive.agent.prompts.search_agent.main
-                "searcher_type": "DuckDuckGoSearch", # SerpApiSearch see recursive.executor.actions.bing_browser
+                "searcher_type": "Searxng", # SerpApiSearch see recursive.executor.actions.bing_browser
                 "llm_args": {
                     "model": global_use_model, # set the llm
                 },
