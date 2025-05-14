@@ -16,7 +16,13 @@ import {
   DropdownMenu,
 } from "@heroui/react";
 
-import { PiFileText, PiFiles, PiFilmReel } from "react-icons/pi";
+import {
+  PiFileText,
+  PiFiles,
+  PiFilmReel,
+  PiCaretDown,
+  PiGear,
+} from "react-icons/pi";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 
 export const Logo = () => {
@@ -57,34 +63,8 @@ export const Logo = () => {
   );
 };
 
-export const ChevronDown = ({ fill, size, height, width, ...props }) => {
-  return (
-    <svg
-      fill="none"
-      height={size || height || 24}
-      viewBox="0 0 26 26"
-      width={size || width || 24}
-      xmlns="http://www.w3.org/2000/svg"
-      {...props}
-    >
-      <path
-        d="m19.92 8.95-6.52 6.52c-.77.77-2.03.77-2.8 0L4.08 8.95"
-        stroke={fill}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeMiterlimit={10}
-        strokeWidth={1.5}
-      />
-    </svg>
-  );
-};
-
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
-  const icons = {
-    chevron: <ChevronDown fill="currentColor" size={16} />,
-  };
 
   function getMenuItems() {
     return (
@@ -105,7 +85,7 @@ const Header = () => {
               <Button
                 disableRipple
                 className="p-0 bg-transparent data-[hover=true]:bg-transparent text-md"
-                endContent={icons.chevron}
+                endContent={<PiCaretDown />}
                 variant="light"
               >
                 长文本创作
@@ -158,7 +138,7 @@ const Header = () => {
             参考论文
           </Link>
         </NavbarMenuItem> */}
-        <NavbarMenuItem className="hidden lg:flex ml-16">
+        <NavbarMenuItem className="hidden lg:flex ml-16 mr-16">
           <Link href="#" color="foreground">
             登录
           </Link>
@@ -166,7 +146,20 @@ const Header = () => {
             注册账号
           </Link>
         </NavbarMenuItem>
-        <ThemeSwitcher />
+        <NavbarMenuItem key="nav-15">
+          <Link
+            className="w-full flex items-center"
+            href="/settings"
+            color="foreground"
+            title="设置"
+          >
+            设置
+            <PiGear size={18} className="ml-1" />
+          </Link>
+        </NavbarMenuItem>
+        <NavbarMenuItem key="nav-0">
+          <ThemeSwitcher />
+        </NavbarMenuItem>
       </>
     );
   }
