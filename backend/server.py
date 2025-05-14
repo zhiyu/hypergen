@@ -125,7 +125,8 @@ def run_story_generation(task_id, prompt, model, api_keys):
         if 'openai' in api_keys and api_keys['openai']:
             f.write(f"OPENAI={api_keys['openai']}\n")
         if 'qwen' in api_keys and api_keys['qwen']:
-            f.write(f"QWEN={api_keys['qwen']}\n")      
+            f.write(f"QWEN={api_keys['qwen']}\n")  
+            f.write(f"QWEN_BASE_URL={os.getenv('QWEN_BASE_URL')}\n")      
         if 'claude' in api_keys and api_keys['claude']:
             f.write(f"CLAUDE={api_keys['claude']}\n")
         if 'gemini' in api_keys and api_keys['gemini']:
@@ -223,7 +224,8 @@ def run_report_generation(task_id, prompt, model, enable_search, search_engine, 
         if 'openai' in api_keys and api_keys['openai']:
             f.write(f"OPENAI={api_keys['openai']}\n")
         if 'qwen' in api_keys and api_keys['qwen']:
-            f.write(f"QWEN={api_keys['qwen']}\n")    
+            f.write(f"QWEN={api_keys['qwen']}\n")   
+            f.write(f"QWEN_BASE_URL={os.getenv('QWEN_BASE_URL')}\n") 
         if 'claude' in api_keys and api_keys['claude']:
             f.write(f"CLAUDE={api_keys['claude']}\n")
         if 'gemini' in api_keys and api_keys['gemini']:

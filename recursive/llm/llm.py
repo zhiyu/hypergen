@@ -159,7 +159,7 @@ class OpenAIApiProxy():
             url = "https://api.openai.com/v1/chat/completions"
             api_key = str(os.getenv('OPENAI'))
         elif "qwen" in model:
-            url = "https://ymcas-llm.yxt.com/ymcas-ai/multi-model/v1/chat/completions"
+            url = str(os.getenv('QWEN_BASE_URL'))+"/chat/completions"
             api_key = str(os.getenv('QWEN'))    
         elif "claude" in model:
             url = 'https://api.anthropic.com/v1/messages'
