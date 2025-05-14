@@ -4,25 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { generateReport, pingAPI } from "../utils/api";
 
 import { Button, Input, Textarea, Tooltip } from "@heroui/react";
-import { Select, SelectItem } from "@heroui/react";
+import { Select, SelectItem, SelectSection } from "@heroui/react";
 import { Alert } from "@heroui/react";
 import { Switch, cn } from "@heroui/react";
 
 import { PiWarningCircle, PiKey, PiMagicWand } from "react-icons/pi";
 
-// Recommended model options
-const commonModels = [
-  { label: "QWen Turbo", value: "qwen-turbo" },
-  {
-    label: "Claude 3.7 Sonnet (Recommended)",
-    value: "claude-3-7-sonnet-20250219",
-  },
-  { label: "Claude 3.5 Sonnet", value: "claude-3-5-sonnet-20241022" },
-  { label: "GPT-4o", value: "gpt-4o" },
-  { label: "GPT-4o-mini", value: "gpt-4o-mini" },
-  { label: "Gemini 2.5 Pro Exp", value: "gemini-2.5-pro-exp-03-25" },
-  { label: "Gemini 2.5 Pro Preview", value: "gemini-2.5-pro-preview-03-25" },
-];
+import defaultProviders from "../config/models";
 
 // Example prompts for story generation
 const examplePrompts = [
@@ -32,6 +20,10 @@ const examplePrompts = [
 ];
 
 const StoryGenerationPage = () => {
+  const [providers] = useState(
+    JSON.parse(localStorage.getItem("providers")) || defaultProviders
+  );
+
   const [prompt, setPrompt] = useState("");
   const [model, setModel] = useState("claude-3-7-sonnet-20250219");
   const [enableSearch, setEnableSearch] = useState(false);
@@ -251,16 +243,19 @@ const StoryGenerationPage = () => {
           <Select
             className="mb-8"
             label="选择模型"
+            placeholder="请选择一个模型"
             variant="underlined"
+            size="lg"
             onChange={(e) => {
               setModel(e.target.value);
             }}
-            size="lg"
           >
-            {commonModels.map((model) => (
-              <SelectItem key={model.value} value={model}>
-                {model.label}
-              </SelectItem>
+            {providers.map((provider) => (
+              <SelectSection showDivider title={provider.name}>
+                {provider.models.map((model) => (
+                  <SelectItem key={model.value}>{model.name}</SelectItem>
+                ))}
+              </SelectSection>
             ))}
           </Select>
 

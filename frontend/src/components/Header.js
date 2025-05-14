@@ -153,8 +153,8 @@ const Header = () => {
             color="foreground"
             title="设置"
           >
+            <PiGear size={18} className="mr-1" />
             设置
-            <PiGear size={18} className="ml-1" />
           </Link>
         </NavbarMenuItem>
         <NavbarMenuItem key="nav-0">
