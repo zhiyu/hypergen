@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Box } from "@mui/material";
+import { Container } from "@mui/material";
 
 import {
   Tabs,
@@ -125,13 +125,13 @@ const SettingsPage = () => {
 
   return (
     <Container maxWidth="lg">
-      <Box sx={{ mt: 4, mb: 6 }}>
+      <div className="mt-12">
         <div className="text-2xl mb-1 font-medium">设置</div>
         <div className="text-sm">
           管理模型和服务商。您的模型配置和API密钥信息会安全存储在浏览器的本地存储中。
         </div>
-      </Box>
-      <div className="flex w-full flex-col mb-8">
+      </div>
+      <div className="flex w-full flex-col mt-12 mb-8">
         <Tabs
           aria-label="Options"
           isVertical={true}
@@ -141,7 +141,9 @@ const SettingsPage = () => {
           {providers.map((provider) => (
             <Tab key={provider.name} title={provider.name} className="px-0">
               <Card className="ml-8">
-                <CardHeader className="p-4 px-6">{provider.name}</CardHeader>
+                <CardHeader className="p-4 px-6 font-medium">
+                  {provider.name}
+                </CardHeader>
                 <CardBody className="px-6">
                   <div
                     style={{
@@ -156,6 +158,9 @@ const SettingsPage = () => {
                     aclaceholder laceholderlaceholderlaceholder
                   </div>
                   <Input
+                    classNames={{
+                      label: "font-medium text-lg",
+                    }}
                     className="w-full"
                     endContent={
                       <button
@@ -188,6 +193,9 @@ const SettingsPage = () => {
                     description=""
                   />
                   <Input
+                    classNames={{
+                      label: "font-medium text-lg text-black",
+                    }}
                     className="w-full mt-4"
                     onChange={(e) =>
                       updateApiHost(provider.name, e.target.value)
@@ -242,7 +250,7 @@ const SettingsPage = () => {
         <Accordion
           variant="splitted"
           className="px-0"
-          itemClasses={{ base: "mb-2" }}
+          classNames={{ base: "mb-2" }}
         >
           <AccordionItem
             key="1"

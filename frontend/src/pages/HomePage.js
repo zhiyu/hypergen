@@ -59,7 +59,7 @@ const HomePage = () => {
               radius="full"
               size="lg"
             >
-              在线体验
+              立即体验
             </Button>
           </Link>
 

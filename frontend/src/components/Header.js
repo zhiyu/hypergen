@@ -92,13 +92,7 @@ const Header = () => {
               </Button>
             </DropdownTrigger>
           </NavbarItem>
-          <DropdownMenu
-            aria-label="features"
-            itemClasses={{
-              base: "gap-4",
-            }}
-            variant="flat"
-          >
+          <DropdownMenu aria-label="features" variant="flat">
             <DropdownItem
               key="autoscaling"
               description=""
