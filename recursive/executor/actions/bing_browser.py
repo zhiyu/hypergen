@@ -413,7 +413,7 @@ class Searxng(BaseSearch):
         black_list = []
         self.serp_api_key = str(os.getenv('SERPAPI'))
         
-        self.endpoint = "http://172.17.138.4:8080"
+        self.endpoint = str(os.getenv('SEARXNG_HOST'))
         if backend_engine == "bing":
             logger.info("USE BING")
             self.params = {"engine": backend_engine, "count": topk, "cc": cc, **kwargs}

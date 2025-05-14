@@ -15,6 +15,10 @@ import argparse
 from pathlib import Path
 from datetime import datetime
 
+# Load env file
+from dotenv import load_dotenv
+load_dotenv()
+
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description='Backend server for WriteHERE application')
 parser.add_argument('--port', type=int, default=5001, help='Port to run the server on')
@@ -128,6 +132,9 @@ def run_story_generation(task_id, prompt, model, api_keys):
             f.write(f"GEMINI={api_keys['gemini']}\n")
         if 'serpapi' in api_keys and api_keys['serpapi']:
             f.write(f"SERPAPI={api_keys['serpapi']}\n")
+
+        if os.getenv("SEARXNG_HOST"):
+            f.write(f"SEARXNG_HOST={os.getenv('SEARXNG_HOST')}\n")
     
     # Create a script to run the engine with the appropriate environment
     script_path = os.path.join(task_dir, 'run.sh')
@@ -223,6 +230,9 @@ def run_report_generation(task_id, prompt, model, enable_search, search_engine, 
             f.write(f"GEMINI={api_keys['gemini']}\n")
         if 'serpapi' in api_keys and api_keys['serpapi']:
             f.write(f"SERPAPI={api_keys['serpapi']}\n")
+
+        if os.getenv("SEARXNG_HOST"):
+            f.write(f"SEARXNG_HOST={os.getenv('SEARXNG_HOST')}\n")    
     
     # Create a script to run the engine with the appropriate environment
     script_path = os.path.join(task_dir, 'run.sh')
