@@ -130,11 +130,13 @@ class OpenAIApiProxy():
         assert tools is None
         messages = copy.deepcopy(messages)
         
-        # Check if model name includes openrouter model identifier
-        if any(provider in model for provider in ["google/", "anthropic/", "meta/", "mistral/"]):
-            use_official = "openrouter"
-
         is_gpt = True if "gpt" in model or "o1" in model else False
+
+        provider = model.split("/")[0]
+        model = model.split("/")[1]
+
+        api_key = str(os.getenv(provider+"_KEY"))
+        url = str(os.getenv(provider+"_BASE_URL")) + "/chat/completions"
     
         params_gpt = {
             "model": model,
@@ -142,43 +144,28 @@ class OpenAIApiProxy():
             "max_tokens": 8192,
         }
         
-        if "claude" in model:
-            use_official = "anthropic"
-        
         if self.verbose:
             logger.info("Messages: {}".format(json.dumps(messages, ensure_ascii=False, indent=4)))
         
         if temperature is not None:
             params_gpt["temperature"] = temperature
 
-        if 'o1' in model:
-            url = ''
-            api_key = ""
-            params_gpt["max_tokens"] = 32768
-        elif "gpt" in model:
+        if "OpenAI" == provider:
             url = "https://api.openai.com/v1/chat/completions"
-            api_key = str(os.getenv('OPENAI'))
-        elif "qwen" in model:
-            url = str(os.getenv('QWEN_BASE_URL'))+"/chat/completions"
-            api_key = str(os.getenv('QWEN'))    
-        elif "claude" in model:
+        elif "Qwen" == provider:
+            url = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"  
+        elif "Anthropic" == provider:
             url = 'https://api.anthropic.com/v1/messages'
-            api_key = str(os.getenv('CLAUDE'))
-        elif "deepseek" in model:
-            url = ''
-            api_key = ''
-        elif use_official == "openrouter" or "openrouter" in model:
+        elif "DeepSeek" == provider:
+            url = 'https://api.deepseek.com/v1/chat/completions'
+        elif  "OpenRouter" == model:
             # Use OpenRouter API
             url = "https://openrouter.ai/api/v1/chat/completions"
-            api_key = str(os.getenv('OPENROUTER'))
             # Add HTTP-Referer and X-Title headers for OpenRouter
             headers['HTTP-Referer'] = os.getenv('OPENROUTER_REFERER', '')
             headers['X-Title'] = os.getenv('OPENROUTER_TITLE', '')
-        elif "gemini" in model:
-            # For Gemini, we'll use the Google API directly, not REST API
-            api_key = str(os.getenv('GEMINI'))
+        elif "Gemini" == provider:
             genai.configure(api_key=api_key)
-            url = None  # Not used for Gemini
 
         if "o1" in model:
             if "temperature" in params_gpt:
@@ -188,6 +175,11 @@ class OpenAIApiProxy():
         headers['Authorization'] = "Bearer " + api_key
 
         params_gpt.update(kwargs)
+        
+        logger.info(headers)
+        logger.info(url)
+        logger.info(api_key)
+        logger.info(model)
         
         
         # Cache

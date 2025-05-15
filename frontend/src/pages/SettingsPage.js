@@ -287,23 +287,24 @@ const SettingsPage = () => {
                     value={provider.apikey}
                     description=""
                   />
-                  <Input
-                    classNames={{
-                      label: "font-medium text-lg text-black",
-                    }}
-                    className="w-full mt-4"
-                    onChange={(e) =>
-                      updateApiHost(provider.name, e.target.value)
-                    }
-                    label={"API Host"}
-                    placeholder={"请输入 API Host"}
-                    type={"text"}
-                    size="lg"
-                    variant="underlined"
-                    value={provider.apihost}
-                    description=""
-                  />
-
+                  {provider.apihost && (
+                    <Input
+                      classNames={{
+                        label: "font-medium text-lg text-black",
+                      }}
+                      className="w-full mt-4"
+                      onChange={(e) =>
+                        updateApiHost(provider.name, e.target.value)
+                      }
+                      label={"API Host"}
+                      placeholder={"请输入 API Host"}
+                      type={"text"}
+                      size="lg"
+                      variant="underlined"
+                      value={provider.apihost}
+                      description=""
+                    />
+                  )}
                   <div className="my-4 mt-8 flex justify-between items-center">
                     <div>模型</div>
                     <Button
@@ -320,7 +321,9 @@ const SettingsPage = () => {
                   {provider.models.map((model) => (
                     <div className="w-full flex justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <p className="text-medium">{model.name}</p>
+                        <p className="text-medium">
+                          {model.name} （{model.value}）
+                        </p>
                       </div>
                       <div className="flex items-center gap-2">
                         <Switch

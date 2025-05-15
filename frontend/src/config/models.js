@@ -1,10 +1,9 @@
 const defaultSettings = {
   providers: [
     {
-      name: "通义千问",
+      name: "QWen",
       icon: "/icons/qwen",
       apikey: "",
-      apihost: "",
       models: [
         { name: "QWen Turbo", value: "qwen-turbo", enabled: true },
         { name: "QWen Plus", value: "qwen-plus", enabled: true },
@@ -12,10 +11,23 @@ const defaultSettings = {
       reserved: true,
     },
     {
+      name: "DeepSeek",
+      icon: "/icons/deepseek",
+      apikey: "",
+      models: [
+        { name: "DeepSeek Chat", value: "deepseek-chat", enabled: true },
+        {
+          name: "DeepSeek Reasoner",
+          value: "deepseek-reasoner",
+          enabled: true,
+        },
+      ],
+      reserved: true,
+    },
+    {
       name: "OpenAI",
       icon: "/icons/openai",
       apikey: "",
-      apihost: "",
       models: [{ name: "GPT-4o", value: "gpt-4o", enabled: true }],
       reserved: true,
     },
@@ -23,7 +35,6 @@ const defaultSettings = {
       name: "Anthropic",
       icon: "/icons/claude",
       apikey: "",
-      apihost: "",
       models: [
         {
           name: "Claude 3.7 Sonnet",
@@ -42,7 +53,6 @@ const defaultSettings = {
       name: "Gemini",
       icon: "/icons/gemini",
       apikey: "",
-      apihost: "",
       models: [
         {
           name: "Gemini 2.5 Pro Exp",
@@ -61,7 +71,6 @@ const defaultSettings = {
       name: "Grok",
       icon: "/icons/grok",
       apikey: "",
-      apihost: "",
       models: [
         {
           name: "Grok Beta",

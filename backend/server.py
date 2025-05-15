@@ -93,10 +93,8 @@ def reload_task_storage():
 # Load existing tasks on startup
 reload_task_storage()
 
-def run_story_generation(task_id, prompt, model, api_keys):
-    """
-    Run the story generation script as a subprocess
-    """
+def init_workspace(task_id, model, provider):
+    
     task_dir = os.path.join(RESULTS_DIR, task_id)
     os.makedirs(task_dir, exist_ok=True)
     
@@ -106,6 +104,30 @@ def run_story_generation(task_id, prompt, model, api_keys):
     
     # Create a temporary input file with the prompt
     input_file = os.path.join(task_dir, 'input.jsonl')
+    output_file = os.path.join(task_dir, 'result.jsonl')
+    done_file = os.path.join(task_dir, 'done.txt')
+    nodes_file = os.path.join(records_dir, 'nodes.json')
+    
+    # Create environment file with API keys
+    env_file = os.path.join(task_dir, 'api_key.env')
+    with open(env_file, 'w') as f:
+        if os.getenv("SEARXNG_HOST"):
+            f.write(f"SEARXNG_HOST={os.getenv('SEARXNG_HOST')}\n")
+            
+        f.write(f"{provider['name']}_KEY={provider['apikey']}\n")    
+        f.write(f"{provider['name']}_BASE_URL={provider['apihost']}\n")    
+    
+    # Create a script to run the engine with the appropriate environment
+    script_path = os.path.join(task_dir, 'run.sh')
+
+    return records_dir, script_path, output_file,env_file,input_file,done_file,nodes_file
+
+def run_story_generation(task_id, prompt, model, provider):
+    """
+    Init workspace
+    """
+    records_dir, script_path, output_file,env_file,input_file, done_file, nodes_file = init_workspace(task_id, model, provider)
+    
     with open(input_file, 'w') as f:
         json.dump({
             "id": task_id,
@@ -115,30 +137,9 @@ def run_story_generation(task_id, prompt, model, api_keys):
         }, f)
         f.write('\n')
     
-    output_file = os.path.join(task_dir, 'result.jsonl')
-    done_file = os.path.join(task_dir, 'done.txt')
-    nodes_file = os.path.join(records_dir, 'nodes.json')
-    
-    # Create environment file with API keys
-    env_file = os.path.join(task_dir, 'api_key.env')
-    with open(env_file, 'w') as f:
-        if 'openai' in api_keys and api_keys['openai']:
-            f.write(f"OPENAI={api_keys['openai']}\n")
-        if 'qwen' in api_keys and api_keys['qwen']:
-            f.write(f"QWEN={api_keys['qwen']}\n")  
-            f.write(f"QWEN_BASE_URL={os.getenv('QWEN_BASE_URL')}\n")      
-        if 'claude' in api_keys and api_keys['claude']:
-            f.write(f"CLAUDE={api_keys['claude']}\n")
-        if 'gemini' in api_keys and api_keys['gemini']:
-            f.write(f"GEMINI={api_keys['gemini']}\n")
-        if 'serpapi' in api_keys and api_keys['serpapi']:
-            f.write(f"SERPAPI={api_keys['serpapi']}\n")
-
-        if os.getenv("SEARXNG_HOST"):
-            f.write(f"SEARXNG_HOST={os.getenv('SEARXNG_HOST')}\n")
-    
-    # Create a script to run the engine with the appropriate environment
-    script_path = os.path.join(task_dir, 'run.sh')
+    """
+    Run the story generation script as a subprocess
+    """
     with open(script_path, 'w') as f:
         f.write(f"""#!/bin/bash
         cd {os.path.abspath(os.path.join(os.path.dirname(__file__), '../recursive'))}
@@ -146,9 +147,7 @@ def run_story_generation(task_id, prompt, model, api_keys):
         export TASK_ENV_FILE={env_file}
         python engine.py --filename {input_file} --output-filename {output_file} --done-flag-file {done_file} --model {model} --mode story --nodes-json-file {nodes_file}
         """)
-    
-    os.chmod(script_path, 0o755)
-    
+
     # Update task status to "running"
     task_storage[task_id] = {
         "status": "running", 
@@ -191,19 +190,12 @@ def run_story_generation(task_id, prompt, model, api_keys):
         task_storage[task_id]["status"] = "error"
         task_storage[task_id]["error"] = str(e)
 
-def run_report_generation(task_id, prompt, model, enable_search, search_engine, api_keys):
+def run_report_generation(task_id, prompt, model, enable_search, search_engine, provider):
     """
-    Run the report generation script as a subprocess
+    Init workspace
     """
-    task_dir = os.path.join(RESULTS_DIR, task_id)
-    os.makedirs(task_dir, exist_ok=True)
-    
-    # Create a records directory for nodes.json
-    records_dir = os.path.join(task_dir, 'records')
-    os.makedirs(records_dir, exist_ok=True)
-    
-    # Create a temporary input file with the prompt
-    input_file = os.path.join(task_dir, 'input.jsonl')
+    records_dir, script_path, output_file,env_file,input_file, done_file, nodes_file = init_workspace(task_id, prompt, provider)
+
     with open(input_file, 'w') as f:
         json.dump({
             "topic": "",
@@ -213,31 +205,10 @@ def run_report_generation(task_id, prompt, model, enable_search, search_engine, 
             "prompt": prompt
         }, f)
         f.write('\n')
-    
-    output_file = os.path.join(task_dir, 'result.jsonl')
-    done_file = os.path.join(task_dir, 'done.txt')
-    nodes_file = os.path.join(records_dir, 'nodes.json')
-    
-    # Create environment file with API keys
-    env_file = os.path.join(task_dir, 'api_key.env')
-    with open(env_file, 'w') as f:
-        if 'openai' in api_keys and api_keys['openai']:
-            f.write(f"OPENAI={api_keys['openai']}\n")
-        if 'qwen' in api_keys and api_keys['qwen']:
-            f.write(f"QWEN={api_keys['qwen']}\n")   
-            f.write(f"QWEN_BASE_URL={os.getenv('QWEN_BASE_URL')}\n") 
-        if 'claude' in api_keys and api_keys['claude']:
-            f.write(f"CLAUDE={api_keys['claude']}\n")
-        if 'gemini' in api_keys and api_keys['gemini']:
-            f.write(f"GEMINI={api_keys['gemini']}\n")
-        if 'serpapi' in api_keys and api_keys['serpapi']:
-            f.write(f"SERPAPI={api_keys['serpapi']}\n")
 
-        if os.getenv("SEARXNG_HOST"):
-            f.write(f"SEARXNG_HOST={os.getenv('SEARXNG_HOST')}\n")    
-    
-    # Create a script to run the engine with the appropriate environment
-    script_path = os.path.join(task_dir, 'run.sh')
+    """
+    Run the report generation script as a subprocess
+    """
     engine_backend = search_engine if enable_search else "none"
     
     with open(script_path, 'w') as f:
@@ -298,18 +269,18 @@ def api_generate_story():
     data = request.json
     
     # Validate request
-    required_fields = ['prompt', 'model', 'apiKeys']
+    required_fields = ['prompt', 'model', 'provider']
     for field in required_fields:
         if field not in data:
             return jsonify({"error": f"Missing required field: {field}"}), 400
     
     # Generate a unique task ID
     task_id = f"story-{uuid.uuid4()}"
-    print(data['apiKeys'])
+    print(data['provider'])
     # Start the generation in a background thread
     thread = threading.Thread(
         target=run_story_generation,
-        args=(task_id, data['prompt'], data['model'], data['apiKeys'])
+        args=(task_id, data['prompt'], data['model'], data['provider'])
     )
     thread.start()
     
@@ -323,7 +294,7 @@ def api_generate_report():
     data = request.json
     
     # Validate request
-    required_fields = ['prompt', 'model', 'apiKeys']
+    required_fields = ['prompt', 'model', 'provider']
     for field in required_fields:
         if field not in data:
             return jsonify({"error": f"Missing required field: {field}"}), 400
@@ -338,7 +309,7 @@ def api_generate_report():
     # Start the generation in a background thread
     thread = threading.Thread(
         target=run_report_generation,
-        args=(task_id, data['prompt'], data['model'], enable_search, search_engine, data['apiKeys'])
+        args=(task_id, data['prompt'], data['model'], enable_search, search_engine, data['provider'])
     )
     thread.start()
     

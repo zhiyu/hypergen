@@ -25,28 +25,14 @@ const StoryGenerationPage = () => {
   );
 
   const [prompt, setPrompt] = useState("");
-  const [model, setModel] = useState("claude-3-7-sonnet-20250219");
+  const [model, setModel] = useState("");
   const [enableSearch, setEnableSearch] = useState(false);
-  const [apiKeys, setApiKeys] = useState({
-    openai: localStorage.getItem("openai_api_key") || "",
-    claude: localStorage.getItem("claude_api_key") || "",
-    gemini: localStorage.getItem("gemini_api_key") || "",
-    qwen: localStorage.getItem("qwen_api_key") || "",
-  });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [showStatus, setShowStatus] = useState(false);
   const navigate = useNavigate();
-
-  // Save API keys to localStorage when they change
-  useEffect(() => {
-    if (apiKeys.openai) localStorage.setItem("openai_api_key", apiKeys.openai);
-    if (apiKeys.claude) localStorage.setItem("claude_api_key", apiKeys.claude);
-    if (apiKeys.gemini) localStorage.setItem("gemini_api_key", apiKeys.gemini);
-    if (apiKeys.qwen) localStorage.setItem("qwen_api_key", apiKeys.qwen);
-  }, [apiKeys]);
 
   // Check if API is available on component mount
   useEffect(() => {
@@ -74,32 +60,6 @@ const StoryGenerationPage = () => {
       return;
     }
 
-    // Check if the appropriate API key is provided
-    const isOpenAIModel = model.toLowerCase().includes("gpt");
-    const isClaudeModel = model.toLowerCase().includes("claude");
-    const isGeminiModel = model.toLowerCase().includes("gemini");
-    const isQwenModel = model.toLowerCase().includes("qwen");
-
-    if (isOpenAIModel && !apiKeys.openai) {
-      setError("请在设置部分填写您的 OpenAI API 密钥。");
-      return;
-    }
-
-    if (isClaudeModel && !apiKeys.claude) {
-      setError("请在设置部分填写您的 Anthropic Claude API 密钥。");
-      return;
-    }
-
-    if (isGeminiModel && !apiKeys.gemini) {
-      setError("请在设置部分填写您的 Google Gemini API 密钥。");
-      return;
-    }
-
-    if (isQwenModel && !apiKeys.qwen) {
-      setError("请在设置部分填写您的 QWen API 密钥。");
-      return;
-    }
-
     // First, check if the server is reachable
     try {
       await pingAPI();
@@ -122,13 +82,10 @@ const StoryGenerationPage = () => {
       const response = await generateReport({
         prompt,
         model,
+        provider: settings.providers.filter(
+          (p) => p.name == model.split("/")[0]
+        )[0],
         enableSearch,
-        apiKeys: {
-          openai: apiKeys.openai,
-          claude: apiKeys.claude,
-          gemini: apiKeys.gemini,
-          qwen: apiKeys.qwen,
-        },
       });
 
       // Navigate to the results page with the task ID
@@ -258,7 +215,9 @@ const StoryGenerationPage = () => {
               >
                 {provider.models.map((model) =>
                   model.enabled ? (
-                    <SelectItem key={model.value}>{model.name}</SelectItem>
+                    <SelectItem key={provider.name + "/" + model.value}>
+                      {model.name}
+                    </SelectItem>
                   ) : (
                     <></>
                   )
