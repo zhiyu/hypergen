@@ -33,7 +33,7 @@ import {
   PiTrash,
 } from "react-icons/pi";
 
-import defaultProviders from "../config/models";
+import defaultSettings from "../config/models";
 
 import {
   Modal,
@@ -46,8 +46,8 @@ import {
 
 const SettingsPage = () => {
   const { theme, setTheme } = useTheme();
-  const [providers, setProviders] = useState(
-    JSON.parse(localStorage.getItem("providers")) || defaultProviders
+  const [settings, setSettings] = useState(
+    JSON.parse(localStorage.getItem("settings")) || defaultSettings
   );
 
   const [showApiKeys, setShowApiKeys] = useState({});
@@ -55,8 +55,8 @@ const SettingsPage = () => {
   const [modalType, setModalType] = useState("");
 
   useEffect(() => {
-    localStorage.setItem("providers", JSON.stringify(providers));
-  }, [providers]);
+    localStorage.setItem("settings", JSON.stringify(settings));
+  }, [settings]);
 
   const handleShowApiKeysChange = (provider, value) => {
     setShowApiKeys((prev) => ({
@@ -66,13 +66,12 @@ const SettingsPage = () => {
   };
 
   function updateApiKey(provider, value) {
-    const updates = providers.map((_provider) => {
-      if (_provider.name == provider) {
-        _provider.apikey = value;
-      }
-      return _provider;
-    });
-    setProviders(updates);
+    setSettings((prev) => ({
+      ...prev,
+      providers: prev.providers.map((p) =>
+        p.name === provider ? { ...p, apikey: value } : p
+      ),
+    }));
   }
 
   /**
@@ -81,13 +80,12 @@ const SettingsPage = () => {
    * @param {string} value - 新的API Host地址
    */
   function updateApiHost(provider, value) {
-    const updates = providers.map((_provider) => {
-      if (_provider.name == provider) {
-        _provider.apihost = value;
-      }
-      return _provider;
-    });
-    setProviders(updates);
+    setSettings((prev) => ({
+      ...prev,
+      providers: prev.providers.map((p) =>
+        p.name === provider ? { ...p, apihost: value } : p
+      ),
+    }));
   }
 
   /**
@@ -97,19 +95,19 @@ const SettingsPage = () => {
    * @param {boolean} enabled - 是否启用该模型
    */
   function setModelEnabled(provider, model, enabled) {
-    const _providers = providers.map((_provider) => {
-      if (_provider.name == provider) {
-        const _models = _provider.models.map((_model) => {
-          if (_model.name == model) {
-            _model.enabled = enabled;
-          }
-          return _model;
-        });
-        _provider.models = _models;
-      }
-      return _provider;
-    });
-    setProviders(_providers);
+    setSettings((prev) => ({
+      ...prev,
+      providers: prev.providers.map((p) => {
+        return p.name === provider
+          ? {
+              ...p,
+              models: p.models.map((_model) =>
+                _model.name == model ? { ..._model, enabled: enabled } : _model
+              ),
+            }
+          : p;
+      }),
+    }));
   }
 
   /**
@@ -118,15 +116,17 @@ const SettingsPage = () => {
    * @param {string} modelName - 要删除的模型名称
    */
   function deleteModel(provider, modelName) {
-    const _providers = providers.map((_provider) => {
-      if (_provider.name === provider) {
-        _provider.models = _provider.models.filter(
-          (model) => model.name !== modelName
-        );
-      }
-      return _provider;
-    });
-    setProviders(_providers);
+    setSettings((prev) => ({
+      ...prev,
+      providers: prev.providers.map((p) => {
+        return p.name === provider
+          ? {
+              ...p,
+              models: p.models.filter((model) => model.name !== modelName),
+            }
+          : p;
+      }),
+    }));
   }
 
   /**
@@ -142,13 +142,17 @@ const SettingsPage = () => {
   });
 
   const handleAddModel = (provider) => {
-    const updatedProviders = providers.map((p) => {
+    const _providers = settings.providers.map((p) => {
       if (p.name === provider) {
         p.models.push({ ...newModel });
       }
       return p;
     });
-    setProviders(updatedProviders);
+    setSettings((prev) => ({
+      ...prev,
+      providers: _providers,
+    }));
+
     setNewModel({ name: "", value: "", enabled: true });
     onOpenChange(false);
   };
@@ -161,8 +165,11 @@ const SettingsPage = () => {
   });
 
   const handleAddProvider = () => {
-    const updatedProviders = [...providers, { ...newProvider }];
-    setProviders(updatedProviders);
+    const _providers = [...settings.providers, { ...newProvider }];
+    setSettings((prev) => ({
+      ...prev,
+      providers: _providers,
+    }));
     setNewProvider({
       name: "",
       apikey: "",
@@ -173,8 +180,13 @@ const SettingsPage = () => {
   };
 
   const handleDeleteProvider = (providerName) => {
-    const updatedProviders = providers.filter((p) => p.name !== providerName);
-    setProviders(updatedProviders);
+    const _providers = settings.providers.filter(
+      (p) => p.name !== providerName
+    );
+    setSettings((prev) => ({
+      ...prev,
+      providers: _providers,
+    }));
   };
 
   return (
@@ -193,7 +205,7 @@ const SettingsPage = () => {
             onOpen();
           }}
         >
-          添加服务商
+          添加模型服务商
         </Button>
       </div>
       <div className="flex w-full flex-col mt-12 mb-8">
@@ -203,7 +215,7 @@ const SettingsPage = () => {
           variant="underlined"
           size="lg"
         >
-          {providers.map((provider) => (
+          {settings.providers.map((provider) => (
             <Tab key={provider.name} title={provider.name} className="px-0">
               <Card className="ml-8">
                 <CardHeader className="h-16 px-6 font-medium flex items-center justify-between">
@@ -406,6 +418,7 @@ const SettingsPage = () => {
                             />
                             <div className="flex items-center mt-4">
                               <Switch
+                                size="sm"
                                 isSelected={newModel.enabled}
                                 onValueChange={(enabled) =>
                                   setNewModel({ ...newModel, enabled })
@@ -436,6 +449,7 @@ const SettingsPage = () => {
         </Tabs>
       </div>
       <Modal
+        backdrop="blur"
         isOpen={isOpen && modalType == "provider"}
         placement="top-center"
         onOpenChange={onOpenChange}

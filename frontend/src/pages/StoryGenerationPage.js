@@ -9,7 +9,7 @@ import { Alert } from "@heroui/react";
 
 import { PiWarningCircle, PiKey, PiMagicWand } from "react-icons/pi";
 
-import defaultProviders from "../config/models";
+import defaultSettings from "../config/models";
 
 // Example prompts for story generation
 const examplePrompts = [
@@ -19,8 +19,8 @@ const examplePrompts = [
 ];
 
 const StoryGenerationPage = () => {
-  const [providers] = useState(
-    JSON.parse(localStorage.getItem("providers")) || defaultProviders
+  const [settings, setSettings] = useState(
+    JSON.parse(localStorage.getItem("settings")) || defaultSettings
   );
 
   const [prompt, setPrompt] = useState("");
@@ -239,11 +239,15 @@ const StoryGenerationPage = () => {
               setModel(e.target.value);
             }}
           >
-            {providers.map((provider) => (
+            {settings.providers.map((provider) => (
               <SelectSection showDivider title={provider.name}>
-                {provider.models.map((model) => (
-                  <SelectItem key={model.value}>{model.name}</SelectItem>
-                ))}
+                {provider.models.map((model) =>
+                  model.enabled ? (
+                    <SelectItem key={model.value}>{model.name}</SelectItem>
+                  ) : (
+                    <></>
+                  )
+                )}
               </SelectSection>
             ))}
           </Select>
