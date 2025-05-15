@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container } from "@mui/material";
+import { useTheme } from "next-themes";
 
 import {
   Tabs,
@@ -18,6 +19,7 @@ import {
   Select,
   SelectItem,
   Alert,
+  Image,
   cn,
 } from "@heroui/react";
 
@@ -28,34 +30,29 @@ import {
   PiBrain,
   PiEye,
   PiEyeClosed,
+  PiTrash,
 } from "react-icons/pi";
 
 import defaultProviders from "../config/models";
 
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from "@heroui/react";
+
 const SettingsPage = () => {
+  const { theme, setTheme } = useTheme();
   const [providers, setProviders] = useState(
     JSON.parse(localStorage.getItem("providers")) || defaultProviders
   );
 
-  const [apiKeys, setApiKeys] = useState({
-    openai: localStorage.getItem("openai_api_key") || "",
-    claude: localStorage.getItem("claude_api_key") || "",
-    gemini: localStorage.getItem("gemini_api_key") || "",
-    qwen: localStorage.getItem("qwen_api_key") || "",
-  });
-
   const [showApiKeys, setShowApiKeys] = useState({});
-  const [showOpenAIKey, setShowOpenAIKey] = useState(false);
-  const [showClaudeKey, setShowClaudeKey] = useState(false);
-  const [showGeminiKey, setShowGeminiKey] = useState(false);
-  const [showQwenKey, setShowQwenKey] = useState(false);
 
-  useEffect(() => {
-    if (apiKeys.openai) localStorage.setItem("openai_api_key", apiKeys.openai);
-    if (apiKeys.claude) localStorage.setItem("claude_api_key", apiKeys.claude);
-    if (apiKeys.gemini) localStorage.setItem("gemini_api_key", apiKeys.gemini);
-    if (apiKeys.qwen) localStorage.setItem("qwen_api_key", apiKeys.qwen);
-  }, [apiKeys]);
+  const [modalType, setModalType] = useState("");
 
   useEffect(() => {
     localStorage.setItem("providers", JSON.stringify(providers));
@@ -115,21 +112,89 @@ const SettingsPage = () => {
     setProviders(_providers);
   }
 
-  const handleApiKeyChange = (provider, value) => {
-    console.log(value);
-    setApiKeys((prev) => ({
-      ...prev,
-      [provider]: value,
-    }));
+  /**
+   * 删除指定服务商的模型
+   * @param {string} provider - 服务商名称
+   * @param {string} modelName - 要删除的模型名称
+   */
+  function deleteModel(provider, modelName) {
+    const _providers = providers.map((_provider) => {
+      if (_provider.name === provider) {
+        _provider.models = _provider.models.filter(
+          (model) => model.name !== modelName
+        );
+      }
+      return _provider;
+    });
+    setProviders(_providers);
+  }
+
+  /**
+   * 添加指定服务商的模型
+   * @param {string} provider - 服务商名称
+   */
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [newModel, setNewModel] = useState({
+    name: "",
+    value: "",
+    enabled: true,
+  });
+
+  const handleAddModel = (provider) => {
+    const updatedProviders = providers.map((p) => {
+      if (p.name === provider) {
+        p.models.push({ ...newModel });
+      }
+      return p;
+    });
+    setProviders(updatedProviders);
+    setNewModel({ name: "", value: "", enabled: true });
+    onOpenChange(false);
+  };
+
+  const [newProvider, setNewProvider] = useState({
+    name: "",
+    apikey: "",
+    apihost: "",
+    models: [],
+  });
+
+  const handleAddProvider = () => {
+    const updatedProviders = [...providers, { ...newProvider }];
+    setProviders(updatedProviders);
+    setNewProvider({
+      name: "",
+      apikey: "",
+      apihost: "",
+      models: [],
+    });
+    onOpenChange(false);
+  };
+
+  const handleDeleteProvider = (providerName) => {
+    const updatedProviders = providers.filter((p) => p.name !== providerName);
+    setProviders(updatedProviders);
   };
 
   return (
     <Container maxWidth="lg">
-      <div className="mt-12">
-        <div className="text-2xl mb-1 font-medium">设置</div>
-        <div className="text-sm">
-          管理模型和服务商。您的模型配置和API密钥信息会安全存储在浏览器的本地存储中。
+      <div className="mt-12 flex justify-between items-center">
+        <div>
+          <div className="text-2xl mb-1 font-medium">模型管理</div>
+          <div className="text-sm flex justify-between items-center">
+            管理模型和服务商。您的模型配置和API密钥信息会安全存储在浏览器的本地存储中。
+          </div>
         </div>
+        <Button
+          color="primary"
+          onPress={() => {
+            setModalType("provider");
+            onOpen();
+          }}
+        >
+          添加服务商
+        </Button>
       </div>
       <div className="flex w-full flex-col mt-12 mb-8">
         <Tabs
@@ -141,8 +206,26 @@ const SettingsPage = () => {
           {providers.map((provider) => (
             <Tab key={provider.name} title={provider.name} className="px-0">
               <Card className="ml-8">
-                <CardHeader className="p-4 px-6 font-medium">
-                  {provider.name}
+                <CardHeader className="h-16 px-6 font-medium flex items-center justify-between">
+                  <div className="flex items-center">
+                    {provider.icon && (
+                      <Image
+                        src={provider.icon + "_" + theme + ".svg"}
+                        className="mr-2 w-5 h-5"
+                      />
+                    )}
+                    {!provider.icon && <PiBrain className="mr-2 w-5 h-5" />}
+                    {provider.name}
+                  </div>
+                  {!provider.reserved && (
+                    <Button
+                      variant="light"
+                      onPress={() => handleDeleteProvider(provider.name)}
+                      startContent={<PiTrash size={16} />}
+                    >
+                      删除
+                    </Button>
+                  )}
                 </CardHeader>
                 <CardBody className="px-6">
                   <div
@@ -209,285 +292,203 @@ const SettingsPage = () => {
                     description=""
                   />
 
-                  <div className="my-4 mt-8">模型</div>
+                  <div className="my-4 mt-8 flex justify-between items-center">
+                    <div>模型</div>
+                    <Button
+                      size="sm"
+                      onPress={() => {
+                        setModalType("model");
+                        onOpen();
+                      }}
+                    >
+                      添加模型
+                    </Button>
+                  </div>
 
                   {provider.models.map((model) => (
                     <div className="w-full flex justify-between mb-2">
-                      <p className="text-medium">{model.name}</p>
-                      <Switch
-                        isSelected={model.enabled}
-                        classNames={{
-                          base: cn("data-[selected=true]:border-primary"),
-                          wrapper: "p-0 h-4 overflow-visible",
-                          thumb: cn(
-                            "w-6 h-6 border-2 shadow-lg",
-                            "group-data-[hover=true]:border-primary",
-                            //selected
-                            "group-data-[selected=true]:ms-6",
-                            // pressed
-                            "group-data-[pressed=true]:w-7",
-                            "group-data-[selected]:group-data-[pressed]:ms-4"
-                          ),
-                        }}
-                        onValueChange={(isSelected) => {
-                          setModelEnabled(
-                            provider.name,
-                            model.name,
-                            isSelected
-                          );
-                        }}
-                      ></Switch>
+                      <div className="flex items-center gap-2">
+                        <p className="text-medium">{model.name}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          isSelected={model.enabled}
+                          color="warning"
+                          classNames={{
+                            base: cn("data-[selected=true]:border-amber-500 "),
+                            wrapper: "p-0 h-4 overflow-visible",
+                            thumb: cn(
+                              "w-6 h-6 border-2 shadow-lg ",
+                              "group-data-[hover=true]:border-amber-500 ",
+                              //selected
+                              "group-data-[selected=true]:ms-6",
+                              // pressed
+                              "group-data-[pressed=true]:w-7",
+                              "group-data-[selected]:group-data-[pressed]:ms-4"
+                            ),
+                          }}
+                          onValueChange={(isSelected) => {
+                            setModelEnabled(
+                              provider.name,
+                              model.name,
+                              isSelected
+                            );
+                          }}
+                        ></Switch>
+                        <Button
+                          size="sm"
+                          variant="light"
+                          color="danger"
+                          onPress={() => deleteModel(provider.name, model.name)}
+                        >
+                          删除
+                        </Button>
+                      </div>
                     </div>
                   ))}
+                  <Modal
+                    backdrop="blur"
+                    isOpen={isOpen && modalType == "model"}
+                    placement="center"
+                    onOpenChange={onOpenChange}
+                    motionProps={{
+                      variants: {
+                        enter: {
+                          y: 0,
+                          opacity: 1,
+                          transition: {
+                            duration: 0.3,
+                            ease: "easeOut",
+                          },
+                        },
+                        exit: {
+                          y: -20,
+                          opacity: 0,
+                          transition: {
+                            duration: 0.2,
+                            ease: "easeIn",
+                          },
+                        },
+                      },
+                    }}
+                  >
+                    <ModalContent>
+                      {(onClose) => (
+                        <>
+                          <ModalHeader className="flex flex-col gap-1">
+                            添加新模型
+                          </ModalHeader>
+                          <ModalBody>
+                            <Input
+                              label="模型名称"
+                              placeholder="请输入模型名称"
+                              value={newModel.name}
+                              onChange={(e) =>
+                                setNewModel({
+                                  ...newModel,
+                                  name: e.target.value,
+                                })
+                              }
+                              variant="bordered"
+                            />
+                            <Input
+                              className="mt-4"
+                              label="模型标识符"
+                              placeholder="请输入模型标识符"
+                              value={newModel.value}
+                              onChange={(e) =>
+                                setNewModel({
+                                  ...newModel,
+                                  value: e.target.value,
+                                })
+                              }
+                              variant="bordered"
+                            />
+                            <div className="flex items-center mt-4">
+                              <Switch
+                                isSelected={newModel.enabled}
+                                onValueChange={(enabled) =>
+                                  setNewModel({ ...newModel, enabled })
+                                }
+                              />
+                              <span className="ml-2">启用模型</span>
+                            </div>
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button variant="flat" onPress={onClose}>
+                              取消
+                            </Button>
+                            <Button
+                              color="primary"
+                              onPress={() => handleAddModel(provider.name)}
+                            >
+                              添加
+                            </Button>
+                          </ModalFooter>
+                        </>
+                      )}
+                    </ModalContent>
+                  </Modal>
                 </CardBody>
               </Card>
             </Tab>
           ))}
         </Tabs>
       </div>
-
-      {/* <div>
-        <Accordion
-          variant="splitted"
-          className="px-0"
-          classNames={{ base: "mb-2" }}
-        >
-          <AccordionItem
-            key="1"
-            aria-label="模型"
-            title="模型"
-            startContent={<PiBrain size={16} />}
-          >
-            <div class="grid grid-cols-1 gap-8 mb-6">
-              <div>
+      <Modal
+        isOpen={isOpen && modalType == "provider"}
+        placement="top-center"
+        onOpenChange={onOpenChange}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                添加新服务商
+              </ModalHeader>
+              <ModalBody>
                 <Input
-                  className="w-full"
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={() => setShowOpenAIKey(!showOpenAIKey)}
-                    >
-                      {!showOpenAIKey ? (
-                        <PiEyeClosed className="text-2xl text-default-400 pointer-events-none" />
-                      ) : (
-                        <PiEye className="text-2xl text-default-400 pointer-events-none" />
-                      )}
-                    </button>
+                  label="服务商名称"
+                  placeholder="请输入服务商名称"
+                  value={newProvider.name}
+                  onChange={(e) =>
+                    setNewProvider({ ...newProvider, name: e.target.value })
                   }
-                  onChange={(e) => handleApiKeyChange("openai", e.target.value)}
-                  label="OpenAI API Key"
-                  placeholder="请输入OpenAI API Key"
-                  type={showOpenAIKey ? "text" : "password"}
-                  size="lg"
                   variant="bordered"
-                  value={apiKeys.openai}
-                  description=""
                 />
-              </div>
-              <div>
                 <Input
-                  className="w-full"
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={() => setShowClaudeKey(!showClaudeKey)}
-                    >
-                      {!showClaudeKey ? (
-                        <PiEyeClosed className="text-2xl text-default-400 pointer-events-none" />
-                      ) : (
-                        <PiEye className="text-2xl text-default-400 pointer-events-none" />
-                      )}
-                    </button>
+                  className="mt-4"
+                  label="API Key"
+                  placeholder="请输入 API Key"
+                  value={newProvider.apikey}
+                  onChange={(e) =>
+                    setNewProvider({ ...newProvider, apikey: e.target.value })
                   }
-                  onChange={(e) => handleApiKeyChange("claude", e.target.value)}
-                  label="Anthropic API Key"
-                  placeholder="请输入 Anthropic API Key"
-                  type={showClaudeKey ? "text" : "password"}
-                  size="lg"
                   variant="bordered"
-                  value={apiKeys.claude}
-                  description=""
                 />
-              </div>
-              <div>
                 <Input
-                  className="w-full"
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={() => setShowGeminiKey(!showGeminiKey)}
-                    >
-                      {!showGeminiKey ? (
-                        <PiEyeClosed className="text-2xl text-default-400 pointer-events-none" />
-                      ) : (
-                        <PiEye className="text-2xl text-default-400 pointer-events-none" />
-                      )}
-                    </button>
+                  className="mt-4"
+                  label="API Host"
+                  placeholder="请输入 API Host"
+                  value={newProvider.apihost}
+                  onChange={(e) =>
+                    setNewProvider({ ...newProvider, apihost: e.target.value })
                   }
-                  onChange={(e) => handleApiKeyChange("gemini", e.target.value)}
-                  label="Google Gemini API Key"
-                  placeholder="请输入 Google Gemini API Key"
-                  type={showGeminiKey ? "text" : "password"}
-                  size="lg"
                   variant="bordered"
-                  value={apiKeys.gemini}
-                  description=""
                 />
-              </div>
-              <div>
-                <Input
-                  className="w-full"
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={() => setShowQwenKey(!showQwenKey)}
-                    >
-                      {!showQwenKey ? (
-                        <PiEyeClosed className="text-2xl text-default-400 pointer-events-none" />
-                      ) : (
-                        <PiEye className="text-2xl text-default-400 pointer-events-none" />
-                      )}
-                    </button>
-                  }
-                  onChange={(e) => handleApiKeyChange("qwen", e.target.value)}
-                  label="QWen Key"
-                  placeholder="请输入 QWen Key"
-                  type={showQwenKey ? "text" : "password"}
-                  size="lg"
-                  variant="bordered"
-                  value={apiKeys.qwen}
-                  description=""
-                />
-              </div>
-            </div>
-          </AccordionItem>
-          <AccordionItem
-            key="2"
-            aria-label="服务商"
-            title="服务商"
-            startContent={<PiKey size={16} />}
-          >
-            <div class="grid grid-cols-1 gap-8 mb-2">
-              <div>
-                <Input
-                  className="w-full"
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={() => setShowOpenAIKey(!showOpenAIKey)}
-                    >
-                      {!showOpenAIKey ? (
-                        <PiEyeClosed className="text-2xl text-default-400 pointer-events-none" />
-                      ) : (
-                        <PiEye className="text-2xl text-default-400 pointer-events-none" />
-                      )}
-                    </button>
-                  }
-                  onChange={(e) => handleApiKeyChange("openai", e.target.value)}
-                  label="OpenAI API Key"
-                  placeholder="请输入OpenAI API Key"
-                  type={showOpenAIKey ? "text" : "password"}
-                  size="lg"
-                  variant="bordered"
-                  value={apiKeys.openai}
-                  description=""
-                />
-              </div>
-              <div>
-                <Input
-                  className="w-full"
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={() => setShowClaudeKey(!showClaudeKey)}
-                    >
-                      {!showClaudeKey ? (
-                        <PiEyeClosed className="text-2xl text-default-400 pointer-events-none" />
-                      ) : (
-                        <PiEye className="text-2xl text-default-400 pointer-events-none" />
-                      )}
-                    </button>
-                  }
-                  onChange={(e) => handleApiKeyChange("claude", e.target.value)}
-                  label="Anthropic API Key"
-                  placeholder="请输入 Anthropic API Key"
-                  type={showClaudeKey ? "text" : "password"}
-                  size="lg"
-                  variant="bordered"
-                  value={apiKeys.claude}
-                  description=""
-                />
-              </div>
-              <div>
-                <Input
-                  className="w-full"
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={() => setShowGeminiKey(!showGeminiKey)}
-                    >
-                      {!showGeminiKey ? (
-                        <PiEyeClosed className="text-2xl text-default-400 pointer-events-none" />
-                      ) : (
-                        <PiEye className="text-2xl text-default-400 pointer-events-none" />
-                      )}
-                    </button>
-                  }
-                  onChange={(e) => handleApiKeyChange("gemini", e.target.value)}
-                  label="Google Gemini API Key"
-                  placeholder="请输入 Google Gemini API Key"
-                  type={showGeminiKey ? "text" : "password"}
-                  size="lg"
-                  variant="bordered"
-                  value={apiKeys.gemini}
-                  description=""
-                />
-              </div>
-              <div>
-                <Input
-                  className="w-full"
-                  endContent={
-                    <button
-                      aria-label="toggle password visibility"
-                      className="focus:outline-none"
-                      type="button"
-                      onClick={() => setShowQwenKey(!showQwenKey)}
-                    >
-                      {!showQwenKey ? (
-                        <PiEyeClosed className="text-2xl text-default-400 pointer-events-none" />
-                      ) : (
-                        <PiEye className="text-2xl text-default-400 pointer-events-none" />
-                      )}
-                    </button>
-                  }
-                  onChange={(e) => handleApiKeyChange("qwen", e.target.value)}
-                  label="QWen Key"
-                  placeholder="请输入 QWen Key"
-                  type={showQwenKey ? "text" : "password"}
-                  size="lg"
-                  variant="bordered"
-                  value={apiKeys.qwen}
-                  description=""
-                />
-              </div>
-            </div>
-          </AccordionItem>
-        </Accordion>
-      </div> */}
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="flat" onPress={onClose}>
+                  取消
+                </Button>
+                <Button color="primary" onPress={handleAddProvider}>
+                  添加
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </Container>
   );
 };

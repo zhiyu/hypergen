@@ -251,7 +251,11 @@ const StoryGenerationPage = () => {
             }}
           >
             {providers.map((provider) => (
-              <SelectSection showDivider title={provider.name}>
+              <SelectSection
+                showDivider
+                title={provider.name}
+                classNames={{ heading: "text-xs" }}
+              >
                 {provider.models.map((model) => (
                   <SelectItem key={model.value}>{model.name}</SelectItem>
                 ))}

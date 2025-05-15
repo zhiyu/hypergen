@@ -1,12 +1,26 @@
 const defaultProviders = [
   {
+    name: "通义千问",
+    icon: "/icons/qwen",
+    apikey: "",
+    apihost: "",
+    models: [
+      { name: "QWen Turbo", value: "qwen-turbo", enabled: true },
+      { name: "QWen Plus", value: "qwen-plus", enabled: true },
+    ],
+    reserved: true,
+  },
+  {
     name: "OpenAI",
+    icon: "/icons/openai",
     apikey: "",
     apihost: "",
     models: [{ name: "GPT-4o", value: "gpt-4o", enabled: true }],
+    reserved: true,
   },
   {
     name: "Anthropic",
+    icon: "/icons/claude",
     apikey: "",
     apihost: "",
     models: [
@@ -21,9 +35,11 @@ const defaultProviders = [
         enabled: true,
       },
     ],
+    reserved: true,
   },
   {
     name: "Gemini",
+    icon: "/icons/gemini",
     apikey: "",
     apihost: "",
     models: [
@@ -38,15 +54,26 @@ const defaultProviders = [
         enabled: true,
       },
     ],
+    reserved: true,
   },
   {
-    name: "通义千问",
+    name: "Grok",
+    icon: "/icons/grok",
     apikey: "",
     apihost: "",
     models: [
-      { name: "QWen Turbo", value: "qwen-turbo", enabled: true },
-      { name: "QWen Plus", value: "qwen-plus", enabled: true },
+      {
+        name: "Grok Beta",
+        value: "grok-beta",
+        enabled: true,
+      },
+      {
+        name: "Grok Vision Beta",
+        value: "grok-vision-beta",
+        enabled: true,
+      },
     ],
+    reserved: true,
   },
 ];
 
