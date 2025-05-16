@@ -20,13 +20,14 @@ import {
   PiMagnifyingGlass,
   PiBrain,
   PiPencilSimpleLine,
+  PiGithubLogo,
 } from "react-icons/pi";
 
 const HomePage = () => {
   return (
     <main className="container mx-auto max-w-6xl flex flex-1 flex-col items-center justify-center">
       <div className="mt-16 z-20 flex flex-col items-center justify-center gap-[18px] sm:gap-6">
-        <Link href="/about" color="foreground">
+        <Link href="https://github.com/zhiyu/hypergen" color="foreground">
           <Button
             className="h-9 overflow-hidden border-1 border-default-100 bg-default-50 px-[18px] py-2 text-small font-normal leading-5"
             endContent={<PiArrowRight />}
@@ -53,7 +54,7 @@ const HomePage = () => {
           一个基于通用规划的文本写作框架，通过递归式任务分解与异构任务/工具的动态集成，实现自适应内容生成。
         </p>
         <div className="flex flex-col items-center justify-center gap-6 sm:flex-row">
-          <Link href="/story" color="text-white">
+          <Link href="https://github.com/zhiyu/hypergen" color="text-white">
             <Button
               className="w-full bg-gradient-to-tr from-pink-600 to-amber-300 text-white shadow-lg hover:scale-105"
               radius="full"
@@ -63,7 +64,11 @@ const HomePage = () => {
             </Button>
           </Link>
 
-          <Link className="w-full" href="/about" color="foreground">
+          <Link
+            className="w-full"
+            href="https://github.com/zhiyu/hypergen"
+            color="foreground"
+          >
             <Button
               className="w-full"
               radius="full"

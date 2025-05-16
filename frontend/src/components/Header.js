@@ -22,6 +22,7 @@ import {
   PiFilmReel,
   PiCaretDown,
   PiGear,
+  PiGithubLogo,
 } from "react-icons/pi";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 
@@ -69,60 +70,7 @@ const Header = () => {
   function getMenuItems() {
     return (
       <>
-        <NavbarMenuItem key="nav-1">
-          <Link className="w-full" href="/" color="foreground">
-            首页
-          </Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem key="nav-10">
-          <Link className="w-full" href="/history" color="foreground">
-            我的创作
-          </Link>
-        </NavbarMenuItem>
-        <Dropdown>
-          <NavbarItem>
-            <DropdownTrigger>
-              <Button
-                disableRipple
-                className="p-0 bg-transparent data-[hover=true]:bg-transparent text-md"
-                endContent={<PiCaretDown />}
-                variant="light"
-              >
-                长文本创作
-              </Button>
-            </DropdownTrigger>
-          </NavbarItem>
-          <DropdownMenu aria-label="features" variant="flat">
-            <DropdownItem
-              key="autoscaling"
-              description=""
-              startContent={<PiFileText color="#db2777" size="20" />}
-            >
-              <Link className="w-full" href="/story" color="foreground">
-                故事生成
-              </Link>
-            </DropdownItem>
-            <DropdownItem
-              key="autoscaling"
-              description=""
-              startContent={<PiFiles color="#db2777" size="20" />}
-            >
-              <Link className="w-full" href="/report" color="foreground">
-                报告生成
-              </Link>
-            </DropdownItem>
-            <DropdownItem
-              key="autoscaling"
-              description=""
-              startContent={<PiFilmReel color="#db2777" size="20" />}
-            >
-              <Link className="w-full" href="/story" color="foreground">
-                剧本生成
-              </Link>
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-        {/* <NavbarMenuItem key="nav-12">
+        <NavbarMenuItem key="nav-12">
           <Link
             href="https://arxiv.org/abs/2503.08275"
             target="_blank"
@@ -131,25 +79,18 @@ const Header = () => {
           >
             参考论文
           </Link>
-        </NavbarMenuItem> */}
-        <NavbarMenuItem className="hidden lg:flex ml-16 mr-16">
-          <Link href="#" color="foreground">
-            登录
-          </Link>
-          <Link href="#" color="foreground" className="ml-4">
-            注册账号
-          </Link>
         </NavbarMenuItem>
+
         <Dropdown>
           <NavbarItem>
             <DropdownTrigger>
               <Button
                 disableRipple
                 className="p-0 bg-transparent data-[hover=true]:bg-transparent text-md"
-                startContent={<PiGear size={18} />}
+                startContent={<PiGithubLogo size={18} />}
                 variant="light"
               >
-                设置
+                Github
               </Button>
             </DropdownTrigger>
           </NavbarItem>
