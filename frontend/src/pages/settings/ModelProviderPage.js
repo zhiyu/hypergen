@@ -33,7 +33,7 @@ import {
   PiTrash,
 } from "react-icons/pi";
 
-import defaultSettings from "../config/models";
+import defaultSettings from "../../config/models";
 
 import {
   Modal,
@@ -44,7 +44,7 @@ import {
   useDisclosure,
 } from "@heroui/react";
 
-const SettingsPage = () => {
+const ModelProviderPage = () => {
   const { theme, setTheme } = useTheme();
   const [settings, setSettings] = useState(
     JSON.parse(localStorage.getItem("settings")) || defaultSettings
@@ -193,9 +193,9 @@ const SettingsPage = () => {
     <Container maxWidth="lg">
       <div className="mt-12 flex justify-between items-center">
         <div>
-          <div className="text-2xl mb-1 font-medium">模型管理</div>
+          <div className="text-2xl mb-1 font-medium">模型服务管理</div>
           <div className="text-sm flex justify-between items-center">
-            管理模型和服务商。您的模型配置和API密钥信息会安全存储在浏览器的本地存储中。
+            管理模型和服务商。您的配置信息会安全存储在浏览器的本地存储中。
           </div>
         </div>
         <Button
@@ -510,4 +510,4 @@ const SettingsPage = () => {
   );
 };
 
-export default SettingsPage;
+export default ModelProviderPage;

@@ -140,17 +140,40 @@ const Header = () => {
             注册账号
           </Link>
         </NavbarMenuItem>
-        <NavbarMenuItem key="nav-15">
-          <Link
-            className="w-full flex items-center"
-            href="/settings"
-            color="foreground"
-            title="设置"
-          >
-            <PiGear size={18} className="mr-1" />
-            设置
-          </Link>
-        </NavbarMenuItem>
+        <Dropdown>
+          <NavbarItem>
+            <DropdownTrigger>
+              <Button
+                disableRipple
+                className="p-0 bg-transparent data-[hover=true]:bg-transparent text-md"
+                startContent={<PiGear size={18} />}
+                variant="light"
+              >
+                设置
+              </Button>
+            </DropdownTrigger>
+          </NavbarItem>
+          <DropdownMenu aria-label="features" variant="flat">
+            <DropdownItem key="autoscaling" description="">
+              <Link
+                className="w-full"
+                href="/settings/model"
+                color="foreground"
+              >
+                模型服务
+              </Link>
+            </DropdownItem>
+            <DropdownItem key="autoscaling" description="">
+              <Link
+                className="w-full"
+                href="/settings/search"
+                color="foreground"
+              >
+                搜索服务
+              </Link>
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
         <NavbarMenuItem key="nav-0">
           <ThemeSwitcher />
         </NavbarMenuItem>
