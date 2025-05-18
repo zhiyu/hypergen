@@ -10,7 +10,7 @@ import { Switch, cn } from "@heroui/react";
 
 import { PiWarningCircle, PiKey, PiMagicWand } from "react-icons/pi";
 
-import defaultSettings from "../config/models";
+import defaultSettings from "../config/settings";
 
 // Example prompts for story generation
 const examplePrompts = [

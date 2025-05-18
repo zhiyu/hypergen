@@ -86,6 +86,29 @@ const defaultSettings = {
       reserved: true,
     },
   ],
+  searchProviders: [
+    {
+      name: "Searxng",
+      icon: "/icons/searxng",
+      apikey: "",
+      apihost: "http://127.0.0.1:8080",
+      engines: [
+        { name: "Google", value: "google", enabled: true },
+        { name: "Bing", value: "bing", enabled: true },
+      ],
+      reserved: true,
+    },
+    {
+      name: "SerpApi",
+      icon: "/icons/serpapi",
+      apikey: "",
+      engines: [
+        { name: "Google", value: "google", enabled: true },
+        { name: "Bing", value: "bing", enabled: true },
+      ],
+      reserved: true,
+    },
+  ],
 };
 
 export default defaultSettings;

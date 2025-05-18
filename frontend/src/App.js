@@ -10,7 +10,8 @@ import HomePage from "./pages/HomePage";
 import StoryGenerationPage from "./pages/StoryGenerationPage";
 import ReportGenerationPage from "./pages/ReportGenerationPage";
 import ResultsPage from "./pages/ResultsPage";
-import SettingsPage from "./pages/SettingsPage";
+import ModelProviderPage from "./pages/settings/ModelProviderPage";
+import SearchProviderPage from "./pages/settings/SearchProviderPage";
 import AboutPage from "./pages/AboutPage";
 import HistoryPage from "./pages/HistoryPage";
 
@@ -29,7 +30,7 @@ function App() {
           }}
         >
           <Header />
-          <main style={{ flexGrow: 1 }} className="p-6">
+          <div style={{ flexGrow: 1 }} className="p-6">
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/story" element={<StoryGenerationPage />} />
@@ -37,9 +38,10 @@ function App() {
               <Route path="/results/:id" element={<ResultsPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/about" element={<AboutPage />} />
-              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/settings/model" element={<ModelProviderPage />} />
+              <Route path="/settings/search" element={<SearchProviderPage />} />
             </Routes>
-          </main>
+          </div>
           <Footer />
         </div>
       </NextThemesProvider>
