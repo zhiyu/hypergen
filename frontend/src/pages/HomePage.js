@@ -25,7 +25,7 @@ import {
 
 const HomePage = () => {
   return (
-    <main className="container mx-auto max-w-6xl flex flex-1 flex-col items-center justify-center">
+    <div className="container mx-auto max-w-6xl flex flex-1 flex-col items-center justify-center">
       <div className="mt-16 z-20 flex flex-col items-center justify-center gap-[18px] sm:gap-6">
         <Link href="https://github.com/zhiyu/hypergen" color="foreground">
           <Button
@@ -291,7 +291,7 @@ const HomePage = () => {
           快来体验基于异构递归规划的新一代AI写作助手
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 
