@@ -406,8 +406,8 @@ const SearchProviderPage = () => {
                             />
                             <Input
                               className="mt-4"
-                              label="模型标识符"
-                              placeholder="请输入模型标识符"
+                              label="引擎标识符"
+                              placeholder="请输入引擎标识符"
                               value={newEngine.value}
                               onChange={(e) =>
                                 setNewEngine({
