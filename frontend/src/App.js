@@ -30,7 +30,7 @@ function App() {
           }}
         >
           <Header />
-          <main style={{ flexGrow: 1 }} className="p-6">
+          <div style={{ flexGrow: 1 }} className="p-6">
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/story" element={<StoryGenerationPage />} />
@@ -41,7 +41,7 @@ function App() {
               <Route path="/settings/model" element={<ModelProviderPage />} />
               <Route path="/settings/search" element={<SearchProviderPage />} />
             </Routes>
-          </main>
+          </div>
           <Footer />
         </div>
       </NextThemesProvider>

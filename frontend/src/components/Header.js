@@ -139,7 +139,7 @@ const Header = () => {
         <NavbarBrand>
           <Link
             className="w-full flex items-center"
-            href="/"
+            href="https://zhiyu.github.io/hypergen/"
             color="foreground"
           >
             <Logo />
