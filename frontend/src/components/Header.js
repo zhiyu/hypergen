@@ -80,41 +80,24 @@ const Header = () => {
             参考论文
           </Link>
         </NavbarMenuItem>
+        <NavbarMenuItem key="nav-12">
+          <Link
+            href="https://zhiyu.github.io/hypergen/"
+            target="_blank"
+            rel="noopener"
+            color="foreground"
+          >
+            <Button
+              disableRipple
+              className="p-0 bg-transparent data-[hover=true]:bg-transparent text-md"
+              startContent={<PiGithubLogo size={18} />}
+              variant="light"
+            >
+              Github
+            </Button>
+          </Link>
+        </NavbarMenuItem>
 
-        <Dropdown>
-          <NavbarItem>
-            <DropdownTrigger>
-              <Button
-                disableRipple
-                className="p-0 bg-transparent data-[hover=true]:bg-transparent text-md"
-                startContent={<PiGithubLogo size={18} />}
-                variant="light"
-              >
-                Github
-              </Button>
-            </DropdownTrigger>
-          </NavbarItem>
-          <DropdownMenu aria-label="features" variant="flat">
-            <DropdownItem key="autoscaling" description="">
-              <Link
-                className="w-full"
-                href="/settings/model"
-                color="foreground"
-              >
-                模型服务
-              </Link>
-            </DropdownItem>
-            <DropdownItem key="autoscaling" description="">
-              <Link
-                className="w-full"
-                href="/settings/search"
-                color="foreground"
-              >
-                搜索服务
-              </Link>
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
         <NavbarMenuItem key="nav-0">
           <ThemeSwitcher />
         </NavbarMenuItem>
