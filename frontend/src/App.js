@@ -31,16 +31,7 @@ function App() {
         >
           <Header />
           <div style={{ flexGrow: 1 }} className="p-6">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/story" element={<StoryGenerationPage />} />
-              <Route path="/report" element={<ReportGenerationPage />} />
-              <Route path="/results/:id" element={<ResultsPage />} />
-              <Route path="/history" element={<HistoryPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/settings/model" element={<ModelProviderPage />} />
-              <Route path="/settings/search" element={<SearchProviderPage />} />
-            </Routes>
+            <HomePage />
           </div>
           <Footer />
         </div>
