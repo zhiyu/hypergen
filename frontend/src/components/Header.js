@@ -111,7 +111,7 @@ const Header = () => {
                 报告生成
               </Link>
             </DropdownItem>
-            <DropdownItem
+            {/* <DropdownItem
               key="autoscaling"
               description=""
               startContent={<PiFilmReel color="#db2777" size="20" />}
@@ -119,7 +119,7 @@ const Header = () => {
               <Link className="w-full" href="/story" color="foreground">
                 剧本生成
               </Link>
-            </DropdownItem>
+            </DropdownItem> */}
           </DropdownMenu>
         </Dropdown>
         {/* <NavbarMenuItem key="nav-12">

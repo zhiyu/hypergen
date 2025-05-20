@@ -27,6 +27,7 @@ const StoryGenerationPage = () => {
   const [prompt, setPrompt] = useState("");
   const [model, setModel] = useState("");
   const [enableSearch, setEnableSearch] = useState(false);
+  const [searcher, setSearcher] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -86,6 +87,9 @@ const StoryGenerationPage = () => {
           (p) => p.name == model.split("/")[0]
         )[0],
         enableSearch,
+        searchProvider: settings.searchProviders.filter(
+          (p) => p.name == searcher
+        )[0],
       });
 
       // Navigate to the results page with the task ID
@@ -253,6 +257,23 @@ const StoryGenerationPage = () => {
               </p>
             </div>
           </Switch>
+
+          {enableSearch && (
+            <Select
+              className="mb-8"
+              label="选择搜索服务"
+              placeholder="请选择要使用的搜索服务"
+              variant="underlined"
+              size="lg"
+              onChange={(e) => {
+                setSearcher(e.target.value);
+              }}
+            >
+              {settings.searchProviders.map((provider) => (
+                <SelectItem key={provider.name}>{provider.name}</SelectItem>
+              ))}
+            </Select>
+          )}
 
           <Button
             className="mb-8 w-full bg-gradient-to-tr from-pink-600 to-amber-300 text-white shadow-lg"

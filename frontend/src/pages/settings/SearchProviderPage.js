@@ -202,7 +202,7 @@ const SearchProviderPage = () => {
             管理搜索服务商。您的配置信息会安全存储在浏览器的本地存储中。
           </div>
         </div>
-        <Button
+        {/* <Button
           color="primary"
           onPress={() => {
             setModalType("provider");
@@ -210,7 +210,7 @@ const SearchProviderPage = () => {
           }}
         >
           添加搜索服务商
-        </Button>
+        </Button> */}
       </div>
       <div className="flex w-full flex-col mt-12 mb-8">
         <Tabs
@@ -302,7 +302,7 @@ const SearchProviderPage = () => {
                   )}
                   <div className="my-4 mt-8 flex justify-between items-center">
                     <div>引擎</div>
-                    <Button
+                    {/* <Button
                       size="sm"
                       onPress={() => {
                         setModalType("engine");
@@ -310,7 +310,7 @@ const SearchProviderPage = () => {
                       }}
                     >
                       添加引擎
-                    </Button>
+                    </Button> */}
                   </div>
 
                   {provider.engines.map((engine) => (

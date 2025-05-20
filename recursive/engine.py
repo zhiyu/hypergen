@@ -361,7 +361,7 @@ def report_writing(input_filename,
                    end,
                    done_flag_file,
                    global_use_model,
-                   engine_backend,
+                   searcher,
                    nodes_json_file=None,
                    today_date=None):
     # Use current date if not provided
@@ -436,9 +436,8 @@ def report_writing(input_filename,
         },
         "RETRIEVAL": {
             "execute": {
-                "react_agent": True if engine_backend else False, # use Search Agent
+                "react_agent": True if searcher else False, # use Search Agent
                 "prompt_version": "SearchAgentENPrompt", # see recursive.agent.prompts.search_agent.main
-                "searcher_type": "Searxng", # SerpApiSearch see recursive.executor.actions.bing_browser
                 "llm_args": {
                     "model": global_use_model, # set the llm
                 },
@@ -458,7 +457,7 @@ def report_writing(input_filename,
                 "only_use_react_summary": False,
                 "webpage_helper_max_threads": 10, # use requests to download web page
                 "search_max_thread": 4, # serpapi parallel
-                "backend_engine": engine_backend, # google or bing, defined in serpapi
+                "searcher": searcher, # google or bing, defined in serpapi
                 "cc": "US", # search region
                 "topk": 20,
                 "pk_quota": 20, # search agent, pk quota, see __search
@@ -595,7 +594,7 @@ def define_args():
     parser.add_argument("--output-filename", type=str, required=True)
     parser.add_argument("--model", type=str, required=True)
     parser.add_argument("--length", type=int)
-    parser.add_argument("--engine-backend", type=str)
+    parser.add_argument("--searcher", type=str)
     parser.add_argument("--nodes-json-file", type=str, help="Path to save nodes.json for real-time visualization")
     current_date = datetime.now().strftime("%b %d, %Y")  # Format: "Apr 1, 2025"
     parser.add_argument("--today-date", type=str, default=current_date, help="Today's date to use in prompts (default: current date)")
@@ -617,5 +616,5 @@ if __name__ == "__main__":
                       nodes_json_file=args.nodes_json_file)
     else:
         report_writing(args.filename, args.output_filename,
-                       args.start, args.end, args.done_flag_file, args.model, args.engine_backend,
+                       args.start, args.end, args.done_flag_file, args.model, args.searcher,
                        nodes_json_file=args.nodes_json_file, today_date=args.today_date)
