@@ -293,7 +293,7 @@ class SerpApiSearch(BaseSearch):
                  cc="US",  # default search region
                  **kwargs,):
         black_list = []
-        self.serp_api_key = str(os.getenv('SERPAPI'))
+        self.serp_api_key = str(os.getenv('SerpApi_KEY'))
 
         self.endpoint = "https://serpapi.com/search"
         if backend_engine == "bing":
@@ -704,6 +704,10 @@ class BingBrowser(BaseAction):
             name=cache_name,
             call_args_dict=call_args_dict
         )
+
+        # disable cache
+        # cache_result = None
+
         if cache_result is not None:
             return cache_result
 
