@@ -30,125 +30,59 @@ HyperGen 是一个基于 [WriteHERE](https://github.com/principia-ai/WriteHERE) 
 
 ![screenshots](./assets/3.png)
 
-### 快速开始
+### 安装
 
-#### 一键启动
-
-```bash
-./setup_env.sh  # One-time setup of the environment
-./start.sh      # Start the application
-```
-
-This will:
-
-- Create a clean Python virtual environment
-- Install all required dependencies
-- Start the backend server on port 5001
-- Start the frontend on port 3000
-- Open your browser at http://localhost:3000
-
-You can customize the ports using command-line arguments:
+#### 下载项目代码到本地
 
 ```bash
-./start.sh --backend-port 8080 --frontend-port 8000
+git clone https://github.com/zhiyu/hypergen
+cd hypergen
 ```
 
-#### Anaconda/Miniconda 用户
+#### 安装 uv
 
-If you're using Anaconda and encounter dependency conflicts, use:
+参考 https://docs.astral.sh/uv/getting-started/installation/
+
+#### 创建 Python 虚拟环境
 
 ```bash
-./run_with_anaconda.sh
+uv venv
 ```
 
-This script creates a dedicated Anaconda environment called 'writehere' with the correct dependencies and runs both servers.
+##### 启动后端服务
 
-You can customize ports with this script:
+1. 安装依赖:
 
 ```bash
-./run_with_anaconda.sh --backend-port 8080 --frontend-port 8000
+uv pip install -v -e .
+uv sync
 ```
 
-#### 手动安装
-
-If you prefer to set up the components manually:
-
-##### 后端服务
-
-1. Create a Python virtual environment:
+2. 启动服务:
 
 ```bash
-python -m venv venv
-source venv/bin/activate
+uv run python  backend/server.py
 ```
 
-2. Install main dependencies:
+##### 启动前端服务
 
-```bash
-pip install -v -e .
-```
-
-3. Install backend server dependencies:
-
-```bash
-pip install -r backend/requirements.txt
-```
-
-4. Start the backend server:
-
-```bash
-cd backend
-python server.py
-```
-
-To use a custom port:
-
-```bash
-python server.py --port 8080
-```
-
-##### 前端服务
-
-1. Install frontend dependencies:
+1. 安装依赖:
 
 ```bash
 cd frontend
 npm install
 ```
 
-2. Start the frontend development server:
+2. 启动服务:
 
 ```bash
 npm start
 ```
 
-To use a custom port:
-
-```bash
-PORT=8000 npm start
-```
-
-### 项目结构
-
-```
-.
-├── backend/               # Backend Flask server
-├── frontend/              # React frontend
-├── recursive/             # Core engine implementation
-│   ├── agent/             # Agent implementation and prompts
-│   ├── executor/          # Task execution modules
-│   ├── llm/               # Language model integrations
-│   ├── utils/             # Utility functions and helpers
-│   ├── cache.py           # Caching for improved efficiency
-│   ├── engine.py          # Core planning and execution engine
-│   ├── graph.py           # Task graph representation
-│   ├── memory.py          # Memory management
-│   ├── test_run_report.sh # Script for generating reports
-│   └── test_run_story.sh  # Script for generating stories
-├── test_data/             # Example data for testing
-└── start.sh               # All-in-one startup script
-```
-
 ### License
 
 [MIT License](LICENSE)
+
+```
+
+```
