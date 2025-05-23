@@ -189,11 +189,11 @@ const LiveTaskList = ({ taskId, onTaskClick }) => {
   };
 
   // Handle tab change
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
+  const handleTabChange = (key) => {
+    setActiveTab(key);
 
     // Fetch workspace content when switching to workspace tab
-    if (newValue === 1 && !workspace && !workspaceLoading) {
+    if (key === "1") {
       fetchWorkspace();
     }
   };
@@ -536,8 +536,13 @@ const LiveTaskList = ({ taskId, onTaskClick }) => {
       <Box sx={{ mb: 2 }}></Box>
 
       {/* Tab navigation */}
-      <Tabs aria-label="Options" variant="underlined" size="lg">
-        <Tab key="photos" title="任务列表">
+      <Tabs
+        aria-label="Options"
+        variant="underlined"
+        size="lg"
+        onSelectionChange={handleTabChange}
+      >
+        <Tab key="0" title="任务列表">
           <Card className="border border-gray-light shadow-lg shadow-gray-light">
             <CardBody>
               <div className="mb-4">
@@ -705,7 +710,7 @@ const LiveTaskList = ({ taskId, onTaskClick }) => {
             </CardBody>
           </Card>
         </Tab>
-        <Tab key="music" title="工作空间">
+        <Tab key="1" title="工作空间">
           <Card className="border border-gray-light shadow-lg shadow-gray-light">
             <CardBody>
               <Box>
