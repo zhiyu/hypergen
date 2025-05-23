@@ -348,7 +348,7 @@ if __name__ == "__main__":
         prompt_version="SearchAgentClaude",
         action_executor=ActionExecutor(
             actions=[BingBrowser(
-                searcher="SerpApiSearch",
+                searcher_type="SerpApiSearch",
                 #   backend_engine = "bing",
                 backend_engine="google",
                 cc="US",

@@ -571,6 +571,7 @@ def report_writing(input_filename,
             continue
 
         result = get_report_with_ref(engine.root_node.to_json(), result)
+
         item["result"] = result
         output_f.write(json.dumps(item, ensure_ascii=False) + "\n")
         output_f.flush()

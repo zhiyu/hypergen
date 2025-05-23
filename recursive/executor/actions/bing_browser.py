@@ -414,12 +414,8 @@ class Searxng(BaseSearch):
         self.api_key = str(os.getenv('Searxng_KEY'))
 
         self.endpoint = str(os.getenv('Searxng_BASE_URL'))
-        if backend_engine == "bing":
-            logger.info("USE BING")
-            self.params = {"engine": backend_engine, "count": topk, "cc": cc, **kwargs}
-        elif backend_engine == "google":
-            logger.info("USE GOOGLE")
-            self.params = {"engine": backend_engine, "count": topk, "gl": cc.lower(), **kwargs}
+
+        self.params = {"engines": "bing,baidu,google", "count": topk}
 
         self.webpage_helper = WebPageHelper(
             min_char_count=min_char_count,
@@ -467,10 +463,8 @@ class Searxng(BaseSearch):
                 try:
                     params = {**self.params, "q": query,
                               "api_key": self.api_key, "format": "json"}
-                    print("search params:")
-                    print(params)
                     results = requests.get(self.endpoint, headers=headers, params=params).json()
-                    print(results)
+
                     if "results" in results:
                         for d in results["results"]:
                             if "url" in d and self.is_valid_source(d["url"]) and d["url"] not in exclude_urls:
@@ -491,6 +485,7 @@ class Searxng(BaseSearch):
                     value=url_to_results
                 )
         results = sorted(list(url_to_results.values()), key=lambda x: x["position"])
+
         pos2results = {}
         for idx, page in enumerate(results, start=1):
             page["position"] = idx
@@ -568,6 +563,7 @@ class BingBrowser(BaseAction):
         self.search_max_thread = search_max_thread
         self.language = language
 
+        self.searcher_name = searcher
         self.searcher = eval(searcher)(topk=topk, **kwargs)
         self.search_results = None
         self.pk_quota = pk_quota
@@ -697,7 +693,7 @@ class BingBrowser(BaseAction):
             "user_question": user_question,
             "think": think,
             "global_start_index": global_start_index,
-            "searcher": self.searcher,
+            "searcher": self.searcher_name,
         }
 
         cache_result = search_cache.get_cache(
@@ -718,10 +714,8 @@ class BingBrowser(BaseAction):
         ori_urls = [res["url"] for res in pk_search_results]
         # fetch web page content
         # pk_search_results = self.__fetch(pk_search_results)
-        if self.searcher == "Searxng":
-            pk_search_results = self.__single_fetch(pk_search_results)
-        else:
-            raise Exception()
+
+        pk_search_results = self.__single_fetch(pk_search_results)
 
         logger.info("Querys {} after pk get {} results, fetched {} results, succ urls: \n{}, \nfailed urls: \n{}".format(
             str(query_list), ori_cnt, len(pk_search_results),

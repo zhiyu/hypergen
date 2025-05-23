@@ -25,7 +25,7 @@ Independently determine, in order, whether the following two types of sub-tasks 
 
 1. **design Sub-task**: If the writing requires certain design designs for support, and these design requirements are not provided by the **dependent design tasks** or the **already completed novel content**, then an design sub-task needs to be planned.
 
-2. **Writing Sub-task**: If its length equals or less than 500 words, there is no need to further plan additional writing sub-tasks.
+2. **Writing Sub-task**: If its length equals or less than 1300 words, there is no need to further plan additional writing sub-tasks.
 
 If either an design sub-task or a writing sub-task needs to be created, the task is considered a complex task.
 
@@ -49,7 +49,6 @@ atomic/complex
 </result>
 """.strip()
 
-        
         content_template = """
 already-written novel:
 ```
@@ -77,8 +76,8 @@ The writing task you need to evaluate:
 ```
 """.strip()
         super().__init__(system_message, content_template)
-        
-        
+
+
 @prompt_register.register_module()
 class StoryWritingNLWriteAtomEN(PromptTemplate):
     def __init__(self) -> None:
@@ -93,7 +92,7 @@ Independently determine, in order, whether the following two types of sub-tasks 
 
 1. **Design Sub-task**: If the writing requires certain design designs for support, and these design requirements are not provided by the **dependent design tasks** or the **already completed novel content**, then an design sub-task needs to be planned.
 
-2. **Writing Sub-task**: If its length equals or less than 500 words, there is no need to further plan additional writing sub-tasks.
+2. **Writing Sub-task**: If its length equals or less than 1300 words, there is no need to further plan additional writing sub-tasks.
 
 If either an design sub-task or a writing sub-task needs to be created, the task is considered a complex task.
 
@@ -114,7 +113,6 @@ atomic/complex
 </result>
 """.strip()
 
-        
         content_template = """
 already-written novel:
 ```

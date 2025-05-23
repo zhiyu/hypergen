@@ -27,7 +27,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import TokenIcon from "@mui/icons-material/Token";
 import ArticleIcon from "@mui/icons-material/Article";
 import io from "socket.io-client";
-import { getWorkspace } from "../utils/api";
+import { getWorkspace, getGenerationResult } from "../utils/api";
 
 import {
   PiMagnifyingGlass,
@@ -153,15 +153,6 @@ const LiveTaskResult = ({ taskId, onTaskClick }) => {
   const [workspaceLoading, setWorkspaceLoading] = useState(false);
   const [workspaceError, setWorkspaceError] = useState("");
 
-  // Function to toggle task details expansion
-  const toggleTaskExpansion = (taskId, event) => {
-    event.stopPropagation(); // Prevent clicking the expand button from triggering the task selection
-    setExpandedTasks((prev) => ({
-      ...prev,
-      [taskId]: !prev[taskId],
-    }));
-  };
-
   // Function to fetch the workspace content
   const fetchWorkspace = async () => {
     if (!taskId) return;
@@ -170,9 +161,9 @@ const LiveTaskResult = ({ taskId, onTaskClick }) => {
     setWorkspaceError("");
 
     try {
-      const data = await getWorkspace(taskId);
-      if (data && data.workspace) {
-        setWorkspace(data.workspace);
+      const data = await getGenerationResult(taskId);
+      if (data && data.result) {
+        setWorkspace(data.result);
       } else {
         setWorkspace("暂无可用内容");
       }
@@ -186,11 +177,11 @@ const LiveTaskResult = ({ taskId, onTaskClick }) => {
   };
 
   // Handle tab change
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
+  const handleTabChange = (key) => {
+    setActiveTab(key);
 
     // Fetch workspace content when switching to workspace tab
-    if (newValue === 1 && !workspace && !workspaceLoading) {
+    if (key === 1 && !workspace && !workspaceLoading) {
       fetchWorkspace();
     }
   };
@@ -533,8 +524,13 @@ const LiveTaskResult = ({ taskId, onTaskClick }) => {
       <Box sx={{ mb: 2 }}></Box>
 
       {/* Tab navigation */}
-      <Tabs aria-label="Options" variant="underlined" size="lg">
-        <Tab key="photos" title="任务列表">
+      <Tabs
+        aria-label="Options"
+        variant="underlined"
+        size="lg"
+        onSelectionChange={handleTabChange}
+      >
+        <Tab key="0" title="任务列表">
           <Card className="border border-gray-light shadow-lg shadow-gray-light">
             <CardBody>
               <div className="mb-4">
@@ -702,7 +698,7 @@ const LiveTaskResult = ({ taskId, onTaskClick }) => {
             </CardBody>
           </Card>
         </Tab>
-        <Tab key="music" title="生成结果">
+        <Tab key="1" title="生成结果">
           <Card className="border border-gray-light shadow-lg shadow-gray-light">
             <CardBody>
               <Box>

@@ -5,6 +5,7 @@ from datetime import datetime
 
 now = datetime.now()
 
+
 @prompt_register.register_module()
 class ReportPlanning(PromptTemplate):
     def __init__(self) -> None:
@@ -53,7 +54,7 @@ You are a recursive professional report-writing and information seeking planning
 - **Function**: Perform actual report-writing tasks in sequence according to the plan. Based on specific writing requirements and already written content, continue writing in conjunction with the conclusions of analysis tasks and search tasks.
 - **All writing tasks are continuation tasks**: Ensure continuity and logical consistency with the preceding content during planning. Writing tasks should flow smoothly and seamlessly with one another, maintaining the overall coherence and unity of the report.
 - **Breakable tasks**: Writing, Analysis, Search
-- Unless necessary, each writing sub-task should be > 500 words.
+- Unless necessary, each writing sub-task should be > 1300 words.
 
 ## Analysis  
 - **Function**: Analyze and design any requirements outside of actual report writing. This includes but is not limited to research plan design, designing outlines, detailed outlines, data analysis, information organization, logic structure building, key argument determination, etc., to support actual writing.
@@ -72,7 +73,7 @@ You are a recursive professional report-writing and information seeking planning
 6. **Do not redundantly plan tasks already covered in the `overall plan` or duplicate content already present in the `already written report content`, and previous analysis tasks.**  
 7. Follow the results of analysis tasks and search tasks.
 8. search tasks goal only specify the information requirements, do not specify the source or specify how to search.
-**9**. Unless specified by user, the length of each writing task should be > 500 words.
+**9**. Unless specified by user, the length of each writing task should be > 1300 words.
 
 # Task Attributes (Required)  
 1. **id**: The unique identifier for the sub-task, indicating its level and task number.  

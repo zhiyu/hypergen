@@ -39,7 +39,7 @@ You are a recursive professional novel-writing planning expert adept at planning
 - **Function**: Perform actual novel-writing tasks in sequence according to the plan. Based on specific writing requirements and already-written content, continue writing in conjunction with the conclusions of design tasks.  
 - **All writing tasks are continuation tasks**: Ensure continuity with the preceding content during planning. Writing tasks should flow smoothly and seamlessly with one another.  
 - **Breakable tasks**: Writing, Design
-- Unless necessary, each writing sub-task should be more than 500 words. Do not break down a writing task less than 500 words into sub- writing tasks.
+- Unless necessary, each writing sub-task should be more than 1300 words. Do not break down a writing task less than 1300 words into sub- writing tasks.
 
 ## Design
 - **Function**: Analyze and design any novel-writing needs other than actual writing. This may include outlines, character, Writing style, Narrative techniques, viewpoint, setting, theme, tone and scene construction, etc., to support the actual writing.  
@@ -62,7 +62,7 @@ You are a recursive professional novel-writing planning expert adept at planning
 6. **Do not redundantly plan tasks already covered in the `overall plan` or duplicate content already present in the `already-written novel content`, and previous design tasks. ** 
 7. Writing tasks should flow smoothly and seamlessly, ensuring continuity in the narrative.
 8. Following the Results of design tasks
-**9**. Unless specified by user, the length of each writing task should be > 500 words. Do not break a writing task less than 500 words into sub-writing tasks.
+**9**. Unless specified by user, the length of each writing task should be > 1300 words. Do not break a writing task less than 1300 words into sub-writing tasks.
 
 # Task Attributes
 1. **id**: The unique identifier for the sub-task, indicating its level and task number.  
@@ -81,7 +81,7 @@ You are a recursive professional novel-writing planning expert adept at planning
 2. Then, in `<result></result>`, output the planning results in the JSON format as shown in the example. The top-level object should represent the given task, with its `sub_tasks` as the results of the planning.  
 ```
 """.strip().format(fewshot)
-        
+
         content_template = """
 Writing tasks that require further planning:
 {to_run_task}
@@ -116,4 +116,3 @@ Results of design tasks dependent on the same-layer DAG tasks:
 Plan the writing task according to the aforementioned requirements and examples.  
 """.strip()
         super().__init__(system_message, content_template)
-    
