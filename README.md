@@ -80,8 +80,8 @@ uv venv
 1. 安装依赖:
 
 ```bash
-uv pip install -v -e .
 uv sync
+uv pip install -v -e .
 ```
 
 2. 启动服务:

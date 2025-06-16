@@ -1,22 +1,22 @@
-import axios from 'axios';
+import axios from "axios";
 
-const BACKEND_PORT = process.env.REACT_APP_BACKEND_PORT || '5001';
+const BACKEND_PORT = process.env.REACT_APP_BACKEND_PORT || "5001";
 const API_BASE_URL =
   window.location.hostname === "localhost"
     ? `http://localhost:${BACKEND_PORT}/api` // For local development
     : `http://${window.location.hostname}:${BACKEND_PORT}/api`; // For EC2
 
-console.log("BACKEND_PORT=", BACKEND_PORT)
-console.log("API_BASE_URL=", API_BASE_URL)
+console.log("BACKEND_PORT=", BACKEND_PORT);
+console.log("API_BASE_URL=", API_BASE_URL);
 
 // Create an axios instance with CORS headers
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
+    "Content-Type": "application/json",
+    Accept: "application/json",
   },
-  timeout: 30000 // 30 seconds timeout
+  timeout: 30000, // 30 seconds timeout
 });
 
 /**
@@ -25,10 +25,10 @@ const apiClient = axios.create({
  */
 export const pingAPI = async () => {
   try {
-    const response = await apiClient.get('/ping');
+    const response = await apiClient.get("/ping");
     return response.data;
   } catch (error) {
-    console.error('API ping failed:', error);
+    console.error("API ping failed:", error);
     throw error;
   }
 };
@@ -46,21 +46,30 @@ export const pingAPI = async () => {
  */
 export const generateStory = async (params) => {
   try {
-    console.log('Sending story generation request to:', `${API_BASE_URL}/generate-story`);
-    const response = await apiClient.post('/generate-story', params);
+    console.log(
+      "Sending story generation request to:",
+      `${API_BASE_URL}/generate-story`
+    );
+    const response = await apiClient.post("/generate-story", params);
     return response.data;
   } catch (error) {
-    console.error('Error generating story:', error);
+    console.error("Error generating story:", error);
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      console.error('Error response data:', error.response.data);
-      console.error('Error response status:', error.response.status);
-      throw new Error(`Server error: ${error.response.data.error || error.response.statusText}`);
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+      throw new Error(
+        `Server error: ${
+          error.response.data.error || error.response.statusText
+        }`
+      );
     } else if (error.request) {
       // The request was made but no response was received
-      console.error('Error request:', error.request);
-      throw new Error('No response from server. Please make sure the backend is running.');
+      console.error("Error request:", error.request);
+      throw new Error(
+        "No response from server. Please make sure the backend is running."
+      );
     } else {
       // Something happened in setting up the request that triggered an Error
       throw error;
@@ -84,18 +93,27 @@ export const generateStory = async (params) => {
  */
 export const generateReport = async (params) => {
   try {
-    console.log('Sending report generation request to:', `${API_BASE_URL}/generate-report`);
-    const response = await apiClient.post('/generate-report', params);
+    console.log(
+      "Sending report generation request to:",
+      `${API_BASE_URL}/generate-report`
+    );
+    const response = await apiClient.post("/generate-report", params);
     return response.data;
   } catch (error) {
-    console.error('Error generating report:', error);
+    console.error("Error generating report:", error);
     if (error.response) {
-      console.error('Error response data:', error.response.data);
-      console.error('Error response status:', error.response.status);
-      throw new Error(`Server error: ${error.response.data.error || error.response.statusText}`);
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+      throw new Error(
+        `Server error: ${
+          error.response.data.error || error.response.statusText
+        }`
+      );
     } else if (error.request) {
-      console.error('Error request:', error.request);
-      throw new Error('No response from server. Please make sure the backend is running.');
+      console.error("Error request:", error.request);
+      throw new Error(
+        "No response from server. Please make sure the backend is running."
+      );
     } else {
       throw error;
     }
@@ -112,9 +130,9 @@ export const getGenerationStatus = async (taskId) => {
     const response = await apiClient.get(`/status/${taskId}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching generation status:', error);
+    console.error("Error fetching generation status:", error);
     if (error.response && error.response.status === 404) {
-      throw new Error('Task not found. It may have been removed or expired.');
+      throw new Error("Task not found. It may have been removed or expired.");
     }
     throw error;
   }
@@ -130,9 +148,11 @@ export const getGenerationResult = async (taskId) => {
     const response = await apiClient.get(`/result/${taskId}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching generation result:', error);
+    console.error("Error fetching generation result:", error);
     if (error.response && error.response.status === 404) {
-      throw new Error('Result not found. The task may have been removed or expired.');
+      throw new Error(
+        "Result not found. The task may have been removed or expired."
+      );
     }
     throw error;
   }
@@ -148,9 +168,11 @@ export const getTaskGraph = async (taskId) => {
     const response = await apiClient.get(`/task-graph/${taskId}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching task graph data:', error);
+    console.error("Error fetching task graph data:", error);
     if (error.response && error.response.status === 404) {
-      throw new Error('Task graph not found. It may not be available for this task.');
+      throw new Error(
+        "Task graph not found. It may not be available for this task."
+      );
     }
     throw error;
   }
@@ -162,10 +184,10 @@ export const getTaskGraph = async (taskId) => {
  */
 export const getHistory = async () => {
   try {
-    const response = await apiClient.get('/history');
+    const response = await apiClient.get("/history");
     return response.data;
   } catch (error) {
-    console.error('Error fetching generation history:', error);
+    console.error("Error fetching generation history:", error);
     throw error;
   }
 };
@@ -176,10 +198,10 @@ export const getHistory = async () => {
  */
 export const reloadTasks = async () => {
   try {
-    const response = await apiClient.post('/reload');
+    const response = await apiClient.post("/reload");
     return response.data;
   } catch (error) {
-    console.error('Error reloading tasks:', error);
+    console.error("Error reloading tasks:", error);
     throw error;
   }
 };
@@ -194,9 +216,9 @@ export const getWorkspace = async (taskId) => {
     const response = await apiClient.get(`/workspace/${taskId}`);
     return response.data;
   } catch (error) {
-    console.error('Error fetching workspace content:', error);
+    console.error("Error fetching workspace content:", error);
     if (error.response && error.response.status === 404) {
-      throw new Error('Workspace content not found. It may not be available yet.');
+      throw new Error("暂无可用内容");
     }
     throw error;
   }
@@ -214,7 +236,7 @@ export const deleteTask = async (taskId) => {
   } catch (error) {
     console.error(`Error deleting task ${taskId}:`, error);
     if (error.response && error.response.status === 404) {
-      throw new Error('Task not found. It may have already been deleted.');
+      throw new Error("Task not found. It may have already been deleted.");
     }
     throw error;
   }
@@ -232,7 +254,9 @@ export const stopTask = async (taskId) => {
   } catch (error) {
     console.error(`Error stopping task ${taskId}:`, error);
     if (error.response && error.response.status === 404) {
-      throw new Error('Task not found. It may have already been stopped or completed.');
+      throw new Error(
+        "Task not found. It may have already been stopped or completed."
+      );
     }
     throw error;
   }

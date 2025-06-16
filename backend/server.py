@@ -186,6 +186,7 @@ def run_story_generation(task_id, prompt, model, provider):
         stdout, stderr = process.communicate()
 
         # Check if the process completed successfully
+
         if process.returncode == 0:
             task_storage[task_id]["status"] = "completed"
             # Store the result if available

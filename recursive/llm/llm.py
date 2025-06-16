@@ -136,7 +136,6 @@ class OpenAIApiProxy():
 
         api_key = str(os.getenv(provider+"_KEY"))
         url = str(os.getenv(provider+"_BASE_URL")) + "/chat/completions"
-
         params_gpt = {
             "model": model,
             "messages": messages,
@@ -151,7 +150,7 @@ class OpenAIApiProxy():
 
         if "OpenAI" == provider:
             url = "https://api.openai.com/v1/chat/completions"
-        elif "Qwen" == provider:
+        elif "QWen" == provider:
             url = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
         elif "Anthropic" == provider:
             url = 'https://api.anthropic.com/v1/messages'

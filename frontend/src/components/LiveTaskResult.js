@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Paper,
-  Typography,
-  Divider,
-  Alert,
-  CircularProgress,
-  Tooltip,
-} from "@mui/material";
+import { Box, Paper, Typography, Divider, Alert, Tooltip } from "@mui/material";
 
 import {
   Tabs,
@@ -18,6 +10,7 @@ import {
   Button,
   Listbox,
   ListboxItem,
+  CircularProgress,
   cn,
 } from "@heroui/react";
 
@@ -452,10 +445,10 @@ const LiveTaskResult = ({ taskId, onTaskClick }) => {
 
   if (loading) {
     return (
-      <Paper elevation={3} sx={{ p: 3, mb: 4, textAlign: "center" }}>
-        <CircularProgress size={40} sx={{ mb: 2 }} />
-        <Typography variant="body1">Loading task data...</Typography>
-      </Paper>
+      <div className="p-8 flex items-center justify-center">
+        <CircularProgress size="sm" className="mr-4" />
+        <Typography variant="body1">加载任务数据...</Typography>
+      </div>
     );
   }
 
