@@ -21,14 +21,22 @@ code {
 
 .markdown-content h1,
 .markdown-content h2,
-.markdown-content h3 {
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5 {
   margin-top: 1.5em;
   margin-bottom: 0.75em;
+  font-weight: bold;
 }
 
 .markdown-content p {
-  line-height: 1.6;
-  margin-bottom: 1em;
+  line-height: 1.5;
+  margin-bottom: 0.75em;
+}
+
+.markdown-content ul li {
+  line-height: 1.5;
+  margin-bottom: 0.75em;
 }
 
 .markdown-content pre {

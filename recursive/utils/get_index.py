@@ -146,7 +146,7 @@ def get_report_with_ref(data, article):
     bib = []
     for index, page in sorted(web_pages.items()):
         bib.append("[{}] [{}]({}) ".format(index, page["title"], page["url"]))
-    article += "\n\n# References\n{}".format("\n\n".join(bib))
+    article += "\n\n# 参考资料\n{}".format("\n\n".join(bib))
     return article
 
 
@@ -165,5 +165,5 @@ if __name__ == "__main__":
     bib = []
     for index, page in sorted(web_pages.items()):
         bib.append("- [{}]({}). {} ".format(index, page["url"], page["title"]))
-    article += "\n\n# References\n{}".format("\n\n".join(bib))
+    article += "\n\n# 参考资料\n{}".format("\n\n".join(bib))
     open("{}/report_with_ref.md".format(folder), "w").write(article.strip())
